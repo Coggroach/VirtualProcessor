@@ -1,0 +1,7 @@
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\bin\Debug\VProcessor.Tests.dll
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\bin\Debug\VProcessor.Tests.pdb
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\bin\Debug\VProcessor.exe
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\bin\Debug\VProcessor.pdb
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.csprojResolveAssemblyReference.cache
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb

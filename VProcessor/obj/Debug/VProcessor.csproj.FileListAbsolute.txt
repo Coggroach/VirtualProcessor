@@ -1,0 +1,8 @@
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\bin\Debug\VProcessor.exe.config
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\bin\Debug\VProcessor.exe
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\bin\Debug\VProcessor.pdb
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\obj\Debug\VProcessor.csprojResolveAssemblyReference.cache
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\obj\Debug\VProcessor.Properties.Resources.resources
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\obj\Debug\VProcessor.csproj.GenerateResource.Cache
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\obj\Debug\VProcessor.exe
+\\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor\obj\Debug\VProcessor.pdb
