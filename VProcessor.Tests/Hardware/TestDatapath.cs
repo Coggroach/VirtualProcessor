@@ -46,6 +46,29 @@ namespace VProcessor.Tests.Hardware
         }
 
         [TestMethod]
+        public void TestZeroFlag()
+        {
+            var datapath = new Datapath();
+            datapath.SetRegister(1, 17);
+            datapath.SetRegister(0, 17);
+            datapath.SetChannel(0, 0);
+            datapath.SetChannel(1, 1);
+            datapath.FunctionUnit(AssemblyTable.SUB, 2);
+            Assert.IsTrue(4 <= datapath.GetNzcv());
+        }
+
+        [TestMethod]
+        public void TestCarryFlag()
+        {
+            var datapath = new Datapath();
+            datapath.SetRegister(1, Int32.MaxValue);
+            datapath.SetRegister(0, Int32.MaxValue);
+            datapath.FunctionUnit(AssemblyTable.SUB, 0);
+            Console.WriteLine(datapath.GetRegister(0));
+            Assert.IsTrue(3 <= datapath.GetNzcv());
+        }
+
+        [TestMethod]
         public void TestRegister()
         {
             var datapath = new Datapath();

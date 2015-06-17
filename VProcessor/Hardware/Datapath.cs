@@ -36,7 +36,7 @@ namespace VProcessor.Hardware
             this.channels[channel] = value;
         }
 
-        public void SetRegister(Byte register, Byte value)
+        public void SetRegister(Byte register, Int32 value)
         {
             this.registers[register] = value;
         }

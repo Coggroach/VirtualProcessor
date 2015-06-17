@@ -5,3 +5,10 @@
 \\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.csprojResolveAssemblyReference.cache
 \\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
 \\pssfiles\users\jarrod.richardson\visual studio 2013\Projects\VProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.Tests.dll
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.Tests.pdb
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.exe
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.pdb
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.csprojResolveAssemblyReference.cache
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
+E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb
