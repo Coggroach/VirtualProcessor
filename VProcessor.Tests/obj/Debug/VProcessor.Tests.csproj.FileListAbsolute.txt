@@ -12,3 +12,10 @@ E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcesso
 E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.csprojResolveAssemblyReference.cache
 E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
 E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.Tests.dll
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.Tests.pdb
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.exe
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.pdb
+C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.csprojResolveAssemblyReference.cache
+C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
+C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb

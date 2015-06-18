@@ -9,6 +9,7 @@ namespace VProcessor.Hardware
     public class Datapath
     {
         private static readonly Byte RegisterFileSize = (Byte) Math.Log(UInt16.MaxValue, 2);
+        private static readonly Byte RegisterContentsSize = (Byte) (RegisterFileSize*2);
         private static readonly Byte ChannelOutSize = 2;
 
         private Int32[] registers;
@@ -60,7 +61,12 @@ namespace VProcessor.Hardware
         {
             this.registers[destination] = this.FunctionUnit(code);
         }
-
+        
+        private Int32 Shifter(Int32 b, Int32 direction)
+        {
+            return direction == 0 ? b << 1 : b >> 1;
+        }
+        
         private Int32 FunctionUnit(Byte code)
         {
             var result = 0;
@@ -100,14 +106,17 @@ namespace VProcessor.Hardware
 
         private Int32 RippleAdder(Int32 a, Int32 b, Int32 cIn = 0)
         {
-            var cOut = 0;
-            if (a < 0 && b < 0)
-                cOut = 1;
+            a += cIn;
+            do
+            {
+                var and = a & b;
+                var xor = a ^ b;
+                and <<= 1;
 
-            this.nzcv |= (Byte) (cOut ^ cIn);
-            this.nzcv |= (Byte) (cOut << 1);
-
-            return a + b + cIn;
+                a = and;
+                b = xor;
+            } while (a != 0);
+            return b;
         }
     }
 }
