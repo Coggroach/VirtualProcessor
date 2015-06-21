@@ -22,3 +22,4 @@ C:\code\VirtualProcessor\VProcessor\bin\Debug\VProcessor.pdb
 C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csprojResolveAssemblyReference.cache
 C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.Properties.Resources.resources
 C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csproj.GenerateResource.Cache
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\ControlMemory.txt

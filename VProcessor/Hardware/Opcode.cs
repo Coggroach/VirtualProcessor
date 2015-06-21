@@ -7,14 +7,18 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Hardware
 {
-    public class AssemblyTable
+    public class Opcode
     {
-        public const Int32 ADD = 2;
         public const Int32 LDR = 0;
         public const Int32 INC = 1;
+        public const Int32 ADD = 2;
         public const Int32 ADDI = 3;
         public const Int32 SUBD = 4;
         public const Int32 SUB = 5;
+        public const Int32 DEC = 6;
+
+        public const Int32 LSL = 10;
+        public const Int32 LSR = 11;
 
         private static Hashtable codeTable;
 
@@ -23,7 +27,7 @@ namespace VProcessor.Hardware
             return (Int32) codeTable[code];
         }
 
-        static AssemblyTable()
+        static Opcode()
         {
             codeTable.Add("ADD", ADD);
             codeTable.Add("LDR", LDR);
@@ -31,6 +35,9 @@ namespace VProcessor.Hardware
             codeTable.Add("ADDI", ADDI);
             codeTable.Add("SUBD", SUBD);
             codeTable.Add("SUB", SUB);
+            codeTable.Add("DEC", DEC);
+            codeTable.Add("LSL", LSL);
+            codeTable.Add("LSR", LSR);
         }
     }
 }

@@ -12,13 +12,12 @@ namespace VProcessor.Hardware
         private static readonly Byte RegisterContentsSize = (Byte) (RegisterFileSize*2);
         private static readonly Byte ChannelOutSize = 2;
 
-        private Int32[] registers;
+        private UInt32[] registers;
         private Byte[] channels;
         private Byte nzcv;
-
         public Datapath()
         {
-            this.registers = new Int32[RegisterFileSize];
+            this.registers = new UInt32[RegisterFileSize];
             this.channels = new Byte[ChannelOutSize];
             this.StartUp();
         }
@@ -37,12 +36,12 @@ namespace VProcessor.Hardware
             this.channels[channel] = value;
         }
 
-        public void SetRegister(Byte register, Int32 value)
+        public void SetRegister(Byte register, UInt32 value)
         {
             this.registers[register] = value;
         }
 
-        public Int32 GetRegister(Byte channel)
+        public UInt32 GetRegister(Byte channel)
         {
             return this.registers[this.channels[channel]];
         }
@@ -58,45 +57,56 @@ namespace VProcessor.Hardware
         }
 
         public void FunctionUnit(Byte code, Byte destination)
-        {
-            this.registers[destination] = this.FunctionUnit(code);
+        {            
+            var a = this.registers[this.channels[0]];
+            var b = this.registers[this.channels[1]];
+
+            this.registers[destination] = this.FunctionUnit(code, a, b);
         }
-        
-        private Int32 Shifter(Int32 b, Int32 direction)
+
+        public void FunctionUnit(Byte code, Byte destination, UInt32 constIn = 0)
+        {
+            var a = this.registers[this.channels[0]];            
+
+            this.registers[destination] = this.FunctionUnit(code, a, constIn);
+        }
+
+        private UInt32 Shifter(UInt32 b, UInt32 direction)
         {
             return direction == 0 ? b << 1 : b >> 1;
         }
-        
-        private Int32 FunctionUnit(Byte code)
+
+        private UInt32 FunctionUnit(Byte code, UInt32 a, UInt32 b)
         {
-            var result = 0;
-            var a = this.registers[this.channels[0]];
-            var b = this.registers[this.channels[1]];
+            UInt32 result = 0;
             switch (code)
             {
-                case AssemblyTable.LDR:
+                case Opcode.LDR:
                     result = a;
                     break;
-                case AssemblyTable.INC:
+                case Opcode.INC:
                     result = this.RippleAdder(a, 0, 1);
                     break;
-                case AssemblyTable.ADD:
+                case Opcode.ADD:
                     result = this.RippleAdder(a, b);
                     break;
-                case AssemblyTable.ADDI:
+                case Opcode.ADDI:
                     result = this.RippleAdder(a, b, 1);
                     break;
-                case AssemblyTable.SUBD:
+                case Opcode.SUBD:
                     result = this.RippleAdder(a, ~b);
                     break;
-                case AssemblyTable.SUB:
+                case Opcode.SUB:
                     result = this.RippleAdder(a, ~b, 1);
+                    break;
+                case Opcode.DEC:
+                    result = this.RippleAdder(a, UInt32.MaxValue - 1, 1);
                     break;
             }
 
             if (result == 0)
                 this.nzcv |= 1 << 2;
-            if (result < 0)
+            if (result > Int32.MaxValue)
                 this.nzcv |= 1 << 3;
 
             this.nzcv &= 0x0F;
@@ -104,19 +114,16 @@ namespace VProcessor.Hardware
             return result;
         }
 
-        private Int32 RippleAdder(Int32 a, Int32 b, Int32 cIn = 0)
+        private UInt32 RippleAdder(UInt32 a, UInt32 b, UInt32 cIn = 0)
         {
-            a += cIn;
-            do
-            {
-                var and = a & b;
-                var xor = a ^ b;
-                and <<= 1;
+            var cOut = 0;
+            if (a - b - cIn <= 0)
+                cOut = 1;
 
-                a = and;
-                b = xor;
-            } while (a != 0);
-            return b;
+            this.nzcv |= (Byte)(cIn ^ cOut);
+            this.nzcv |= (Byte)(cOut << 1);
+
+            return a + b + cIn;
         }
     }
 }

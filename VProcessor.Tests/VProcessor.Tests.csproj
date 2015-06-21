@@ -51,6 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Hardware\TestDatapath.cs" />
+    <Compile Include="Hardware\TestMemoryUnit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -58,6 +59,11 @@
       <Project>{672e9b38-6690-4609-8fb6-df7b8045dfc8}</Project>
       <Name>VProcessor</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Software\TestControlMemory.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

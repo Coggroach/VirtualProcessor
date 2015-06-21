@@ -14,20 +14,24 @@ namespace VProcessor.Tests.Hardware
         {
             var datapath = new Datapath();
 
-            const Byte a = 3;
-            const Byte b = 5;
+            const Byte regA = 3;
+            const Byte regB = 5;
 
-            datapath.SetRegister(a, 162);
-            datapath.SetRegister(b, 94);
-            datapath.SetChannel(0, a);
-            datapath.SetChannel(1, b);
-            datapath.FunctionUnit(AssemblyTable.ADD, 2);
+            const UInt32 i = 162;
+            const UInt32 j = 94;
+
+            datapath.SetRegister(regA, i);
+            datapath.SetRegister(regB, j);
+            datapath.SetChannel(0, regA);
+            datapath.SetChannel(1, regB);
+            datapath.FunctionUnit(Opcode.ADD, 2);
             
-            Assert.AreEqual(162, datapath.GetRegister(0));
-            Assert.AreEqual(94, datapath.GetRegister(1));
+            Assert.AreEqual(i, datapath.GetRegister(0));
+            Assert.AreEqual(j, datapath.GetRegister(1));
             datapath.SetChannel(0, 2);
             var reg = datapath.GetRegister(0);
-            Assert.AreEqual(256, reg);
+            var outReg = i + j;
+            Assert.AreEqual(outReg, reg);
             var nzcv = datapath.GetNzcv();
             Assert.AreEqual(0, nzcv);
         }
@@ -39,7 +43,7 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(1, 17);
             datapath.SetChannel(0, 0);
             datapath.SetChannel(1, 1);
-            datapath.FunctionUnit(AssemblyTable.SUB, 2);
+            datapath.FunctionUnit(Opcode.SUB, 2);
             var nzcv = (datapath.GetNzcv() & 0x08);
             Assert.IsTrue(8 == nzcv);
         }
@@ -52,7 +56,7 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(0, 17);
             datapath.SetChannel(0, 0);
             datapath.SetChannel(1, 1);
-            datapath.FunctionUnit(AssemblyTable.SUB, 2);
+            datapath.FunctionUnit(Opcode.SUB, 2);
             var nzcv = (datapath.GetNzcv() & 0x04);
             Assert.IsTrue(4 == nzcv);
         }
@@ -61,9 +65,9 @@ namespace VProcessor.Tests.Hardware
         public void TestCarryFlag()
         {
             var datapath = new Datapath();
-            datapath.SetRegister(1, Int32.MinValue);
-            datapath.SetRegister(0, Int32.MinValue);
-            datapath.FunctionUnit(AssemblyTable.ADD, 0);
+            datapath.SetRegister(1, UInt32.MaxValue);
+            datapath.SetRegister(0, UInt32.MaxValue);
+            datapath.FunctionUnit(Opcode.ADD, 0);
             var nzcv = (datapath.GetNzcv() & 2);
             Assert.IsTrue(2 == nzcv);
         }
@@ -72,9 +76,9 @@ namespace VProcessor.Tests.Hardware
         public void TestOverflowFlag()
         {
             var datapath = new Datapath();
-            datapath.SetRegister(1, Int32.MaxValue);
-            datapath.SetRegister(0, Int32.MaxValue);
-            datapath.FunctionUnit(AssemblyTable.SUB, 0);
+            datapath.SetRegister(1, UInt32.MaxValue);
+            datapath.SetRegister(0, UInt32.MaxValue);
+            datapath.FunctionUnit(Opcode.SUB, 0);
             var nzcv = (datapath.GetNzcv() & 0x01);
             Assert.IsTrue(1 == nzcv);
         }
@@ -83,9 +87,10 @@ namespace VProcessor.Tests.Hardware
         public void TestRegister()
         {
             var datapath = new Datapath();
-            datapath.SetRegister(0, 17);
+            UInt32 data = 17;
+            datapath.SetRegister(0, data);
             datapath.SetChannel(0, 0);
-            Assert.AreEqual(17, datapath.GetRegister(0));
+            Assert.AreEqual(data, datapath.GetRegister(0));
         }
 
         [TestMethod]
