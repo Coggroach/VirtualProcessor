@@ -30,6 +30,12 @@ namespace VProcessor.Hardware
         public void Tick()
         {
             this.instructionRegister = userMemory.GetMemory();
+            //Split Ir into Opcode, Channel A and B, Destination
+            var car = controlMemory.GetRegister();
+            var pc = userMemory.GetRegister();
+            var control = controlMemory.GetMemory();
+            //Split Control into Parts
+            //MORE HARD PARST
         }
 
     }
