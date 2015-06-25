@@ -31,7 +31,13 @@ namespace VProcessor.Hardware
                 case Opcode.BNE:
                     return BitMatch(2, 0);
                 case Opcode.BGT:
-                    return BitMatch(2, 1)*( (BitMatch(3, 1)*BitMatch(0, 1)) + (BitMatch(3, 0)*BitMatch(0, 0)) );
+                    return BitMatch(2, 1) && ( BitMatch(3, 1) ^ BitMatch(0, 0) );
+                case Opcode.BLT:
+                    return BitMatch(3, 1) ^ BitMatch(0, 1);
+                case Opcode.BGE:
+                    return BitMatch(3, 1) ^ BitMatch(0, 0);
+                case Opcode.BLE:
+                    return BitMatch(2, 1) || ( BitMatch(3, 1) ^ BitMatch(0, 1) );
             }
             return false;
         }
@@ -46,17 +52,5 @@ namespace VProcessor.Hardware
             
             return BitMatch(i, neg);
         }
-        
-        private static Boolean operator +(Boolean A, Boolean B)
-        {
-            return A || B;    
-        }
-        
-        private static Boolean operator *(Boolean A, Boolean B)
-        {
-            return A && B;
-        }
-        }
-}
     }
 }
