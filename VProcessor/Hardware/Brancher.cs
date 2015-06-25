@@ -38,19 +38,24 @@ namespace VProcessor.Hardware
                     return BitMatch(3, 1) ^ BitMatch(0, 0);
                 case Opcode.BLE:
                     return BitMatch(2, 1) || ( BitMatch(3, 1) ^ BitMatch(0, 1) );
+                case Opcode.BVS:
+                    return BitMatch(0, 1);
+                case Opcode.BVC:
+                    return BitMatch(0, 0);
+                case Opcode.BCS:
+                    return BitMatch(1, 1);
+                case Opcode.BCC:
+                    return BitMatch(1, 0);
+                case Opcode.BNS:
+                    return BitMatch(3, 1);
+                case Opcode.BNC:
+                    return BitMatch(3, 0);
+                case Opcode.BHI:
+                    return BitMatch(1, 1) && BitMatch(2, 0);
+                case Opcode.BLS:
+                    return BitMatch(1, 0) || BitMatch(2, 1);
             }
             return false;
-        }
-        
-        private Boolean Parse(String s)
-        {
-            var neg = 1;
-            if(s.Contains("!"))
-                neg = 0;
-            var codes = new[] {"N", "Z", "C", "V"};
-            var i = codes.Where(code => if(s.Contains(code)) { break; } i++);
-            
-            return BitMatch(i, neg);
         }
     }
 }
