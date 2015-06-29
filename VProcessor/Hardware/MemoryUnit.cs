@@ -40,7 +40,7 @@ namespace VProcessor.Hardware
         
         private Boolean BitMatch(UInt32 value, Byte bitPos, Byte matchBit, Byte mask = 1)
         {
-            return (this.register >> bitPos) & mask == matchBit;
+            return (value >> bitPos) & mask == matchBit;
         }
         
         public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, Byte mask = 1)
@@ -51,6 +51,21 @@ namespace VProcessor.Hardware
         public Boolean BitMatchRegister(Byte bitPos, Byte matchBit, Byte mask = 1)
         {
             return this.BitMatch(this.register, bitPos, matchBit, mask);
+        }
+        
+        private UInt32 BitExtract(UInt32 value, Byte bitPos, Byte mask = 1)
+        {
+            return (value >> bitPos) & mask;
+        }
+        
+        public UInt32 BitExtractMemory(Byte bitPos, Byte mask = 1)
+        {
+            return this.BitExtract(this.GetMemory(), bitPos, mask);
+        }
+        
+        public UInt32 BitExtractRegister(Byte bitPos, Byte mask = 1)
+        {
+            return this.BitExtract(this.register, bitPos, mask);
         }
 
         public UInt32 GetMemory()
