@@ -38,9 +38,19 @@ namespace VProcessor.Hardware
             }
         }
         
-        public Boolean BitMatch(Byte bitPos, Byte matchBit, Byte mask = 1)
+        private Boolean BitMatch(UInt32 value, Byte bitPos, Byte matchBit, Byte mask = 1)
         {
             return (this.register >> bitPos) & mask == matchBit;
+        }
+        
+        public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, Byte mask = 1)
+        {
+            return this.BitMatch(this.GetMemory(), bitPos, matchBit, mask);
+        }
+        
+        public Boolean BitMatchRegister(Byte bitPos, Byte matchBit, Byte mask = 1)
+        {
+            return this.BitMatch(this.register, bitPos, matchBit, mask);
         }
 
         public UInt32 GetMemory()
