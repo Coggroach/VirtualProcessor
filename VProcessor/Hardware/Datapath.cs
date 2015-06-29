@@ -56,19 +56,24 @@ namespace VProcessor.Hardware
             return this.nzcv;
         }
 
-        public void FunctionUnit(Byte code, Byte destination)
+        public void FunctionUnit(Byte load, Byte code, Byte destination)
         {            
-            var a = this.registers[this.channels[0]];
-            var b = this.registers[this.channels[1]];
-
-            this.registers[destination] = this.FunctionUnit(code, a, b);
+            if(load == 1) 
+            {
+                var a = this.registers[this.channels[0]];
+                var b = this.registers[this.channels[1]];
+    
+                this.registers[destination] = this.FunctionUnit(code, a, b);
+            }
         }
 
-        public void FunctionUnit(Byte code, Byte destination, UInt32 constIn = 0)
+        public void FunctionUnit(Byte load, Byte code, Byte destination, UInt32 constIn = 0)
         {
-            var a = this.registers[this.channels[0]];            
-
-            this.registers[destination] = this.FunctionUnit(code, a, constIn);
+            if(load == 1)
+            {
+                var a = this.registers[this.channels[0]];
+                this.registers[destination] = this.FunctionUnit(code, a, constIn);
+            }
         }
 
         private UInt32 Shifter(UInt32 b, UInt32 direction)
