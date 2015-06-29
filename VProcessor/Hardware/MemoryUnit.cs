@@ -37,6 +37,11 @@ namespace VProcessor.Hardware
                 }
             }
         }
+        
+        public Boolean BitMatch(Byte bitPos, Byte matchBit, Byte mask = 1)
+        {
+            return (this.register >> bitPos) & mask == matchBit;
+        }
 
         public UInt32 GetMemory()
         {
