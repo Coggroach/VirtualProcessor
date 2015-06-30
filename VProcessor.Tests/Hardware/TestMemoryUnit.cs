@@ -9,12 +9,23 @@ namespace VProcessor.Tests.Hardware
     public class TestMemoryUnit
     {
         [TestMethod]
-        public void TestStartUp()
+        public void TestStartUp_ControlMemory()
         {
-            var memory = new MemoryUnit(4, "Software\\TestControlMemory.txt");
-            Assert.AreNotEqual((UInt32) 0, memory.GetMemory());
+            this.TestStartUp("Software\\TestControlMemory.txt");
+        }
+
+        [TestMethod]
+        public void TestStartUp_UserMemory()
+        {
+            this.TestStartUp("Software\\TestUserMemory.txt");
+        }
+
+        internal void TestStartUp(String path)
+        {
+            var memory = new MemoryUnit(4, path);
+            Assert.AreNotEqual((UInt32)0, memory.GetMemory());
             memory++;
-            Assert.AreEqual((UInt32) 0, memory.GetMemory());
+            Assert.AreEqual((UInt32)0, memory.GetMemory());
         }
     }
 }

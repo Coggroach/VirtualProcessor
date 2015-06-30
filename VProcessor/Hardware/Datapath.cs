@@ -56,24 +56,14 @@ namespace VProcessor.Hardware
             return this.nzcv;
         }
 
-        public void FunctionUnit(Byte load, Byte code, Byte destination)
-        {            
-            if(load == 1) 
-            {
-                var a = this.registers[this.channels[0]];
-                var b = this.registers[this.channels[1]];
-    
-                this.registers[destination] = this.FunctionUnit(code, a, b);
-            }
-        }
-
-        public void FunctionUnit(Byte load, Byte code, Byte destination, UInt32 constIn = 0)
+        public void FunctionUnit(Byte code, Byte destination = 0, Byte load = 0)
         {
-            if(load == 1)
-            {
-                var a = this.registers[this.channels[0]];
-                this.registers[destination] = this.FunctionUnit(code, a, constIn);
-            }
+            var a = this.registers[this.channels[0]];
+            var b = this.registers[this.channels[1]];
+            var f = this.FunctionUnit(code, a, b);
+
+            if (load != 1) return;
+            this.registers[destination] = f;
         }
 
         private UInt32 Shifter(UInt32 b, UInt32 direction)
@@ -107,6 +97,9 @@ namespace VProcessor.Hardware
                 case Opcode.DEC:
                     result = this.RippleAdder(a, UInt32.MaxValue - 1, 1);
                     break;
+                case Opcode.CMP:
+                    result = this.RippleAdder(a, ~b, 1);
+                    break;
             }
 
             if (result == 0)
@@ -122,10 +115,13 @@ namespace VProcessor.Hardware
         private UInt32 RippleAdder(UInt32 a, UInt32 b, UInt32 cIn = 0)
         {
             var cOut = 0;
-            if (a - b - cIn <= 0)
+            if ((Int32) a - (b + cIn) <= 0)
                 cOut = 1;
+            var v = 0;
+            if (a >= Int32.MaxValue && (b + cIn) >= Int32.MaxValue)
+                v = 1;
 
-            this.nzcv |= (Byte)(cIn ^ cOut);
+            this.nzcv |= (Byte) (v);
             this.nzcv |= (Byte)(cOut << 1);
 
             return a + b + cIn;

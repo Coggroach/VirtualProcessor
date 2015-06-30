@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VProcessor.Hardware
 {
@@ -17,8 +13,9 @@ namespace VProcessor.Hardware
         public const Int32 SUB = 5;
         public const Int32 DEC = 6;
 
-        public const Int32 LSL = 10;
-        public const Int32 LSR = 11;
+        public const Int32 LSL = 0xA;
+        public const Int32 LSR = 0xB;
+        public const Int32 CMP = 0xF;
         
         public const Int32 B   = 0x10000;
         public const Int32 BEQ = 0x20000;
@@ -36,39 +33,42 @@ namespace VProcessor.Hardware
         public const Int32 BGT = 0xE0000;
         public const Int32 BLE = 0xF0000;
 
-        private static Hashtable codeTable;
+        private static readonly Hashtable CodeTable;
 
         public static Int32 GetCode(String code)
         {
-            return (Int32) codeTable[code];
+            return (Int32) CodeTable[code];
         }
 
         static Opcode()
         {
-            codeTable.Add("ADD", ADD);
-            codeTable.Add("LDR", LDR);
-            codeTable.Add("INC", INC);
-            codeTable.Add("ADDI", ADDI);
-            codeTable.Add("SUBD", SUBD);
-            codeTable.Add("SUB", SUB);
-            codeTable.Add("DEC", DEC);
-            codeTable.Add("LSL", LSL);
-            codeTable.Add("LSR", LSR);
-            codeTable.Add("B", B);
-            codeTable.Add("BEQ", BEQ);
-            codeTable.Add("BNE", BNE);
-            codeTable.Add("BCS", BCS);
-            codeTable.Add("BCC", BCC);
-            codeTable.Add("BNS", BNS);
-            codeTable.Add("BNC", BNC);
-            codeTable.Add("BVS", BVS);
-            codeTable.Add("BVC", BVC);
-            codeTable.Add("BHI", BHI);
-            codeTable.Add("BLS", BLS);
-            codeTable.Add("BGE", BGE);
-            codeTable.Add("BLT", BLT);
-            codeTable.Add("BGT", BGT);
-            codeTable.Add("BLE", BLE);
+            CodeTable = new Hashtable
+            {
+                {"ADD", ADD},
+                {"LDR", LDR},
+                {"INC", INC},
+                {"ADDI", ADDI},
+                {"SUBD", SUBD},
+                {"SUB", SUB},
+                {"DEC", DEC},
+                {"LSL", LSL},
+                {"LSR", LSR},
+                {"B", B},
+                {"BEQ", BEQ},
+                {"BNE", BNE},
+                {"BCS", BCS},
+                {"BCC", BCC},
+                {"BNS", BNS},
+                {"BNC", BNC},
+                {"BVS", BVS},
+                {"BVC", BVC},
+                {"BHI", BHI},
+                {"BLS", BLS},
+                {"BGE", BGE},
+                {"BLT", BLT},
+                {"BGT", BGT},
+                {"BLE", BLE}
+            };
         }
     }
 }

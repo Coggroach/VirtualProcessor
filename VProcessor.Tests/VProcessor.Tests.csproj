@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Hardware\TestDatapath.cs" />
     <Compile Include="Hardware\TestMemoryUnit.cs" />
+    <Compile Include="Hardware\TestBrancher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

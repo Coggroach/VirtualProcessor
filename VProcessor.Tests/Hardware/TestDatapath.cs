@@ -24,7 +24,7 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(regB, j);
             datapath.SetChannel(0, regA);
             datapath.SetChannel(1, regB);
-            datapath.FunctionUnit(Opcode.ADD, 2);
+            datapath.FunctionUnit(Opcode.ADD, 2, 1);
             
             Assert.AreEqual(i, datapath.GetRegister(0));
             Assert.AreEqual(j, datapath.GetRegister(1));
@@ -43,7 +43,7 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(1, 17);
             datapath.SetChannel(0, 0);
             datapath.SetChannel(1, 1);
-            datapath.FunctionUnit(Opcode.SUB, 2);
+            datapath.FunctionUnit(Opcode.SUB, 2, 1);
             var nzcv = (datapath.GetNzcv() & 0x08);
             Assert.IsTrue(8 == nzcv);
         }
@@ -56,7 +56,7 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(0, 17);
             datapath.SetChannel(0, 0);
             datapath.SetChannel(1, 1);
-            datapath.FunctionUnit(Opcode.SUB, 2);
+            datapath.FunctionUnit(Opcode.SUB, 2, 1);
             var nzcv = (datapath.GetNzcv() & 0x04);
             Assert.IsTrue(4 == nzcv);
         }
@@ -67,7 +67,7 @@ namespace VProcessor.Tests.Hardware
             var datapath = new Datapath();
             datapath.SetRegister(1, UInt32.MaxValue);
             datapath.SetRegister(0, UInt32.MaxValue);
-            datapath.FunctionUnit(Opcode.ADD, 0);
+            datapath.FunctionUnit(Opcode.ADD, 0, 1);
             var nzcv = (datapath.GetNzcv() & 2);
             Assert.IsTrue(2 == nzcv);
         }
@@ -78,8 +78,8 @@ namespace VProcessor.Tests.Hardware
             var datapath = new Datapath();
             datapath.SetRegister(1, UInt32.MaxValue);
             datapath.SetRegister(0, UInt32.MaxValue);
-            datapath.FunctionUnit(Opcode.SUB, 0);
-            var nzcv = (datapath.GetNzcv() & 0x01);
+            datapath.FunctionUnit(Opcode.ADD, 0, 1);
+            var nzcv = (datapath.GetNzcv() & 1);
             Assert.IsTrue(1 == nzcv);
         }
 
