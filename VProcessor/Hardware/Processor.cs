@@ -14,28 +14,49 @@ namespace VProcessor.Hardware
         private const String UserMemoryLocation = "Software\\UserMemory.txt";
 
         private Datapath datapath;
-        private MemoryUnit controlMemory;
-        private MemoryUnit userMemory;
-        private UInt32 instructionRegister;
+        private MemoryUnit<UInt64> controlMemory;
+        private MemoryUnit<UInt32> userMemory;
         private Brancher branchControl;
         public Processor()
         {
             this.datapath = new Datapath();
-            this.controlMemory = new MemoryUnit(ControlMemorySize, ControlMemoryLocation);
-            this.userMemory = new MemoryUnit(UserMemorySize, UserMemoryLocation);
-            this.instructionRegister = 0;
+            this.controlMemory = new MemoryUnit<UInt64>(ControlMemorySize, ControlMemoryLocation);
+            this.userMemory = new MemoryUnit<UInt32>(UserMemorySize, UserMemoryLocation);
             this.branchControl = new Brancher();
         }
 
         public void Tick()
         {
-            this.instructionRegister = userMemory.GetMemory();
+            // UMemory 16:4:4:4:4
+            // Car:Unassigned:Dest:SrcA:SrcB
+            // CMemory 16:3:2:1:5:2:3
+            // Na:Unassigned:LoadCar:LoadReg:FS:PC:TD:TA:TB
             //Split Ir into Opcode, Channel A and B, Destination
-            var car = controlMemory.GetRegister();
-            var pc = userMemory.GetRegister();
-            var control = controlMemory.GetMemory();
+            
+            var opcode = this.userMemory.BitExtractMemory(16, 0xFFFF);
+            var dest = this.controlMemory.BitExtractMemory(2) == 1 ? 0xF : this.userMemory.BitExtractMemory(8, 0xF); 
+            var srcA = this.controlMemory.BitExtractMemory(1) == 1 ? 0xF : this.userMemory.BitExtractMemory(4, 0xF);
+            var srcB = this.controlMemory.BitExtractMemory(0) == 1 ? 0xF : this.userMemory.BitExtractMemory(0, 0xF);
+            
             //Split Control into Parts
-            //MORE HARD PARST
+            var pc = this.controlMemory.BitExtractMemory(3, 3);
+            var fs = this.controlMemory.BitExtractMemory(5, 0x1F);
+            var ld = this.controlMemory.BitExtractMemory(10);
+            var lCar = this.controlMemory.BitExtractMemory(11, 3);
+            var branch = this.controlMemory.BitExtractMemory(13, 0xF);
+            var na = this.controlMemory.BitExtractMemory(48, 0xFFFF);
+            
+            this.datapath.SetChannel(0, srcA);
+            this.datapath.SetChannel(1, srcB);
+            this.datapath.FunctionUnit(ld, fs, dest);
+            
+            var muxCar = (lCar & 2) == 1 ? na : opcode;
+            
+            if(this.branchControl.Branch(branch) && (lCar & 1) == 1) 
+            { 
+                this.controlMemory.SetRegister(muxCar);
+            }
+            //Pc
         }
 
     }
