@@ -7,14 +7,14 @@ using System.IO;
 
 namespace VProcessor.Hardware
 {
-    public class MemoryUnit
+    public class MemoryUnit <T> where T : UInt32, UInt64
     {
-        private UInt32 register;
-        private UInt32[] memory;
+        private T register;
+        private T[] memory;
         private String path;
         public MemoryUnit(int i, String s)
         {
-            this.memory = new UInt32[i];
+            this.memory = new T[i];
             this.path = s;
             this.StartUp();
         }
@@ -29,7 +29,7 @@ namespace VProcessor.Hardware
                     for (int i = 0; i < memory.Length; i++)
                     {
                         if ((input = reader.ReadLine()) != null)
-                            this.memory[i] = UInt32.Parse(input);
+                            this.memory[i] = T.Parse(input);
                         else
                             this.memory[i] = 0;                        
 
@@ -38,7 +38,7 @@ namespace VProcessor.Hardware
             }
         }
         
-        private Boolean BitMatch(UInt32 value, Byte bitPos, Byte matchBit, Byte mask = 1)
+        private Boolean BitMatch<T>(T value, Byte bitPos, Byte matchBit, Byte mask = 1)
         {
             return (value >> bitPos) & mask == matchBit;
         }
@@ -53,27 +53,27 @@ namespace VProcessor.Hardware
             return this.BitMatch(this.register, bitPos, matchBit, mask);
         }
         
-        private UInt32 BitExtract(UInt32 value, Byte bitPos, Byte mask = 1)
+        private T BitExtract<T>(T value, Byte bitPos, Byte mask = 1)
         {
             return (value >> bitPos) & mask;
         }
         
-        public UInt32 BitExtractMemory(Byte bitPos, Byte mask = 1)
+        public T BitExtractMemory(Byte bitPos, Byte mask = 1)
         {
             return this.BitExtract(this.GetMemory(), bitPos, mask);
         }
         
-        public UInt32 BitExtractRegister(Byte bitPos, Byte mask = 1)
+        public T BitExtractRegister(Byte bitPos, Byte mask = 1)
         {
             return this.BitExtract(this.register, bitPos, mask);
         }
 
-        public UInt32 GetMemory()
+        public T GetMemory()
         {
             return this.memory[this.register];
         }
 
-        public UInt32 GetRegister()
+        public T GetRegister()
         {
             return this.register;
         }
@@ -83,7 +83,7 @@ namespace VProcessor.Hardware
             this.register++;
         }
 
-        public void Add(UInt32 i)
+        public void Add<T>(T i)
         {
             this.register += i;
         }
