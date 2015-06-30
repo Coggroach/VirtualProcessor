@@ -21,3 +21,6 @@ C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
 C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb
 E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\ControlMemory.txt
 E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestControlMemory.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\ControlMemory.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\UserMemory.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestControlMemory.txt

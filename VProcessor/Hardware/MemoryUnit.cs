@@ -1,84 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace VProcessor.Hardware
 {
-    public class MemoryUnit <T> where T : UInt32, UInt64
+
+    public class MemoryUnit
     {
-        private T register;
-        private T[] memory;
-        private String path;
-        public MemoryUnit(int i, String s)
+        private UInt32 register;
+        private readonly UInt64[] memory;
+        private readonly String path;
+        public MemoryUnit(Int32 i, String s)
         {
-            this.memory = new T[i];
+            this.memory = new UInt64[i];
             this.path = s;
             this.StartUp();
         }
         public void StartUp()
         {
             this.register = 0;
-            if(File.Exists(this.path))
+            if (!File.Exists(this.path)) return;
+            using (var reader = File.OpenText(this.path))
             {
-                using (StreamReader reader = File.OpenText(this.path))
+                for (var i = 0; i < this.memory.Length; i++)
                 {
-                    String input = "";
-                    for (int i = 0; i < memory.Length; i++)
-                    {
-                        if ((input = reader.ReadLine()) != null)
-                            this.memory[i] = T.Parse(input);
-                        else
-                            this.memory[i] = 0;                        
-
-                    }                  
+                    var input = "";
+                    if ((input = reader.ReadLine()) != null)
+                        this.memory[i] = UInt64.Parse(input);
+                    else
+                        this.memory[i] = 0;
                 }
             }
         }
-        
-        private Boolean BitMatch<T>(T value, Byte bitPos, Byte matchBit, Byte mask = 1)
+
+        private static Boolean BitMatch(UInt64 value, Byte bitPos, Byte matchBit, UInt32 mask = 1)
         {
-            return (value >> bitPos) & mask == matchBit;
+            return ((value >> bitPos) & mask) == matchBit;
         }
-        
-        public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, Byte mask = 1)
+
+        public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, UInt32 mask = 1)
         {
-            return this.BitMatch(this.GetMemory(), bitPos, matchBit, mask);
+            return BitMatch(this.GetMemory(), bitPos, matchBit, mask);
         }
-        
-        public Boolean BitMatchRegister(Byte bitPos, Byte matchBit, Byte mask = 1)
+
+        public Boolean BitMatchRegister(Byte bitPos, Byte matchBit, UInt32 mask = 1)
         {
-            return this.BitMatch(this.register, bitPos, matchBit, mask);
+            return BitMatch(this.register, bitPos, matchBit, mask);
         }
-        
-        private T BitExtract<T>(T value, Byte bitPos, Byte mask = 1)
+
+        private static UInt64 BitExtract(UInt64 value, Byte bitPos, UInt32 mask = 1)
         {
             return (value >> bitPos) & mask;
         }
-        
-        public T BitExtractMemory(Byte bitPos, Byte mask = 1)
+
+        public UInt32 BitExtractMemory(Byte bitPos, UInt32 mask = 1)
         {
-            return this.BitExtract(this.GetMemory(), bitPos, mask);
-        }
-        
-        public T BitExtractRegister(Byte bitPos, Byte mask = 1)
-        {
-            return this.BitExtract(this.register, bitPos, mask);
+            return (UInt32) BitExtract(this.GetMemory(), bitPos, mask);
         }
 
-        public T GetMemory()
+        public UInt32 BitExtractRegister(Byte bitPos, UInt32 mask = 1)
+        {
+            return (UInt32) BitExtract(this.register, bitPos, mask);
+        }
+
+        public UInt64 GetMemory()
         {
             return this.memory[this.register];
         }
 
-        public T GetRegister()
+        public UInt32 GetRegister()
         {
             return this.register;
         }
         
-        public void SetRegister(T value)
+        public void SetRegister(UInt32 value)
         {
             this.register = value;
         }
@@ -88,7 +82,7 @@ namespace VProcessor.Hardware
             this.register++;
         }
 
-        public void Add<T>(T i)
+        public void Add(UInt32 i)
         {
             this.register += i;
         }
