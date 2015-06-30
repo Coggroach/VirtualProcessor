@@ -77,6 +77,11 @@ namespace VProcessor.Hardware
         {
             return this.register;
         }
+        
+        public void SetRegister(T value)
+        {
+            this.register = value;
+        }
 
         public void Increment()
         {
