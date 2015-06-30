@@ -39,24 +39,28 @@ namespace VProcessor.Hardware
             var srcB = this.controlMemory.BitExtractMemory(0) == 1 ? 0xF : this.userMemory.BitExtractMemory(0, 0xF);
             
             //Split Control into Parts
-            var pc = this.controlMemory.BitExtractMemory(3, 3);
-            var fs = this.controlMemory.BitExtractMemory(5, 0x1F);
-            var ld = this.controlMemory.BitExtractMemory(10);
-            var lCar = this.controlMemory.BitExtractMemory(11, 3);
-            var branch = this.controlMemory.BitExtractMemory(13, 0xF);
-            var na = this.controlMemory.BitExtractMemory(48, 0xFFFF);
+            var pc = this.controlMemory.BitExtractMemory(3, 3);     // 4:3
+            var fs = this.controlMemory.BitExtractMemory(5, 0x1F);  // 9:5
+            var ld = this.controlMemory.BitExtractMemory(10);       // 10
+            var lCar = this.controlMemory.BitExtractMemory(11, 3);  // 12:11
+            var branch = this.controlMemory.BitExtractMemory(13, 0xF);  // 16:13
+            var na = this.controlMemory.BitExtractMemory(48, 0xFFFF);   // 63:48
             
             this.datapath.SetChannel(0, srcA);
             this.datapath.SetChannel(1, srcB);
             this.datapath.FunctionUnit(ld, fs, dest);
             
-            var muxCar = (lCar & 2) == 1 ? na : opcode;
+            var muxCar = (lCar & 2) == 2 ? na : opcode;
             
             if(this.branchControl.Branch(branch) && (lCar & 1) == 1) 
-            { 
                 this.controlMemory.SetRegister(muxCar);
-            }
-            //Pc
+            else 
+                this.controlMemory++;
+            
+            if((pc & 1) == 1)
+                this.userMemory++;
+            if((pc & 2) == 2)
+                this.userMemory += this.userMemory.BitExtractMemory(0, 0xFFF);
         }
 
     }
