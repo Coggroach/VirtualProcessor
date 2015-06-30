@@ -44,11 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Editor.cs">
+    <Compile Include="Gui\Editor.cs">
       <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor.Designer.cs">
-      <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
     <Compile Include="Hardware\Brancher.cs" />
     <Compile Include="Hardware\MemoryUnit.cs" />

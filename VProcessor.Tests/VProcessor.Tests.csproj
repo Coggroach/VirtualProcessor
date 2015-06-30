@@ -53,6 +53,7 @@
     <Compile Include="Hardware\TestDatapath.cs" />
     <Compile Include="Hardware\TestMemoryUnit.cs" />
     <Compile Include="Hardware\TestBrancher.cs" />
+    <Compile Include="Hardware\TestProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +63,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Software\TestUserMemory.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Software\TestControlMemory.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

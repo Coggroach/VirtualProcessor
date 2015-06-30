@@ -25,6 +25,34 @@ namespace VProcessor.Hardware
             this.branchControl = new Brancher();
         }
 
+        public UInt32[] GetRegisters()
+        {
+            return this.datapath.GetRegisters();
+        }
+
+        public Byte GetNzcv()
+        {
+            return this.branchControl.Nzcv;
+        }
+
+        public UInt32 GetProgramCounter()
+        {
+            return this.userMemory.GetRegister();
+        }
+
+        public UInt32 GetControlAddressRegister()
+        {
+            return this.controlMemory.GetRegister();
+        }
+
+        public void Refresh()
+        {
+            this.userMemory.StartUp();
+            this.controlMemory.StartUp();
+        }
+
+
+        
         public void Tick()
         {
             // UMemory 16:4:4:4:4

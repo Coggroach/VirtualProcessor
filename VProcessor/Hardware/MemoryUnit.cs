@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 
 namespace VProcessor.Hardware
@@ -25,7 +26,7 @@ namespace VProcessor.Hardware
                 {
                     var input = "";
                     if ((input = reader.ReadLine()) != null)
-                        this.memory[i] = UInt64.Parse(input);
+                        this.memory[i] = UInt64.Parse(input, NumberStyles.HexNumber);
                     else
                         this.memory[i] = 0;
                 }

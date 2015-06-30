@@ -8,7 +8,7 @@ namespace VProcessor.Hardware
 {
     public class Datapath
     {
-        private static readonly Byte RegisterFileSize = (Byte) Math.Log(UInt16.MaxValue, 2);
+        public static readonly Byte RegisterFileSize = (Byte) Math.Log(UInt16.MaxValue, 2);
         private static readonly Byte RegisterContentsSize = (Byte) (RegisterFileSize*2);
         private static readonly Byte ChannelOutSize = 2;
 
@@ -39,6 +39,11 @@ namespace VProcessor.Hardware
         public void SetRegister(Byte register, UInt32 value)
         {
             this.registers[register] = value;
+        }
+
+        public UInt32[] GetRegisters()
+        {
+            return this.registers;
         }
 
         public UInt32 GetRegister(Byte channel)
