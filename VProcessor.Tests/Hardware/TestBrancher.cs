@@ -39,7 +39,7 @@ namespace VProcessor.Tests.Hardware
         public void TestBhi()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(14, 12);
+            var datapath = TestHelper.CreateDatapath(14, 12);
 
             datapath.FunctionUnit(Opcode.CMP);
 
@@ -47,26 +47,11 @@ namespace VProcessor.Tests.Hardware
             Assert.IsTrue(brancher.Branch(Opcode.BHI));
         }
 
-        private static Datapath SetupDatapath(UInt32 a, UInt32 b)
-        {
-            var datapath = new Datapath();
-
-            const Byte reg0 = 0;
-            const Byte reg1 = 1;
-
-            datapath.SetRegister(reg0, a);
-            datapath.SetRegister(reg1, b);
-
-            datapath.SetChannel(0, reg0);
-            datapath.SetChannel(1, reg1);
-            return datapath;
-        }
-
         [TestMethod]
         public void TestBge_WhenFalse()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(14, 17);
+            var datapath = TestHelper.CreateDatapath(14, 17);
 
             datapath.FunctionUnit(Opcode.CMP);
             
@@ -78,7 +63,7 @@ namespace VProcessor.Tests.Hardware
         public void TestBge_WhenGreaterThan()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(18, 17);
+            var datapath = TestHelper.CreateDatapath(18, 17);
 
             datapath.FunctionUnit(Opcode.CMP);
 
@@ -90,7 +75,7 @@ namespace VProcessor.Tests.Hardware
         public void TestBge_WhenEqual()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(17, 17);
+            var datapath = TestHelper.CreateDatapath(17, 17);
 
             datapath.FunctionUnit(Opcode.CMP);
 
@@ -102,7 +87,7 @@ namespace VProcessor.Tests.Hardware
         public void TestBgt_WhenEqual()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(17, 17);
+            var datapath = TestHelper.CreateDatapath(17, 17);
 
             datapath.FunctionUnit(Opcode.CMP);
 
@@ -114,7 +99,7 @@ namespace VProcessor.Tests.Hardware
         public void TestBgt_WhenGreaterThan()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(18, 17);
+            var datapath = TestHelper.CreateDatapath(18, 17);
 
             datapath.FunctionUnit(Opcode.CMP);
 
@@ -126,7 +111,7 @@ namespace VProcessor.Tests.Hardware
         public void TestBgt_WhenLessThan()
         {
             var brancher = new Brancher();
-            var datapath = SetupDatapath(14, 17);
+            var datapath = TestHelper.CreateDatapath(14, 17);
 
             datapath.FunctionUnit(Opcode.CMP);
 

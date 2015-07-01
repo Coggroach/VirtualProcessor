@@ -54,6 +54,8 @@
     <Compile Include="Hardware\TestMemoryUnit.cs" />
     <Compile Include="Hardware\TestBrancher.cs" />
     <Compile Include="Hardware\TestProcessor.cs" />
+    <Compile Include="Hardware\TestOpcode.cs" />
+    <Compile Include="Hardware\TestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

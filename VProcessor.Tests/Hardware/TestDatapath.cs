@@ -30,7 +30,7 @@ namespace VProcessor.Tests.Hardware
             Assert.AreEqual(j, datapath.GetRegister(1));
             datapath.SetChannel(0, 2);
             var reg = datapath.GetRegister(0);
-            var outReg = i + j;
+            const UInt32 outReg = i + j;
             Assert.AreEqual(outReg, reg);
             var nzcv = datapath.GetNzcv();
             Assert.AreEqual(0, nzcv);
@@ -69,7 +69,9 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(0, UInt32.MaxValue);
             datapath.FunctionUnit(Opcode.ADD, 0, 1);
             var nzcv = (datapath.GetNzcv() & 2);
+            var reg = datapath.GetRegister();
             Assert.IsTrue(2 == nzcv);
+            Assert.IsTrue(UInt32.MaxValue << 1 == reg);
         }
 
         [TestMethod]
@@ -87,7 +89,7 @@ namespace VProcessor.Tests.Hardware
         public void TestRegister()
         {
             var datapath = new Datapath();
-            UInt32 data = 17;
+            const UInt32 data = 17;
             datapath.SetRegister(0, data);
             datapath.SetChannel(0, 0);
             Assert.AreEqual(data, datapath.GetRegister(0));

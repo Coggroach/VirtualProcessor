@@ -5,39 +5,75 @@ namespace VProcessor.Hardware
 {
     public class Opcode
     {
+        //http://simplemachines.it/doc/arm_inst.pdf
+        //General Flags
         public const Int32 LDR = 0;
+
+        //Arithmetic Flags
         public const Int32 INC = 1;
         public const Int32 ADD = 2;
         public const Int32 ADDI = 3;
-        public const Int32 SUBD = 4;
-        public const Int32 SUB = 5;
-        public const Int32 DEC = 6;
+        public const Int32 ADC = 4;
+        public const Int32 SUBD = 5;
+        public const Int32 SUB = 6;
+        public const Int32 SBC = 7;
+        public const Int32 DEC = 8;
+        public const Int32 RSB = 9;
+        public const Int32 RSC = 0xA;
 
-        public const Int32 LSL = 0xA;
-        public const Int32 LSR = 0xB;
-        public const Int32 CMP = 0xF;
+        //Multiplication Flags
+        public const Int32 MUL = 0xB;
+        public const Int32 MLA = 0xC;
+
+        //Logical Flags
+        public const Int32 AND = 0x10;
+        public const Int32 EOR = 0x11;
+        public const Int32 ORR = 0x12;
+        public const Int32 BIC = 0x13;
+
+        //Data Movement
+        public const Int32 MOV = 0x14;
+        public const Int32 MNV = 0x15;
+
+        //Shifting Flags
+        public const Int32 ROL = 0x18;
+        public const Int32 ROR = 0x19;
+        public const Int32 LSL = 0x1A;
+        public const Int32 LSR = 0x1B;
+
+        //Comparison Flags
+        public const Int32 TST = 0x1C;
+        public const Int32 TEQ = 0x1D;
+        public const Int32 CMN = 0x1E;
+        public const Int32 CMP = 0x1F;
         
-        public const Int32 B   = 0x10000;
-        public const Int32 BEQ = 0x20000;
-        public const Int32 BNE = 0x30000;
-        public const Int32 BCS = 0x40000;
-        public const Int32 BCC = 0x50000;
-        public const Int32 BNS = 0x60000;
-        public const Int32 BNC = 0x70000;
-        public const Int32 BVS = 0x80000;
-        public const Int32 BVC = 0x90000;
-        public const Int32 BHI = 0xA0000;
-        public const Int32 BLS = 0xB0000;
-        public const Int32 BGE = 0xC0000;
-        public const Int32 BLT = 0xD0000;
-        public const Int32 BGT = 0xE0000;
-        public const Int32 BLE = 0xF0000;
+        //Branch Flags
+        public const Int32 B   = 0x21;
+        public const Int32 BEQ = 0x22;
+        public const Int32 BNE = 0x23;
+        public const Int32 BCS = 0x24;
+        public const Int32 BCC = 0x25;
+        public const Int32 BNS = 0x26;
+        public const Int32 BNC = 0x27;
+        public const Int32 BVS = 0x28;
+        public const Int32 BVC = 0x29;
+        public const Int32 BHI = 0x2A;
+        public const Int32 BLS = 0x2B;
+        public const Int32 BGE = 0x2C;
+        public const Int32 BLT = 0x2D;
+        public const Int32 BGT = 0x2E;
+        public const Int32 BLE = 0x2F;
 
         private static readonly Hashtable CodeTable;
 
         public static Int32 GetCode(String code)
         {
             return (Int32) CodeTable[code];
+        }
+
+        public static Hashtable GetCodeTable()
+        {
+            return CodeTable;
         }
 
         static Opcode()
