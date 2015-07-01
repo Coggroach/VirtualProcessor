@@ -25,3 +25,5 @@ C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csproj.GenerateResource
 E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\ControlMemory.txt
 C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\ControlMemory.txt
 C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\UserMemory.txt
+C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.Gui.EditorForm.resources
+C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Assembly.txt

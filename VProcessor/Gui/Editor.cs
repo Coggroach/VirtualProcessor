@@ -28,6 +28,19 @@ namespace VProcessor.Gui
             this.ResumeLayout(false);
             this.Padding = this.DefaultMargin;
 
+            this.EditorBox = new RichTextBox();
+            var sizeY = Scale(this.ClientSize.Height, 0.1);
+            this.CommandBox = new TextBox
+            {
+                Name = "CommandBox",
+                Location =
+                    new Point(Scale(this.ClientSize.Width, 0.3) + this.Padding.Size.Width,
+                        this.ClientSize.Height - sizeY),
+                Size = new Size(Scale(this.ClientSize.Width, 0.7), sizeY),
+            };
+            this.Controls.Add(this.CommandBox);
+            this.CommandBox.KeyDown += this.CommandBoxEnter;
+
             this.RegisterBox = new DataGridView
             {
                 Name = "RegisterGroupBox",
@@ -51,6 +64,15 @@ namespace VProcessor.Gui
 
             this.RegisterBox.Rows.Add("pc", this.processor.GetProgramCounter());
             this.RegisterBox.Rows.Add("nzcv", this.processor.GetNzcv());
+        }
+
+        private void CommandBoxEnter(Object o, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.processor.Tick();
+                this.UpdateRegisters();
+            }
         }
 
         public void UpdateRegisters()

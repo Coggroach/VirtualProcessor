@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace VProcessor.Hardware
 {
@@ -84,11 +85,11 @@ namespace VProcessor.Hardware
                 {"LDR", LDR},
                 {"INC", INC},
                 {"ADDI", ADDI},
+                {"ADC", ADC},
                 {"SUBD", SUBD},
                 {"SUB", SUB},
+                {"SBC", SBC},
                 {"DEC", DEC},
-                {"LSL", LSL},
-                {"LSR", LSR},
                 {"B", B},
                 {"BEQ", BEQ},
                 {"BNE", BNE},
@@ -103,7 +104,25 @@ namespace VProcessor.Hardware
                 {"BGE", BGE},
                 {"BLT", BLT},
                 {"BGT", BGT},
-                {"BLE", BLE}
+                {"BLE", BLE},
+                {"LSL", LSL},
+                {"LSR", LSR},
+                {"ROL", ROL},
+                {"ROR", ROR},
+                {"TST", TST},
+                {"TEQ", TEQ},
+                {"CMN", CMN},
+                {"CMP", CMP},
+                {"RSB", RSB},
+                {"RSC", RSC},
+                {"MUL", MUL},
+                {"MLA", MLA},
+                {"AND", AND},
+                {"EOR", EOR},
+                {"ORR", ORR},
+                {"BIC", BIC},
+                {"MOV", MOV},
+                {"MNV", MNV}
             };
         }
     }

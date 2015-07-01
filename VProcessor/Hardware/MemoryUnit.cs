@@ -68,6 +68,11 @@ namespace VProcessor.Hardware
             return this.memory[this.register];
         }
 
+        public Int32 GetLength()
+        {
+            return this.memory.Length;
+        }
+
         public UInt32 GetRegister()
         {
             return this.register;

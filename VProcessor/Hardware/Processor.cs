@@ -41,6 +41,16 @@ namespace VProcessor.Hardware
             return this.controlMemory.GetRegister();
         }
 
+        public MemoryUnit GetControlMemory()
+        {
+            return this.controlMemory;
+        }
+
+        public MemoryUnit GetUserMemory()
+        {
+            return this.userMemory;
+        }
+
         public void Refresh()
         {
             this.userMemory.StartUp();
