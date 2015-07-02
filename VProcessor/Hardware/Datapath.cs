@@ -8,7 +8,7 @@ namespace VProcessor.Hardware
 {
     public class Datapath
     {
-        public static readonly Byte RegisterFileSize = (Byte) Math.Log(UInt16.MaxValue, 2);
+        public static readonly Byte RegisterFileSize = (Byte) Math.Ceiling(Math.Log(UInt16.MaxValue, 2));
         private static readonly Byte RegisterContentsSize = (Byte) (RegisterFileSize*2);
         private const Byte ChannelOutSize = 2;
 

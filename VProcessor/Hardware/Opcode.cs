@@ -64,8 +64,10 @@ namespace VProcessor.Hardware
         public const Int32 BLT = 0x2D;
         public const Int32 BGT = 0x2E;
         public const Int32 BLE = 0x2F;
+        public const Int32 B_BASE = B;
 
         private static readonly Hashtable CodeTable;
+        
 
         public static Hashtable GetCode(String code)
         {

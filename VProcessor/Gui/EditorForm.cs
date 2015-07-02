@@ -34,13 +34,23 @@ namespace VProcessor.Gui
 
         }
 
+        public void Tick()
+        {
+            this.processor.Tick();
+            this.UpdateRegisterFile();
+        }
 
         public void UpdateRegisterFile()
         {
-            for (var i = 0; i < this.processor.GetRegisters().Length; i++)
-                this.RegisterFile.UpdateCellValue(1, i);
-            this.RegisterFile.UpdateCellValue(1, (Int32)this.processor.GetProgramCounter());
-            this.RegisterFile.UpdateCellValue(1, this.processor.GetNzcv());
+            var registers = this.processor.GetRegisters();
+            var length = registers.Length;
+            for (var i = 0; i < length; i++)
+                this.RegisterFile[1, i].Value = registers[i];
+            //this.RegisterFile.UpdateCellValue(1, length);//
+            //this.RegisterFile.UpdateCellValue(1, length + 1);//
+            this.RegisterFile[1, length].Value = (Int32)this.processor.GetProgramCounter();
+           this.RegisterFile[1, length+1].Value = this.processor.GetControlAddressRegister();
+            this.RegisterFile[1, length+2].Value = this.processor.GetNzcv();
         }
 
         public void SetupRegisterFile()
@@ -58,6 +68,7 @@ namespace VProcessor.Gui
             }
 
             this.RegisterFile.Rows.Add("pc", this.processor.GetProgramCounter());
+            this.RegisterFile.Rows.Add("car", this.processor.GetControlAddressRegister());
             this.RegisterFile.Rows.Add("nzcv", this.processor.GetNzcv());
         }
 
@@ -74,6 +85,11 @@ namespace VProcessor.Gui
         private void EditorBox_TextChanged(Object sender, EventArgs e)
         {
 
+        }
+
+        private void tickToolStripMenuItem_Click(Object sender, EventArgs e)
+        {
+            this.Tick();
         }
     }
 }

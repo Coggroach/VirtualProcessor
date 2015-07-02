@@ -24,9 +24,9 @@ namespace VProcessor.Hardware
             {
                 for (var i = 0; i < this.memory.Length; i++)
                 {
-                    var input = "";
-                    if ((input = reader.ReadLine()) != null)
-                        this.memory[i] = UInt64.Parse(input, NumberStyles.HexNumber);
+                    var input = reader.ReadLine();
+                    if (!String.IsNullOrWhiteSpace(input))
+                        this.memory[i] = UInt64.Parse(input.Replace(" ", ""), NumberStyles.HexNumber);
                     else
                         this.memory[i] = 0;
                 }
@@ -88,13 +88,25 @@ namespace VProcessor.Hardware
             this.register++;
         }
 
+        public void Decrement()
+        {
+            this.register--;
+        }
+
         public void Add(UInt32 i)
         {
             this.register += i;
         }
+
         public static MemoryUnit operator ++(MemoryUnit memory)
         {
             memory.Increment();
+            return memory;
+        }
+
+        public static MemoryUnit operator --(MemoryUnit memory)
+        {
+            memory.Decrement();
             return memory;
         }
 

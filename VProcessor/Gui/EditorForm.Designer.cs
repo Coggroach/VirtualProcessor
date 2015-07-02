@@ -39,6 +39,7 @@
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -74,8 +75,8 @@
             this.EditorBox.Size = new System.Drawing.Size(523, 497);
             this.EditorBox.TabIndex = 2;
             this.EditorBox.Text = "";
-            this.EditorBox.TextChanged += new System.EventHandler(this.EditorBox_TextChanged);
             this.EditorBox.SelectionChanged += new System.EventHandler(this.EditorBox_SelectionChanged);
+            this.EditorBox.TextChanged += new System.EventHandler(this.EditorBox_TextChanged);
             // 
             // MenuStrip
             // 
@@ -113,6 +114,8 @@
             // 
             // editToolStripMenuItem
             // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tickToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -134,8 +137,15 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            // 
+            // tickToolStripMenuItem
+            // 
+            this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
+            this.tickToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tickToolStripMenuItem.Text = "Tick";
+            this.tickToolStripMenuItem.Click += new System.EventHandler(this.tickToolStripMenuItem_Click);
             // 
             // EditorForm
             // 
@@ -170,5 +180,6 @@
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tickToolStripMenuItem;
     }
 }
