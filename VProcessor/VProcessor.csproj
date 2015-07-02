@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Software\Assembly\AssemblyConverter.cs" />
+    <Compile Include="Software\Assembly\AssemblyCompiler.cs" />
     <Compile Include="Software\Assembly\AssemblyFile.cs" />
     <Compile Include="Gui\Editor.cs">
       <SubType>Form</SubType>

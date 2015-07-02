@@ -10,7 +10,8 @@ namespace VProcessor.Tests.Hardware
         [TestMethod]
         public void TestCodeTable()
         {
-            Assert.IsTrue(Opcode.GetCode("ADD") == Opcode.ADD);
+            Assert.IsTrue(Opcode.GetCodeIndexer("ADD") == Opcode.ADD);
+            Assert.IsTrue(Opcode.GetCodeType("ADD") == 0x15);
         }
 
         [TestMethod]

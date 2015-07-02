@@ -25,3 +25,4 @@ C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\ControlMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\UserMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestControlMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestUserMemory.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Assembly.txt
