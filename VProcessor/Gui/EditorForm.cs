@@ -15,16 +15,13 @@ namespace VProcessor.Gui
     public partial class EditorForm : Form
     {
         private Processor processor;
-        private AssemblyFile file;
-        private AssemblyKeywords keywords;
+        private SFile file;
         private const String RegisterPrefix = "r";
-        private const String ControlCodeTemplate = "F3 F2 F1 F0 Bu Dn Cn Il B3 B2 B1 B0 Co Ci Pl Pi Lr Td Ta Tb";
 
         public EditorForm()
         {
             this.processor = new Processor();
-            this.file = new AssemblyFile("Software\\Assembly.txt");
-            this.keywords = new AssemblyKeywords();
+            this.file = new SFile(this.processor.GetUserMemory().GetPath());
             this.InitializeComponent();
             this.SetupRegisterFile();
             this.SetupEditorBoxText();
@@ -47,8 +44,6 @@ namespace VProcessor.Gui
             var length = registers.Length;
             for (var i = 0; i < length; i++)
                 this.RegisterFile[1, i].Value = registers[i];
-            //this.RegisterFile.UpdateCellValue(1, length);//
-            //this.RegisterFile.UpdateCellValue(1, length + 1);//
             this.RegisterFile[1, length].Value = (Int32)this.processor.GetProgramCounter();
             this.RegisterFile[1, length+1].Value = this.processor.GetControlAddressRegister();
             this.RegisterFile[1, length+2].Value = this.processor.GetNzcv();
@@ -108,7 +103,7 @@ namespace VProcessor.Gui
 
         private void EditorBox_SelectionChanged(Object sender, EventArgs e)
         {
-            this.keywords.KeywordRichTextBox(this.EditorBox);
+
         }
 
         private void EditorBox_TextChanged(Object sender, EventArgs e)

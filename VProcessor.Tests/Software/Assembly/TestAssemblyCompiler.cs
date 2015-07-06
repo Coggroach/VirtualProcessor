@@ -14,7 +14,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "ADD r0, r1, r2";
             const UInt64 theoOutput = (Opcode.ADD << 16) | 0x0012;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -25,7 +25,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "  ADD  r0, r1,  r2  ";
             const UInt64 theoOutput = (Opcode.ADD << 16) | 0x0012;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -36,7 +36,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "      ADD     r0,     r1,     r2  ";
             const UInt64 theoOutput = (Opcode.ADD << 16) | 0x0012;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -49,7 +49,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "DD r0, r1, r2";
             const UInt64 theoOutput = (Opcode.ADD << 16) | 0x0012;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreNotEqual(theoOutput, pracOutput[0]);
         }
@@ -61,7 +61,7 @@ namespace VProcessor.Tests.Software.Assembly
             const UInt64 theoOutput = (Opcode.LDR << 16) | 0x0000;
             const UInt64 theOutput2 = 14;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
             Assert.AreEqual(theOutput2, pracOutput[1]);
@@ -74,7 +74,7 @@ namespace VProcessor.Tests.Software.Assembly
             const UInt64 theoOutput = (Opcode.LDR << 16) | 0x0100;
             const UInt64 theOutput2 = 18;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
             Assert.AreEqual(theOutput2, pracOutput[1]);
@@ -87,7 +87,7 @@ namespace VProcessor.Tests.Software.Assembly
             const UInt64 theoOutput = (Opcode.LDR << 16) | 0x0100;
             const UInt64 theOutput2 = 18;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
             Assert.AreEqual(theOutput2, pracOutput[1]);
@@ -99,7 +99,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "MOV r1, #1";
             const UInt64 theoOutput = (Opcode.MOV << 16) | 0x0101;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -110,7 +110,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "MOV r1, #21";
             const UInt64 theoOutput = (Opcode.MOV << 16) | 0x0105;
 
-            var pracOutput = AssemblyCompiler.ConvertWithType(input);
+            var pracOutput = Compiler.ConvertWithType(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }

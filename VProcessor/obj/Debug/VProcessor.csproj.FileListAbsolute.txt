@@ -30,3 +30,9 @@ C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Assembly.txt
 C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Testing\Ldr_FullNum_UM.txt
 C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Testing\Ldr_Register_UM.txt
 C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Testing\Ldr_ConstNum_UM.txt
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\Assembly.txt
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\Testing\Ldr_FullNum_UM.txt
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\Testing\Ldr_Register_UM.txt
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\Testing\Ldr_ConstNum_UM.txt
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\bin\Debug\Software\UserMemory.txt
+E:\Development\C#\Projects\VirtualProcessor\VProcessor\obj\Debug\VProcessor.Gui.EditorForm.resources

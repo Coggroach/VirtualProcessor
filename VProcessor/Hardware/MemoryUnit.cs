@@ -31,9 +31,14 @@ namespace VProcessor.Hardware
                     else
                         this.memory[i] = 0;
                 }
+                reader.Close();
             }
         }        
 
+        public String GetPath()
+        {
+            return this.path;
+        }
         public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, UInt32 mask = 1)
         {
             return BitHelper.BitMatch(this.GetMemory(), bitPos, matchBit, mask);

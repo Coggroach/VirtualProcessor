@@ -44,8 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Software\Assembly\AssemblyCompiler.cs" />
-    <Compile Include="Software\Assembly\AssemblyFile.cs" />
+    <Compile Include="Software\Assembly\Compiler.cs" />
+    <Compile Include="Software\Assembly\SFile.cs" />
     <Compile Include="Gui\Editor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,7 +62,6 @@
     <Compile Include="Hardware\Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Software\Assembly\AssemblyKeywords.cs" />
     <Compile Include="Tools\BitHelper.cs" />
     <EmbeddedResource Include="Gui\EditorForm.resx">
       <DependentUpon>EditorForm.cs</DependentUpon>

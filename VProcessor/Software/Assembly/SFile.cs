@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Software.Assembly
 {
-    class AssemblyFile
+    public class SFile
     {
         private FileStream stream;
         private readonly String path;
         private String builder;
         private const Int32 BufferSize = 1024;
 
-        public AssemblyFile(String path)
+        public SFile(String path)
         {
             this.path = path;
             this.stream = new FileStream(this.path, FileMode.OpenOrCreate);

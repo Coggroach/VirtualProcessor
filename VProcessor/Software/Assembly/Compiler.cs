@@ -9,7 +9,7 @@ using VProcessor.Hardware;
 
 namespace VProcessor.Software.Assembly
 {
-    public class AssemblyCompiler
+    public class Compiler
     {
         private const String GeneralRoot = @"^[\w][\w]+[,][rR][\d]+[,][rR][\d]+[,]";
         private const String DataRoot = @"^[\w][\w]+[,][rR][\d]+[,]";
