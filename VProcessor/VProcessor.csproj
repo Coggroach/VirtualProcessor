@@ -96,6 +96,15 @@
     <Content Include="Software\ControlMemory.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Software\Testing\Ldr_FullNum_UM.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Software\Testing\Ldr_Register_UM.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Software\Testing\Ldr_ConstNum_UM.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Software\UserMemory.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -127,5 +127,11 @@ namespace VProcessor.Gui
                 this.processor.Tick();
             this.UpdateRegisterFile();
         }
+
+        private void restartToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.processor.Restart();
+            this.UpdateRegisterFile();
+        }
     }
 }

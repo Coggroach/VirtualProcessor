@@ -113,6 +113,9 @@ namespace VProcessor.Hardware
                 case Opcode.LDR:
                     result = a;
                     break;
+                case Opcode.LDRC:
+                    result = b;
+                    break;
                 //Arithmetic
                 case Opcode.INC:
                     result = this.RippleAdder(a, 0, 1);

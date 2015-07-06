@@ -9,6 +9,7 @@ namespace VProcessor.Hardware
         //http://simplemachines.it/doc/arm_inst.pdf
         //General Flags
         public const Int32 LDR = 0;
+        public const Int32 LDRC = 0xD;
 
         //Arithmetic Flags
         public const Int32 INC = 1;
@@ -89,10 +90,11 @@ namespace VProcessor.Hardware
             return CodeTable;
         }
 
-        public static void Add(String name, Int32 value, Byte typeAndConstants)
+        public static void Add(String name, Int32 value, Int32 address, Byte typeAndConstants)
         {
             CodeTable.Add(name, new Hashtable()
             {
+                {"Address", address},
                 {"Value", value},
                 {"Type", typeAndConstants}
             });
@@ -103,10 +105,15 @@ namespace VProcessor.Hardware
             CodeTable = new Hashtable();
             //Name CarIndex 4:4 -> Type:C_F_R_CR_FR_CFR
             //1_2_4_5_6_7
-            Add("ADD", ADD, 0x15);
-            Add("LDR", LDR, 0x26);
-            Add("INC", INC, 0x24);
-            Add("ADDI", ADDI, 0x15);
+            Add("ADD", ADD, 6, 0x15);
+            Add("ADDC", ADD, 7, 0x15);
+            Add("LDR", LDR, 1, 0x26);
+            Add("LDRR", LDR, 4, 0x26);
+            Add("LDRC", LDRC, 5, 0x26);
+            Add("INC", INC, 8, 0x24);
+            Add("ADDI", ADDI, 9, 0x15);
+            Add("ADDIC", ADDI, 10, 0x15);
+            /*
             Add("ADC", ADC, 0x15);
             Add("SUBD", SUBD, 0x15);
             Add("SUB", SUB, 0x15);
@@ -144,7 +151,7 @@ namespace VProcessor.Hardware
             Add("ORR", ORR, 0x15);
             Add("BIC", BIC, 0x15);
             Add("MOV", MOV, 0x25);
-            Add("MNV", MNV, 0x25);
+            Add("MNV", MNV, 0x25);*/
         }
     }
 }
