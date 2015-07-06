@@ -4,6 +4,7 @@ using System.IO;
 
 namespace VProcessor.Hardware
 {
+    using VProcessor.Tools;
 
     public class MemoryUnit
     {
@@ -31,36 +32,26 @@ namespace VProcessor.Hardware
                         this.memory[i] = 0;
                 }
             }
-        }
-
-        private static Boolean BitMatch(UInt64 value, Byte bitPos, Byte matchBit, UInt32 mask = 1)
-        {
-            return ((value >> bitPos) & mask) == matchBit;
-        }
+        }        
 
         public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, UInt32 mask = 1)
         {
-            return BitMatch(this.GetMemory(), bitPos, matchBit, mask);
+            return BitHelper.BitMatch(this.GetMemory(), bitPos, matchBit, mask);
         }
 
         public Boolean BitMatchRegister(Byte bitPos, Byte matchBit, UInt32 mask = 1)
         {
-            return BitMatch(this.register, bitPos, matchBit, mask);
-        }
-
-        private static UInt64 BitExtract(UInt64 value, Byte bitPos, UInt32 mask = 1)
-        {
-            return (value >> bitPos) & mask;
+            return BitHelper.BitMatch(this.register, bitPos, matchBit, mask);
         }
 
         public UInt32 BitExtractMemory(Byte bitPos, UInt32 mask = 1)
         {
-            return (UInt32) BitExtract(this.GetMemory(), bitPos, mask);
+            return (UInt32)BitHelper.BitExtract(this.GetMemory(), bitPos, mask);
         }
 
         public UInt32 BitExtractRegister(Byte bitPos, UInt32 mask = 1)
         {
-            return (UInt32) BitExtract(this.register, bitPos, mask);
+            return (UInt32) BitHelper.BitExtract(this.register, bitPos, mask);
         }
 
         public UInt64 GetMemory()

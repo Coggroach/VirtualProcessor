@@ -18,6 +18,7 @@ namespace VProcessor.Gui
         private AssemblyFile file;
         private AssemblyKeywords keywords;
         private const String RegisterPrefix = "r";
+        private const String ControlCodeTemplate = "F3 F2 F1 F0 Bu Dn Cn Il B3 B2 B1 B0 Co Ci Pl Pi Lr Td Ta Tb";
 
         public EditorForm()
         {
@@ -49,8 +50,9 @@ namespace VProcessor.Gui
             //this.RegisterFile.UpdateCellValue(1, length);//
             //this.RegisterFile.UpdateCellValue(1, length + 1);//
             this.RegisterFile[1, length].Value = (Int32)this.processor.GetProgramCounter();
-           this.RegisterFile[1, length+1].Value = this.processor.GetControlAddressRegister();
+            this.RegisterFile[1, length+1].Value = this.processor.GetControlAddressRegister();
             this.RegisterFile[1, length+2].Value = this.processor.GetNzcv();
+            this.LabelControlCode.Text = ConvertRegisterContent();
         }
 
         public void SetupRegisterFile()
@@ -67,9 +69,36 @@ namespace VProcessor.Gui
                 this.RegisterFile.Rows.Add(row);
             }
 
+            this.LabelControlCode.Text = ConvertRegisterContent();
             this.RegisterFile.Rows.Add("pc", this.processor.GetProgramCounter());
             this.RegisterFile.Rows.Add("car", this.processor.GetControlAddressRegister());
             this.RegisterFile.Rows.Add("nzcv", this.processor.GetNzcv());
+        }
+
+        private String ConvertRegisterContent()
+        {
+            var i = (UInt32)this.processor.GetControlMemory().GetMemory() & 0xFFFFF;
+            var j = (UInt32)this.processor.GetUserMemory().GetMemory() & 0xFFFF;
+            var k = (UInt32)this.processor.GetInstructionRegister() & 0xFFFF;
+
+            String s = Convert.ToString(i, 16);
+            String t = Convert.ToString(j, 16);
+            String r = Convert.ToString(k, 16);
+
+            while (r.Length < 4)
+            {
+                r = 0 + r;
+            }
+            while(t.Length < 4)
+            {
+                t = 0 + t;
+            }
+            while(s.Length < 4)
+            {
+                s = 0 + s;
+            }                       
+
+            return "Car: " + s + "\nPc : " + t + "\nIr : " + r;
         }
 
         private void SetupEditorBoxText()
@@ -90,6 +119,13 @@ namespace VProcessor.Gui
         private void tickToolStripMenuItem_Click(Object sender, EventArgs e)
         {
             this.Tick();
+        }
+
+        private void tickx25ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 25; i++)
+                this.processor.Tick();
+            this.UpdateRegisterFile();
         }
     }
 }
