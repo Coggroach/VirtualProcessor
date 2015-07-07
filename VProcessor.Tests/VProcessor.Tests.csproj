@@ -58,6 +58,7 @@
     <Compile Include="Hardware\TestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Software\Assembly\TestAssemblyCompiler.cs" />
+    <Compile Include="Software\Assembly\TestSFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VProcessor\VProcessor.csproj">

@@ -34,15 +34,15 @@
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.restartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tickToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tickx25ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.LabelControlCode = new System.Windows.Forms.Label();
-            this.tickx25ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.restartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.CurrentCommandTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -74,9 +74,9 @@
             // EditorBox
             // 
             this.EditorBox.AcceptsTab = true;
-            this.EditorBox.Location = new System.Drawing.Point(249, 27);
+            this.EditorBox.Location = new System.Drawing.Point(249, 54);
             this.EditorBox.Name = "EditorBox";
-            this.EditorBox.Size = new System.Drawing.Size(523, 458);
+            this.EditorBox.Size = new System.Drawing.Size(523, 470);
             this.EditorBox.TabIndex = 2;
             this.EditorBox.Text = "";
             this.EditorBox.SelectionChanged += new System.EventHandler(this.EditorBox_SelectionChanged);
@@ -108,13 +108,21 @@
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+            // 
+            // restartToolStripMenuItem
+            // 
+            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
+            this.restartToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.restartToolStripMenuItem.Text = "Restart";
+            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // editToolStripMenuItem
@@ -129,9 +137,16 @@
             // tickToolStripMenuItem
             // 
             this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
-            this.tickToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
+            this.tickToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
             this.tickToolStripMenuItem.Text = "Tick";
             this.tickToolStripMenuItem.Click += new System.EventHandler(this.tickToolStripMenuItem_Click);
+            // 
+            // tickx25ToolStripMenuItem
+            // 
+            this.tickx25ToolStripMenuItem.Name = "tickx25ToolStripMenuItem";
+            this.tickx25ToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.tickx25ToolStripMenuItem.Text = "Tick x25";
+            this.tickx25ToolStripMenuItem.Click += new System.EventHandler(this.tickx25ToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -153,35 +168,20 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             // 
-            // LabelControlCode
+            // CurrentCommandTextBox
             // 
-            this.LabelControlCode.AutoSize = true;
-            this.LabelControlCode.Location = new System.Drawing.Point(249, 488);
-            this.LabelControlCode.Name = "LabelControlCode";
-            this.LabelControlCode.Size = new System.Drawing.Size(32, 39);
-            this.LabelControlCode.TabIndex = 4;
-            this.LabelControlCode.Text = "Code\r\n0000\r\n\r\n";
-            // 
-            // tickx25ToolStripMenuItem
-            // 
-            this.tickx25ToolStripMenuItem.Name = "tickx25ToolStripMenuItem";
-            this.tickx25ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.tickx25ToolStripMenuItem.Text = "Tick x25";
-            this.tickx25ToolStripMenuItem.Click += new System.EventHandler(this.tickx25ToolStripMenuItem_Click);
-            // 
-            // restartToolStripMenuItem
-            // 
-            this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.restartToolStripMenuItem.Text = "Restart";
-            this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
+            this.CurrentCommandTextBox.Location = new System.Drawing.Point(250, 28);
+            this.CurrentCommandTextBox.Name = "CurrentCommandTextBox";
+            this.CurrentCommandTextBox.ReadOnly = true;
+            this.CurrentCommandTextBox.Size = new System.Drawing.Size(522, 20);
+            this.CurrentCommandTextBox.TabIndex = 4;
             // 
             // EditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
-            this.Controls.Add(this.LabelControlCode);
+            this.Controls.Add(this.CurrentCommandTextBox);
             this.Controls.Add(this.EditorBox);
             this.Controls.Add(this.CommandBox);
             this.Controls.Add(this.RegisterFile);
@@ -211,8 +211,8 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tickToolStripMenuItem;
-        private System.Windows.Forms.Label LabelControlCode;
         private System.Windows.Forms.ToolStripMenuItem tickx25ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restartToolStripMenuItem;
+        private System.Windows.Forms.TextBox CurrentCommandTextBox;
     }
 }

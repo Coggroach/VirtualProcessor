@@ -21,10 +21,10 @@ namespace VProcessor.Hardware
             this.registers = new UInt32[RegisterFileSize];
             this.channels = new Byte[ChannelOutSize];
             this.constIn = 0;
-            this.StartUp();
+            this.Reset();
         }
 
-        public void StartUp()
+        public void Reset()
         {
             for (var i = 0; i < this.registers.Length; i++)
                 this.registers[i] = 0;

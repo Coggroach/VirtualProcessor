@@ -9,33 +9,36 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using VProcessor.Hardware;
 using VProcessor.Software.Assembly;
+using VProcessor.Tools;
 
 namespace VProcessor.Gui
 {
     public partial class EditorForm : Form
     {
+        private ICompiler compiler;
         private Processor processor;
-        private SFile file;
+        private SFile flashFile;
         private const String RegisterPrefix = "r";
 
         public EditorForm()
         {
-            this.processor = new Processor();
-            this.file = new SFile(this.processor.GetUserMemory().GetPath());
+            this.compiler = new Compiler();
+            this.flashFile = new SFile(Settings.FlashMemoryLocation);
+            
+            this.processor = new Processor(
+                    this.compiler.Compile(new SFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
+                    this.compiler.Compile(this.flashFile, Settings.FlashMemorySize));
+            
             this.InitializeComponent();
             this.SetupRegisterFile();
             this.SetupEditorBoxText();
-        }
-
-        private void MenuLabel_Click(Object sender, EventArgs e)
-        {
-
+            this.UpdateMemoryDisplays();
         }
 
         public void Tick()
         {
             this.processor.Tick();
-            this.UpdateRegisterFile();
+            this.Update();
         }
 
         public void UpdateRegisterFile()
@@ -47,7 +50,7 @@ namespace VProcessor.Gui
             this.RegisterFile[1, length].Value = (Int32)this.processor.GetProgramCounter();
             this.RegisterFile[1, length+1].Value = this.processor.GetControlAddressRegister();
             this.RegisterFile[1, length+2].Value = this.processor.GetNzcv();
-            this.LabelControlCode.Text = ConvertRegisterContent();
+            this.UpdateMemoryDisplays();
         }
 
         public void SetupRegisterFile()
@@ -64,46 +67,39 @@ namespace VProcessor.Gui
                 this.RegisterFile.Rows.Add(row);
             }
 
-            this.LabelControlCode.Text = ConvertRegisterContent();
             this.RegisterFile.Rows.Add("pc", this.processor.GetProgramCounter());
             this.RegisterFile.Rows.Add("car", this.processor.GetControlAddressRegister());
             this.RegisterFile.Rows.Add("nzcv", this.processor.GetNzcv());
         }
 
-        private String ConvertRegisterContent()
-        {
-            var i = (UInt32)this.processor.GetControlMemory().GetMemory() & 0xFFFFF;
-            var j = (UInt32)this.processor.GetUserMemory().GetMemory() & 0xFFFF;
-            var k = (UInt32)this.processor.GetInstructionRegister() & 0xFFFF;
-
-            String s = Convert.ToString(i, 16);
-            String t = Convert.ToString(j, 16);
-            String r = Convert.ToString(k, 16);
-
-            while (r.Length < 4)
-            {
-                r = 0 + r;
-            }
-            while(t.Length < 4)
-            {
-                t = 0 + t;
-            }
-            while(s.Length < 4)
-            {
-                s = 0 + s;
-            }                       
-
-            return "Car: " + s + "\nPc : " + t + "\nIr : " + r;
-        }
-
         private void SetupEditorBoxText()
         {
-            this.EditorBox.Text = this.file.GetString();
+            this.EditorBox.Text = this.flashFile.GetString();
         }
 
         private void EditorBox_SelectionChanged(Object sender, EventArgs e)
-        {
+        {            
+      
+        }
 
+        private void UpdateMemoryDisplays()
+        {
+            var pc = this.processor.GetProgramCounter();
+            var carM = Convert.ToString((Int64) this.processor.GetControlMemory().GetMemory(), 16);
+
+            while (carM.Length < 16)
+                carM = "0" + carM;
+            for (var i = 1; i < 4; i++ )
+                carM = carM.Insert(5*i - 1, " ");
+
+            this.CurrentCommandTextBox.Text = carM.ToUpper();
+            for(var i = 0; i < this.EditorBox.Lines.Length; i++)
+            {
+                var charIndex = this.EditorBox.GetFirstCharIndexFromLine(i);
+                var current = this.EditorBox.Lines[i];
+                this.EditorBox.Select(charIndex, current.Length);
+                this.EditorBox.SelectionBackColor = (i != pc) ? this.EditorBox.BackColor : Color.LightYellow;
+            }
         }
 
         private void EditorBox_TextChanged(Object sender, EventArgs e)
@@ -119,14 +115,29 @@ namespace VProcessor.Gui
         private void tickx25ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 25; i++)
-                this.processor.Tick();
-            this.UpdateRegisterFile();
+                this.processor.Tick(); 
+            this.Update();
         }
 
         private void restartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.processor.Restart();
+            this.processor.Reset();
+            this.Update();
+        }
+
+        public new void Update()
+        {
             this.UpdateRegisterFile();
+            this.UpdateMemoryDisplays();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.flashFile.SetString(this.EditorBox.Text);
+            this.flashFile.Save();
+            this.flashFile.Load();
+            this.processor.Reset(this.compiler.Compile(this.flashFile, Settings.FlashMemorySize));
+            this.Update();
         }
     }
 }

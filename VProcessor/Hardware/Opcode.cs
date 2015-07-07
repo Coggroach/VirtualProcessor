@@ -85,6 +85,11 @@ namespace VProcessor.Hardware
             return (Byte) ((Hashtable) CodeTable[code])["Type"];
         }
 
+        public static Int32 GetCodeAddress(String code)
+        {
+            return (Int32) ((Hashtable)CodeTable[code])["Address"];
+        }
+
         public static Hashtable GetCodeTable()
         {
             return CodeTable;
@@ -113,6 +118,9 @@ namespace VProcessor.Hardware
             Add("INC", INC, 8, 0x24);
             Add("ADDI", ADDI, 9, 0x15);
             Add("ADDIC", ADDI, 10, 0x15);
+            Add("MOV", MOV, 11, 0x25);
+            Add("MNV", MNV, 12, 0x25);
+
             /*
             Add("ADC", ADC, 0x15);
             Add("SUBD", SUBD, 0x15);
@@ -149,9 +157,7 @@ namespace VProcessor.Hardware
             Add("AND", AND, 0x15);
             Add("EOR", EOR, 0x15);
             Add("ORR", ORR, 0x15);
-            Add("BIC", BIC, 0x15);
-            Add("MOV", MOV, 0x25);
-            Add("MNV", MNV, 0x25);*/
+            Add("BIC", BIC, 0x15);*/
         }
     }
 }

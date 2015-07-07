@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace VProcessor.Tests.Hardware
 {
     using VProcessor.Hardware;
+    using VProcessor.Software.Assembly;
 
     [TestClass]
     public class TestMemoryUnit
@@ -21,8 +22,13 @@ namespace VProcessor.Tests.Hardware
         }
 
         internal void TestStartUp(String path)
-        {
-            var memory = new MemoryUnit(4, path);
+        {            
+            var file = new SFile(path);
+            var compiler = new Compiler();
+
+            var memChunk = compiler.Compile(file, 4);
+            var memory = new MemoryUnit(memChunk);
+
             Assert.AreNotEqual((UInt32)0, memory.GetMemory());
             memory++;
             Assert.AreEqual((UInt32)0, memory.GetMemory());

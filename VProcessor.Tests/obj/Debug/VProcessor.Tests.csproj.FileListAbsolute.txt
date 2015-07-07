@@ -26,3 +26,6 @@ C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\UserMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestControlMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestUserMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Assembly.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Testing\Ldr_FullNum_UM.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Testing\Ldr_Register_UM.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Testing\Ldr_ConstNum_UM.txt
