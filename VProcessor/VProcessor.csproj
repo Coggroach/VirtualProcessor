@@ -96,6 +96,7 @@
     <Content Include="Software\ControlMemory.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Software\Testing\Beq_Cmp_Const_UM.txt" />
     <Content Include="Software\Testing\Ldr_FullNum_UM.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

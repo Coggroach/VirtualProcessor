@@ -229,7 +229,7 @@ namespace VProcessor.Hardware
             if(CarryOut(a, b, cIn))
                 cOut = 1;
             var v = 0;
-            if (a >= Int32.MaxValue && (b + cIn) >= Int32.MaxValue)
+            if (a > Int32.MaxValue && (b + cIn) > Int32.MaxValue)
                 v = 1;
 
             this.nzcv |= (Byte) (v);
@@ -244,7 +244,7 @@ namespace VProcessor.Hardware
             var longB = (UInt64) b;
             var longC = (UInt64) c;
 
-            return longA + longB + longC >= UInt32.MaxValue;
+            return longA + longB + longC > UInt32.MaxValue;
         }
     }
 }

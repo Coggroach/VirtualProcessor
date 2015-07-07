@@ -68,6 +68,7 @@ namespace VProcessor.Hardware
             this.controlMemory.Reset();
             this.datapath.Reset();
             this.instructionReg = this.flashMemory.GetMemory();
+            this.branchControl.Nzcv = 0;
         }
                 
         public void Tick()
@@ -103,19 +104,19 @@ namespace VProcessor.Hardware
             //Update Branch
             if (Bu == 1)
                 this.branchControl.Nzcv = this.datapath.GetNzcv();
-
+            
             //Set up CAR
             var muxCar = (Cion & 2) == 2 ? opcode : na;
-            if((Cion & 1) == 0 && this.branchControl.Branch(Bx)) 
+            if((Cion & 1) == 0) 
                 this.controlMemory.SetRegister(muxCar);
             else
                 this.controlMemory++;
 
             //Set up PC
-            if((Pc & 1) == 1)
-                this.flashMemory++;
-            else if((Pc & 2) == 2)
-                this.flashMemory += this.flashMemory.BitExtractMemory(0, 0xFFF);
+            if ((Pc & 2) == 2 && this.branchControl.Branch(Bx))
+                this.flashMemory += this.flashMemory.BitExtractMemory(0, 0xFFFF);
+            else if((Pc & 1) == 1)
+                this.flashMemory++;            
 
             //Set up IR
             if (IL == 1) this.instructionReg = this.flashMemory.GetMemory();

@@ -108,56 +108,56 @@ namespace VProcessor.Hardware
         static Opcode()
         {
             CodeTable = new Hashtable();
-            //Name CarIndex 4:4 -> Type:C_F_R_CR_FR_CFR
-            //1_2_4_5_6_7
-            Add("ADD", ADD, 6, 0x15);
-            Add("ADDC", ADD, 7, 0x15);
+                        
             Add("LDR", LDR, 1, 0x26);
             Add("LDRR", LDR, 4, 0x26);
             Add("LDRC", LDRC, 5, 0x26);
+            Add("ADD", ADD, 6, 0x15);
             Add("INC", INC, 8, 0x24);
-            Add("ADDI", ADDI, 9, 0x15);
-            Add("ADDIC", ADDI, 10, 0x15);
+            Add("ADDI", ADDI, 9, 0x15);            
             Add("MOV", MOV, 11, 0x25);
-            Add("MNV", MNV, 12, 0x25);
+            Add("MNV", MNV, 13, 0x25);
+            Add("CMP", CMP, 15, 0x25);
+            Add("CMN", CMN, 17, 0x25);
+            Add("TST", TST, 19, 0x25);
+            Add("TEQ", TEQ, 21, 0x25);
 
-            /*
-            Add("ADC", ADC, 0x15);
-            Add("SUBD", SUBD, 0x15);
-            Add("SUB", SUB, 0x15);
-            Add("SBC", SBC, 0x15);
-            Add("DEC", DEC, 0x24);
-            Add("B", B, 0x32);
-            Add("BEQ", BEQ, 0x32);
-            Add("BNE", BNE, 0x32);
-            Add("BCS", BCS, 0x32);
-            Add("BCC", BCC, 0x32);
-            Add("BNS", BNS, 0x32);
-            Add("BNC", BNC, 0x32);
-            Add("BVS", BVS, 0x32);
-            Add("BVC", BVC, 0x32);
-            Add("BHI", BHI, 0x32);
-            Add("BLS", BLS, 0x32);
-            Add("BGE", BGE, 0x32);
-            Add("BLT", BLT, 0x32);
-            Add("BGT", BGT, 0x32);
-            Add("BLE", BLE, 0x32);
-            Add("LSL", LSL, 0x15);
-            Add("LSR", LSR, 0x15);
-            Add("ROL", ROL, 0x15);
-            Add("ROR", ROR, 0x15);
-            Add("TST", TST, 0x25);
-            Add("TEQ", TEQ, 0x25);
-            Add("CMN", CMN, 0x25);
-            Add("CMP", CMP, 0x25);
-            Add("RSB", RSB, 0x15);
-            Add("RSC", RSC, 0x15);
-            Add("MUL", MUL, 0x15);
-            Add("MLA", MLA, 0x15);
-            Add("AND", AND, 0x15);
-            Add("EOR", EOR, 0x15);
-            Add("ORR", ORR, 0x15);
-            Add("BIC", BIC, 0x15);*/
+            Add("AND", AND, 23, 0x15);
+            Add("EOR", EOR, 25, 0x15);
+            Add("ORR", ORR, 27, 0x15);
+            Add("BIC", BIC, 29, 0x15);
+
+            Add("LSL", LSL, 31, 0x15);
+            Add("LSR", LSR, 33, 0x15);
+            Add("ROL", ROL, 35, 0x15);
+            Add("ROR", ROR, 37, 0x15);
+
+            Add("B", B, 39, 0x32);
+            Add("BEQ", BEQ, 40, 0x32);
+            Add("BNE", BNE, 41, 0x32);
+            Add("BCS", BCS, 42, 0x32);
+            Add("BCC", BCC, 43, 0x32);
+            Add("BNS", BNS, 44, 0x32);
+            Add("BNC", BNC, 45, 0x32);
+            Add("BVS", BVS, 46, 0x32);
+            Add("BVC", BVC, 47, 0x32);
+            Add("BHI", BHI, 48, 0x32);
+            Add("BLS", BLS, 49, 0x32);
+            Add("BGE", BGE, 50, 0x32);
+            Add("BLT", BLT, 51, 0x32);
+            Add("BGT", BGT, 52, 0x32);
+            Add("BLE", BLE, 53, 0x32);
+
+            Add("MUL", MUL, 54, 0x15);
+            Add("MLA", MLA, 56, 0x15);
+
+            Add("ADC", ADC, 58, 0x15);
+            Add("SUBD", SUBD, 60, 0x15);
+            Add("SUB", SUB, 62, 0x15);
+            Add("SBC", SBC, 64, 0x15);
+            Add("DEC", DEC, 66, 0x24);
+            Add("RSB", RSB, 68, 0x15);
+            Add("RSC", RSC, 70, 0x15);
         }
     }
 }
