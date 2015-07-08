@@ -15,7 +15,7 @@ namespace VProcessor.Hardware
         private UInt32[] registers;
         private Byte[] channels;
         private UInt32 constIn;
-        private Byte nzcv;
+        private StatusRegister nzcv;
         public Datapath()
         {
             this.registers = new UInt32[RegisterFileSize];
@@ -30,7 +30,7 @@ namespace VProcessor.Hardware
                 this.registers[i] = 0;
             for (var i = 0; i < this.channels.Length; i++)
                 this.channels[i] = 0;
-            this.nzcv = 0;
+            this.nzcv = new StatusRegister();
         }
 
         public void SetChannel(Byte channel, Byte value)
@@ -63,15 +63,20 @@ namespace VProcessor.Hardware
             return this.channels[channel];
         }
 
-        public Byte GetNzcv()
+        public void SetStatusRegister(StatusRegister reg)
+        {
+            this.nzcv = reg;
+        }
+
+        public StatusRegister GetStatusRegister()
         {
             return this.nzcv;
         }
-
+                
         public void FunctionUnit(Byte code, Byte destination = 0, Byte load = 0, Boolean useConst = false)
         {
             var a = this.registers[this.channels[0]];
-            var b = useConst ? this.constIn : this.registers[this.channels[1]];
+            var b = useConst ? this.constIn : this.registers[this.channels[1]];            
             var f = this.FunctionUnit(code, a, b);
 
             if (load != 1) return;
@@ -84,11 +89,10 @@ namespace VProcessor.Hardware
             {
                 case 0:
                 {
-                    var c = 1 & b;
-                    var v = b > Int32.MaxValue ? 1 : 0;
+                    var c = 1 & b;                    
 
-                    this.nzcv |= (Byte)(v);
-                    this.nzcv |= (Byte)(c << 1);
+                    this.nzcv.BitSet(0, b > Int32.MaxValue);
+                    this.nzcv.BitSet(1, c == 1);
 
                     return barrel ? ((b >> 1) | (c << 31)): b >> 1;
                 }
@@ -97,8 +101,8 @@ namespace VProcessor.Hardware
                     var c = (0x80000000 & b) >> 30;
                     var v = b >= Int32.MaxValue ? 1 : 0;
 
-                    this.nzcv |= (Byte)(v);
-                    this.nzcv |= (Byte)(c);
+                    this.nzcv.BitSet(0, b >= Int32.MaxValue);
+                    this.nzcv.BitSet(1, c == 2);
                     
                     return barrel ? ((b << 1) | (c >> 1)) : b << 1;
                 }
@@ -136,16 +140,16 @@ namespace VProcessor.Hardware
                     result = this.RippleAdder(a, UInt32.MaxValue - 1, 1);
                     break;
                 case Opcode.ADC:
-                    result = this.RippleAdder(a, b, (UInt32) ((this.nzcv >> 1) & 1));
+                    result = this.RippleAdder(a, b, (UInt32) this.nzcv.GetBit(1));
                     break;
                 case Opcode.RSB:
                     result = this.RippleAdder(b, ~a, 1);
                     break;
                 case Opcode.RSC:
-                    result = this.RippleAdder(b, ~a, (UInt32) ((this.nzcv >> 1) & 1));
+                    result = this.RippleAdder(b, ~a, (UInt32) this.nzcv.GetBit(1));
                     break;
                 case Opcode.SBC:
-                    result = this.RippleAdder(a, ~b, (UInt32)((this.nzcv >> 1) & 1));
+                    result = this.RippleAdder(a, ~b, (UInt32) this.nzcv.GetBit(1));
                     break;
 
                 //Multiplication
@@ -196,44 +200,25 @@ namespace VProcessor.Hardware
                     break;
 
             }
-
-            if (result == 0)
-                this.nzcv |= 1 << 2;
-            if (result > Int32.MaxValue)
-                this.nzcv |= 1 << 3;
-
-            this.nzcv &= 0x0F;
+            this.nzcv.BitSet(2, result == 0);
+            this.nzcv.BitSet(3, result > Int32.MaxValue);
+            this.nzcv.Mask();
 
             return result;
         }
 
         private UInt32 BoothMultiplier(UInt32 a, UInt32 b)
-        {
-            var cOut = 0;
-            if ((Int32)(a * b) <= 0)
-                cOut = 1;
-            var v = 0;
-            if (a >= Int32.MaxValue && (b) >= Int32.MaxValue)
-                v = 1;
-
-            this.nzcv |= (Byte)(v);
-            this.nzcv |= (Byte)(cOut << 1);
+        {   
+            this.nzcv.BitSet(1, (Int32)(a * b) <= 0);
+            this.nzcv.BitSet(0, a > Int32.MaxValue && (b) > Int32.MaxValue);
 
             return a*b;
         }
 
         private UInt32 RippleAdder(UInt32 a, UInt32 b, UInt32 cIn = 0)
         {
-            var cOut = 0;
-            //if ((Int32)a - (b + cIn) <= 0 && enableCarry)
-            if(CarryOut(a, b, cIn))
-                cOut = 1;
-            var v = 0;
-            if (a > Int32.MaxValue && (b + cIn) > Int32.MaxValue)
-                v = 1;
-
-            this.nzcv |= (Byte) (v);
-            this.nzcv |= (Byte)(cOut << 1);
+            this.nzcv.BitSet(1, CarryOut(a, b, cIn));
+            this.nzcv.BitSet(0, a > Int32.MaxValue && (b + cIn) > Int32.MaxValue);
 
             return a + b + cIn;
         }

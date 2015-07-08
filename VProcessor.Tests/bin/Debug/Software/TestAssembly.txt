@@ -1,0 +1,4 @@
+﻿LDR r0, =14
+LDR r1, =16
+ADD r2, r1, r0
+MOV r0, r2

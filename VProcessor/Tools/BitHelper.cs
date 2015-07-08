@@ -17,5 +17,15 @@ namespace VProcessor.Tools
         {
             return (value >> bitPos) & mask;
         }
+
+        public static Boolean BitMatch(UInt32 value, Byte bitPos, Byte matchBit, UInt32 mask = 1)
+        {
+            return ((value >> bitPos) & mask) == matchBit;
+        }
+
+        public static UInt32 BitExtract(UInt32 value, Byte bitPos, UInt32 mask = 1)
+        {
+            return (value >> bitPos) & mask;
+        }
     }
 }

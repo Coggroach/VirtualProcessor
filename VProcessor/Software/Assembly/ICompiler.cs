@@ -10,6 +10,7 @@ namespace VProcessor.Software.Assembly
 
     interface ICompiler
     {
-        Memory Compile(SFile file, Int32 size);
+        Memory64 Compile64(SFile file, Int32 size);
+        Memory32 Compile32(SFile file, Int32 size);
     }
 }

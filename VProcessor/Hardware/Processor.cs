@@ -8,15 +8,15 @@ namespace VProcessor.Hardware
     public class Processor
     {
         private Datapath datapath;
-        private MemoryUnit controlMemory;
-        private MemoryUnit flashMemory;
+        private MemoryUnit<UInt64> controlMemory;
+        private MemoryUnit<UInt32> flashMemory;
         private Brancher branchControl;
         private UInt64 instructionReg;
-        public Processor(Memory control, Memory flash)
+        public Processor(Memory64 control, Memory32 flash)
         {
             this.datapath = new Datapath();
-            this.controlMemory = new MemoryUnit(control);
-            this.flashMemory = new MemoryUnit(flash);
+            this.controlMemory = new MemoryUnit<UInt64>(control);
+            this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.branchControl = new Brancher();
             this.instructionReg = this.flashMemory.GetMemory();
         }
@@ -28,7 +28,7 @@ namespace VProcessor.Hardware
 
         public Byte GetNzcv()
         {
-            return this.branchControl.Nzcv;
+            return this.branchControl.Nzcv.Nzcv;
         }
 
         public UInt32 GetProgramCounter()
@@ -41,7 +41,7 @@ namespace VProcessor.Hardware
             return this.controlMemory.GetRegister();
         }
 
-        public MemoryUnit GetControlMemory()
+        public MemoryUnit<UInt64> GetControlMemory()
         {
             return this.controlMemory;
         }
@@ -51,12 +51,12 @@ namespace VProcessor.Hardware
             return this.instructionReg;
         }
 
-        public MemoryUnit GetUserMemory()
+        public MemoryUnit<UInt32> GetUserMemory()
         {
             return this.flashMemory;
         }
 
-        public void Reset(Memory flash)
+        public void Reset(Memory32 flash)
         {
             this.flashMemory.SetMemory(flash);
             this.Reset();
@@ -68,31 +68,31 @@ namespace VProcessor.Hardware
             this.controlMemory.Reset();
             this.datapath.Reset();
             this.instructionReg = this.flashMemory.GetMemory();
-            this.branchControl.Nzcv = 0;
+            this.branchControl.Nzcv = new StatusRegister();
         }
                 
         public void Tick()
         { 
             //Split Ir into Opcode, Channel A and B, Destination  
             var opcode = (UInt32) BitHelper.BitExtract(this.instructionReg, 16, 0xFFFF);
-            var dest = (Byte)(this.controlMemory.BitExtractMemory(2) == 1 ? 0xF : BitHelper.BitExtract(this.instructionReg, 8, 0xF));
-            var srcA = (Byte)(this.controlMemory.BitExtractMemory(1) == 1 ? 0xF : BitHelper.BitExtract(this.instructionReg, 4, 0xF));
-            var srcB = (Byte)(this.controlMemory.BitExtractMemory(0) == 1 ? 0xF : BitHelper.BitExtract(this.instructionReg, 0, 0xF)); 
+            var dest = (Byte)(BitHelper.BitMatch(this.controlMemory.GetMemory(), 2, 1) ? 0xF : BitHelper.BitExtract(this.instructionReg, 8, 0xF));
+            var srcA = (Byte)(BitHelper.BitMatch(this.controlMemory.GetMemory(), 1, 1) ? 0xF : BitHelper.BitExtract(this.instructionReg, 4, 0xF));
+            var srcB = (Byte)(BitHelper.BitMatch(this.controlMemory.GetMemory(), 0, 1) ? 0xF : BitHelper.BitExtract(this.instructionReg, 0, 0xF)); 
             var cnst = (UInt32) BitHelper.BitExtract(this.instructionReg, 0, 0xF); 
 
             //Split Control into Parts
-            var Lr = (Byte)(this.controlMemory.BitExtractMemory(3));            // 3
-            var Pc = this.controlMemory.BitExtractMemory(4, 3);                 // 5:4
-            var Cion = this.controlMemory.BitExtractMemory(6, 3);               // 7:6
-            var Bx = this.controlMemory.BitExtractMemory(8, 0xF) + Opcode.B_BASE;      // 11:8
-            var IL = this.controlMemory.BitExtractMemory(12);
-            var Cin = this.controlMemory.BitExtractMemory(13) == 1;       
-            var Din = this.controlMemory.BitExtractMemory(14) == 1;          
-            var Bu = this.controlMemory.BitExtractMemory(15);             
+            var Lr = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 3));            // 3
+            var Pc = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 4, 3));                 // 5:4
+            var Cion = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 6, 3));             // 7:6
+            var Bx = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 8, 0xF) + Opcode.B_BASE);      // 11:8
+            var IL = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 12));
+            var Cin = BitHelper.BitMatch(this.controlMemory.GetMemory(), 13, 1);
+            var Din = BitHelper.BitMatch(this.controlMemory.GetMemory(), 14, 1);
+            var Bu = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15));
 
-            var fs = (Byte)this.controlMemory.BitExtractMemory(16, 0x1F);
-            
-            var na = this.controlMemory.BitExtractMemory(48, 0xFFFF);            // 63:48   
+            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15, 0x1F));
+
+            var na = (UInt32)BitHelper.BitExtract(this.controlMemory.GetMemory(), 48, 0xFFFF);            // 63:48   
             
             //Set up Datapath
             this.datapath.SetChannel(0, srcA);
@@ -103,7 +103,7 @@ namespace VProcessor.Hardware
 
             //Update Branch
             if (Bu == 1)
-                this.branchControl.Nzcv = this.datapath.GetNzcv();
+                this.branchControl.Nzcv = this.datapath.GetStatusRegister();
             
             //Set up CAR
             var muxCar = (Cion & 2) == 2 ? opcode : na;
@@ -114,8 +114,15 @@ namespace VProcessor.Hardware
 
             //Set up PC
             if ((Pc & 2) == 2 && this.branchControl.Branch(Bx))
-                this.flashMemory += this.flashMemory.BitExtractMemory(0, 0xFFFF);
-            else if((Pc & 1) == 1)
+            {
+                var extract = (UInt32) BitHelper.BitExtract(this.instructionReg, 0, 0xFFFF);
+
+                if(extract >= 0x8000)
+                    extract = ~(~extract ^ 0xFFFF0000);
+
+                this.flashMemory += extract;
+            }
+            else if ((Pc & 1) == 1)
                 this.flashMemory++;            
 
             //Set up IR

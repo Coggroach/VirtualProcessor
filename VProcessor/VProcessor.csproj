@@ -44,7 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hardware\Memory.cs" />
+    <Compile Include="Hardware\Memory\Memory.cs" />
+    <Compile Include="Hardware\Memory\Memory32.cs" />
+    <Compile Include="Hardware\Memory\Memory64.cs" />
+    <Compile Include="Hardware\StatusRegister.cs" />
     <Compile Include="Software\Assembly\Compiler.cs" />
     <Compile Include="Software\Assembly\CompilerHelper.cs" />
     <Compile Include="Software\Assembly\ICompiler.cs" />

@@ -26,8 +26,8 @@ namespace VProcessor.Gui
             this.flashFile = new SFile(Settings.FlashMemoryLocation);
             
             this.processor = new Processor(
-                    this.compiler.Compile(new SFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
-                    this.compiler.Compile(this.flashFile, Settings.FlashMemorySize));
+                    this.compiler.Compile64(new SFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
+                    this.compiler.Compile32(this.flashFile, Settings.FlashMemorySize));
             
             this.InitializeComponent();
             this.SetupRegisterFile();
@@ -136,8 +136,28 @@ namespace VProcessor.Gui
             this.flashFile.SetString(this.EditorBox.Text);
             this.flashFile.Save();
             this.flashFile.Load();
-            this.processor.Reset(this.compiler.Compile(this.flashFile, Settings.FlashMemorySize));
+            this.processor.Reset(this.compiler.Compile32(this.flashFile, Settings.FlashMemorySize));
             this.Update();
+        }
+
+        private void modeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.flashFile.SetMode(SFile.Hexadecimal);
+        }
+
+        private void decimalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.flashFile.SetMode(SFile.Decimal);
+        }
+
+        private void assemblyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.flashFile.SetMode(SFile.Assembly);
         }
     }
 }

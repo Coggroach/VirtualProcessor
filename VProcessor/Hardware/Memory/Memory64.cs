@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Hardware
 {
-    public class Memory
+    public class Memory64 : Memory<UInt64>
     {
         private readonly UInt64[] memory;       
 
-        public Memory(Int32 i)
+        public Memory64(Int32 i)
         {
             this.memory = new UInt64[i];
         }

@@ -14,6 +14,8 @@ namespace VProcessor.Software.Assembly
         public const Int32 Decimal = 1;
         public const Int32 Assembly = 2;
 
+        public const Char Delimiter = ';';
+
         private const Int32 BufferSize = 1024;
         private readonly String path;
 
@@ -34,6 +36,11 @@ namespace VProcessor.Software.Assembly
             return this.mode;
         }
 
+        public void SetMode(Int32 mode)
+        {
+            this.mode = mode;
+        }
+
         private void Init()
         {
             this.Load();
@@ -42,6 +49,12 @@ namespace VProcessor.Software.Assembly
         public String GetString()
         {
             return this.builder;
+        }
+
+        public void CleanUp()
+        {
+            String s = Delimiter.ToString();
+            this.builder = this.builder.Replace("\r\n", s).Replace(s + s, s).Replace("\0", "");
         }
 
         public void SetString(String s)
@@ -54,7 +67,8 @@ namespace VProcessor.Software.Assembly
             var buffer = new Byte[BufferSize];
             this.stream.Position = 0;
             this.stream.Read(buffer, 0, buffer.Length);
-            this.builder = Encoding.ASCII.GetString(buffer).Replace("\0", "");
+            this.builder = Encoding.ASCII.GetString(buffer);
+            this.CleanUp();
         }
 
         public void Save()

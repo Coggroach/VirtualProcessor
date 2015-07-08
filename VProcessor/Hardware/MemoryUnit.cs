@@ -7,11 +7,11 @@ namespace VProcessor.Hardware
     using VProcessor.Tools;
     using VProcessor.Software.Assembly;
 
-    public class MemoryUnit
+    public class MemoryUnit<T>
     {
         private UInt32 register;
-        private Memory memory;
-        public MemoryUnit(Memory m)
+        private Memory<T> memory;
+        public MemoryUnit(Memory<T> m)
         {
             this.Init();
             this.memory = m;
@@ -27,35 +27,15 @@ namespace VProcessor.Hardware
             this.Init();            
         }
       
-        public void SetMemory(Memory m)
+        public void SetMemory(Memory<T> m)
         {
             this.memory = m;
         }
 
-        public UInt64 GetMemory()
+        public T GetMemory()
         {
             return this.memory.GetMemory(this.register);
         }
-
-        public Boolean BitMatchMemory(Byte bitPos, Byte matchBit, UInt32 mask = 1)
-        {
-            return BitHelper.BitMatch(this.GetMemory(), bitPos, matchBit, mask);
-        }
-
-        public Boolean BitMatchRegister(Byte bitPos, Byte matchBit, UInt32 mask = 1)
-        {
-            return BitHelper.BitMatch(this.register, bitPos, matchBit, mask);
-        }
-
-        public UInt32 BitExtractMemory(Byte bitPos, UInt32 mask = 1)
-        {
-            return (UInt32)BitHelper.BitExtract(this.GetMemory(), bitPos, mask);
-        }
-
-        public UInt32 BitExtractRegister(Byte bitPos, UInt32 mask = 1)
-        {
-            return (UInt32) BitHelper.BitExtract(this.register, bitPos, mask);
-        }       
 
         public UInt32 GetRegister()
         {
@@ -77,13 +57,13 @@ namespace VProcessor.Hardware
             this.register += i;
         }
 
-        public static MemoryUnit operator ++(MemoryUnit memory)
+        public static MemoryUnit<T> operator ++(MemoryUnit<T> memory)
         {
             memory.Increment();
             return memory;
         }
 
-        public static MemoryUnit operator +(MemoryUnit memory, UInt32 i)
+        public static MemoryUnit<T> operator +(MemoryUnit<T> memory, UInt32 i)
         {
             memory.Add(i);
             return memory;

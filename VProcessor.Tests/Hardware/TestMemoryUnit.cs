@@ -26,8 +26,8 @@ namespace VProcessor.Tests.Hardware
             var file = new SFile(path);
             var compiler = new Compiler();
 
-            var memChunk = compiler.Compile(file, 4);
-            var memory = new MemoryUnit(memChunk);
+            var memChunk = compiler.Compile32(file, 4);
+            var memory = new MemoryUnit<UInt32>(memChunk);
 
             Assert.AreNotEqual((UInt32)0, memory.GetMemory());
             memory++;

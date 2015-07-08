@@ -20,12 +20,12 @@ namespace VProcessor.Software.Assembly
         private const String ConstNumberStem = @"[#][\d]+";
         private const String FullNumberStem = @"[=][\d]+";
 
-        public static UInt64[] Convert(String s)
+        public static UInt32[] Convert(String s)
         {
             var table = CreatePropertyTable(s);
             var stem = (Int32)table["Stem"];
 
-            var array = new UInt64[
+            var array = new UInt32[
                 (stem & 2) == 2 ? (Int32)table["Contains"] + 1 : 1];
             for (var i = 0; i < array.Length; i++)
                 array[i] = 0;
@@ -33,9 +33,9 @@ namespace VProcessor.Software.Assembly
             var parts = (String[])table["Code"];
             var type = (Int32)table["Type"];
 
-            array[0] |= (UInt64)(Opcode.GetCodeIndexer(parts[0]) << 16);
+            array[0] |= (UInt32)(Opcode.GetCodeAddress(parts[0]) << 16);
             for (var i = 1; i <= 3 - type; i++)
-                array[0] |= (UInt64)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
+                array[0] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
 
             var lastElement = parts.Length - 1;
             if (Regex.Match(parts[lastElement], RegisterStem).Success)
@@ -43,7 +43,7 @@ namespace VProcessor.Software.Assembly
             if (Regex.Match(parts[lastElement], ConstNumberStem).Success)
                 array[0] |= GetConstantNumberCode(parts[lastElement]);
             if (Regex.Match(parts[lastElement], FullNumberStem).Success)
-                array[1] |= (UInt64)GetFullNumberCode(parts[lastElement]);
+                array[1] |= (UInt32)GetFullNumberCode(parts[lastElement]);
 
             return array;
         }

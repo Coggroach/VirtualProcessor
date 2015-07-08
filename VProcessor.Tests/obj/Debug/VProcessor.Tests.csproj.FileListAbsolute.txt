@@ -29,3 +29,5 @@ C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Assembly.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Testing\Ldr_FullNum_UM.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Testing\Ldr_Register_UM.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\Testing\Ldr_ConstNum_UM.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestAssemblyCode.txt
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestAssembly.txt

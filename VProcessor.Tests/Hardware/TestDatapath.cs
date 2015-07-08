@@ -32,7 +32,7 @@ namespace VProcessor.Tests.Hardware
             var reg = datapath.GetRegister(0);
             const UInt32 outReg = i + j;
             Assert.AreEqual(outReg, reg);
-            var nzcv = datapath.GetNzcv();
+            var nzcv = datapath.GetStatusRegister().Nzcv;
             Assert.AreEqual(0, nzcv);
         }
 
@@ -44,7 +44,8 @@ namespace VProcessor.Tests.Hardware
             datapath.SetChannel(0, 0);
             datapath.SetChannel(1, 1);
             datapath.FunctionUnit(Opcode.SUB, 2, 1);
-            var nzcv = (datapath.GetNzcv() & 0x08);
+            datapath.GetStatusRegister().Mask(8);
+            var nzcv = datapath.GetStatusRegister().Nzcv;
             Assert.IsTrue(8 == nzcv);
         }
 
@@ -57,7 +58,8 @@ namespace VProcessor.Tests.Hardware
             datapath.SetChannel(0, 0);
             datapath.SetChannel(1, 1);
             datapath.FunctionUnit(Opcode.SUB, 2, 1);
-            var nzcv = (datapath.GetNzcv() & 0x04);
+            datapath.GetStatusRegister().Mask(4);
+            var nzcv = datapath.GetStatusRegister().Nzcv;
             Assert.IsTrue(4 == nzcv);
         }
 
@@ -68,7 +70,8 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(1, UInt32.MaxValue);
             datapath.SetRegister(0, UInt32.MaxValue);
             datapath.FunctionUnit(Opcode.ADD, 0, 1);
-            var nzcv = (datapath.GetNzcv() & 2);
+            datapath.GetStatusRegister().Mask(2);
+            var nzcv = datapath.GetStatusRegister().Nzcv;
             var reg = datapath.GetRegister();
             Assert.IsTrue(2 == nzcv);
             Assert.IsTrue(UInt32.MaxValue << 1 == reg);
@@ -81,7 +84,8 @@ namespace VProcessor.Tests.Hardware
             datapath.SetRegister(1, UInt32.MaxValue);
             datapath.SetRegister(0, UInt32.MaxValue);
             datapath.FunctionUnit(Opcode.ADD, 0, 1);
-            var nzcv = (datapath.GetNzcv() & 1);
+            datapath.GetStatusRegister().Mask(1);
+            var nzcv = datapath.GetStatusRegister().Nzcv;
             Assert.IsTrue(1 == nzcv);
         }
 

@@ -43,6 +43,10 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CurrentCommandTextBox = new System.Windows.Forms.TextBox();
+            this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.decimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.assemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -115,21 +119,22 @@
             // restartToolStripMenuItem
             // 
             this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.restartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.restartToolStripMenuItem.Text = "Restart";
             this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tickToolStripMenuItem,
-            this.tickx25ToolStripMenuItem});
+            this.tickx25ToolStripMenuItem,
+            this.modeToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -137,14 +142,14 @@
             // tickToolStripMenuItem
             // 
             this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
-            this.tickToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.tickToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tickToolStripMenuItem.Text = "Tick";
             this.tickToolStripMenuItem.Click += new System.EventHandler(this.tickToolStripMenuItem_Click);
             // 
             // tickx25ToolStripMenuItem
             // 
             this.tickx25ToolStripMenuItem.Name = "tickx25ToolStripMenuItem";
-            this.tickx25ToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.tickx25ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tickx25ToolStripMenuItem.Text = "Tick x25";
             this.tickx25ToolStripMenuItem.Click += new System.EventHandler(this.tickx25ToolStripMenuItem_Click);
             // 
@@ -175,6 +180,38 @@
             this.CurrentCommandTextBox.ReadOnly = true;
             this.CurrentCommandTextBox.Size = new System.Drawing.Size(522, 20);
             this.CurrentCommandTextBox.TabIndex = 4;
+            // 
+            // modeToolStripMenuItem
+            // 
+            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.hexadecimalToolStripMenuItem,
+            this.decimalToolStripMenuItem,
+            this.assemblyToolStripMenuItem});
+            this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.modeToolStripMenuItem.Text = "Mode";
+            this.modeToolStripMenuItem.Click += new System.EventHandler(this.modeToolStripMenuItem_Click);
+            // 
+            // hexadecimalToolStripMenuItem
+            // 
+            this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
+            this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
+            this.hexadecimalToolStripMenuItem.Click += new System.EventHandler(this.hexadecimalToolStripMenuItem_Click);
+            // 
+            // decimalToolStripMenuItem
+            // 
+            this.decimalToolStripMenuItem.Name = "decimalToolStripMenuItem";
+            this.decimalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.decimalToolStripMenuItem.Text = "Decimal";
+            this.decimalToolStripMenuItem.Click += new System.EventHandler(this.decimalToolStripMenuItem_Click);
+            // 
+            // assemblyToolStripMenuItem
+            // 
+            this.assemblyToolStripMenuItem.Name = "assemblyToolStripMenuItem";
+            this.assemblyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.assemblyToolStripMenuItem.Text = "Assembly";
+            this.assemblyToolStripMenuItem.Click += new System.EventHandler(this.assemblyToolStripMenuItem_Click);
             // 
             // EditorForm
             // 
@@ -214,5 +251,9 @@
         private System.Windows.Forms.ToolStripMenuItem tickx25ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem restartToolStripMenuItem;
         private System.Windows.Forms.TextBox CurrentCommandTextBox;
+        private System.Windows.Forms.ToolStripMenuItem modeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hexadecimalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem decimalToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem assemblyToolStripMenuItem;
     }
 }
