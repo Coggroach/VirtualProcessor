@@ -47,6 +47,7 @@
             this.hexadecimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.decimalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.assemblyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FlashMemoryBox = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +81,7 @@
             this.EditorBox.AcceptsTab = true;
             this.EditorBox.Location = new System.Drawing.Point(249, 54);
             this.EditorBox.Name = "EditorBox";
-            this.EditorBox.Size = new System.Drawing.Size(523, 470);
+            this.EditorBox.Size = new System.Drawing.Size(444, 470);
             this.EditorBox.TabIndex = 2;
             this.EditorBox.Text = "";
             this.EditorBox.SelectionChanged += new System.EventHandler(this.EditorBox_SelectionChanged);
@@ -213,11 +214,21 @@
             this.assemblyToolStripMenuItem.Text = "Assembly";
             this.assemblyToolStripMenuItem.Click += new System.EventHandler(this.assemblyToolStripMenuItem_Click);
             // 
+            // FlashMemoryBox
+            // 
+            this.FlashMemoryBox.Location = new System.Drawing.Point(699, 55);
+            this.FlashMemoryBox.Name = "FlashMemoryBox";
+            this.FlashMemoryBox.ReadOnly = true;
+            this.FlashMemoryBox.Size = new System.Drawing.Size(73, 469);
+            this.FlashMemoryBox.TabIndex = 5;
+            this.FlashMemoryBox.Text = "";
+            // 
             // EditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.FlashMemoryBox);
             this.Controls.Add(this.CurrentCommandTextBox);
             this.Controls.Add(this.EditorBox);
             this.Controls.Add(this.CommandBox);
@@ -255,5 +266,6 @@
         private System.Windows.Forms.ToolStripMenuItem hexadecimalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem decimalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem assemblyToolStripMenuItem;
+        private System.Windows.Forms.RichTextBox FlashMemoryBox;
     }
 }

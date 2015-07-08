@@ -54,7 +54,7 @@ namespace VProcessor.Software.Assembly
         public void CleanUp()
         {
             String s = Delimiter.ToString();
-            this.builder = this.builder.Replace("\r\n", s).Replace(s + s, s).Replace("\0", "");
+            this.builder = this.builder.Replace("???", "").Replace("\r\n", s).Replace(s + s, s).Replace("\0", "");
         }
 
         public void SetString(String s)
@@ -73,8 +73,8 @@ namespace VProcessor.Software.Assembly
 
         public void Save()
         {
-            var buffer = new Byte[this.builder.Length * sizeof(Char)];
-            Buffer.BlockCopy(this.builder.ToCharArray(), 0, buffer, 0, buffer.Length);
+            var buffer = new Byte[BufferSize];
+            Buffer.BlockCopy(this.builder.ToCharArray(), 0, buffer, 0, this.builder.Length);
             this.stream.Position = 0;
             this.stream.Write(buffer, 0, buffer.Length);
         }

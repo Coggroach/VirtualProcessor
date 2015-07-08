@@ -90,7 +90,7 @@ namespace VProcessor.Hardware
             var Din = BitHelper.BitMatch(this.controlMemory.GetMemory(), 14, 1);
             var Bu = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15));
 
-            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15, 0x1F));
+            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 16, 0x1F));
 
             var na = (UInt32)BitHelper.BitExtract(this.controlMemory.GetMemory(), 48, 0xFFFF);            // 63:48   
             

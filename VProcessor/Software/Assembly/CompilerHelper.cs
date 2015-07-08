@@ -33,7 +33,7 @@ namespace VProcessor.Software.Assembly
             var parts = (String[])table["Code"];
             var type = (Int32)table["Type"];
 
-            array[0] |= (UInt32)(Opcode.GetCodeAddress(parts[0]) << 16);
+            array[0] |= (UInt32)(Opcode.GetCodeAddress(parts[0].ToUpper()) << 16);
             for (var i = 1; i <= 3 - type; i++)
                 array[0] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
 
@@ -54,7 +54,7 @@ namespace VProcessor.Software.Assembly
             var line = CleanUp(s);
             var parts = line.Split(',');
 
-            var type = Opcode.GetCodeType(parts[0]);
+            var type = Opcode.GetCodeType(parts[0].ToUpper());
 
             table.Add("Code", parts);
             table.Add("Type", (type & 0xF0) >> 4);

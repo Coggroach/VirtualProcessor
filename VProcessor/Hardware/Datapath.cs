@@ -210,17 +210,33 @@ namespace VProcessor.Hardware
         private UInt32 BoothMultiplier(UInt32 a, UInt32 b)
         {   
             this.nzcv.BitSet(1, (Int32)(a * b) <= 0);
-            this.nzcv.BitSet(0, a > Int32.MaxValue && (b) > Int32.MaxValue);
+            this.nzcv.BitSet(0, IsNegative(a) && IsNegative(b));
 
             return a*b;
         }
 
         private UInt32 RippleAdder(UInt32 a, UInt32 b, UInt32 cIn = 0)
         {
+            var sum = a + b + cIn;
             this.nzcv.BitSet(1, CarryOut(a, b, cIn));
-            this.nzcv.BitSet(0, a > Int32.MaxValue && (b + cIn) > Int32.MaxValue);
+            this.nzcv.BitSet(0, Overflow(sum, a, b));
 
-            return a + b + cIn;
+            return sum;
+        }
+
+        private static Boolean Overflow(UInt32 sum, UInt32 a, UInt32 b)
+        {
+            return IsPositive(a) && IsPositive(b) && IsNegative(sum);
+        }
+
+        private static Boolean IsPositive(UInt32 a)
+        {
+            return a >= 0 && a <= Int32.MaxValue;
+        }
+
+        private static Boolean IsNegative(UInt32 a)
+        {
+            return a > Int32.MaxValue;
         }
 
         private static Boolean CarryOut(UInt32 a, UInt32 b, UInt32 c)

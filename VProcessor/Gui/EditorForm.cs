@@ -74,7 +74,21 @@ namespace VProcessor.Gui
 
         private void SetupEditorBoxText()
         {
-            this.EditorBox.Text = this.flashFile.GetString();
+            this.EditorBox.Text = this.flashFile.GetString().Replace(SFile.Delimiter, '\n');
+            this.FlashMemoryBox.Text = ConvertMemoryToString(this.processor.GetUserMemory());
+        }
+
+        private String ConvertMemoryToString(MemoryUnit<UInt32> memory)
+        {
+            var chunk = memory.GetMemoryChunk();
+            var s = "";
+            const String template = "00000000";
+            for(var i = 0; i < chunk.GetLength(); i++)
+            {
+                var convert = Convert.ToString(chunk.GetMemory(i), 16).ToUpper();
+                s += template.Substring(0, template.Length - convert.Length) + convert +"\n";
+            }
+            return s;
         }
 
         private void EditorBox_SelectionChanged(Object sender, EventArgs e)
@@ -93,13 +107,14 @@ namespace VProcessor.Gui
                 carM = carM.Insert(5*i - 1, " ");
 
             this.CurrentCommandTextBox.Text = carM.ToUpper();
+            this.FlashMemoryBox.Text = ConvertMemoryToString(this.processor.GetUserMemory());
             for(var i = 0; i < this.EditorBox.Lines.Length; i++)
             {
-                var charIndex = this.EditorBox.GetFirstCharIndexFromLine(i);
-                var current = this.EditorBox.Lines[i];
-                this.EditorBox.Select(charIndex, current.Length);
-                this.EditorBox.SelectionBackColor = (i != pc) ? this.EditorBox.BackColor : Color.LightYellow;
-            }
+                var charIndex = this.FlashMemoryBox.GetFirstCharIndexFromLine(i);
+                var current = this.FlashMemoryBox.Lines[i];
+                this.FlashMemoryBox.Select(charIndex, current.Length);
+                this.FlashMemoryBox.SelectionBackColor = (i != pc) ? this.EditorBox.BackColor : Color.PaleVioletRed;
+            }            
         }
 
         private void EditorBox_TextChanged(Object sender, EventArgs e)

@@ -37,6 +37,11 @@ namespace VProcessor.Hardware
             return this.memory.GetMemory(this.register);
         }
 
+        public Memory<T> GetMemoryChunk()
+        {
+            return this.memory;
+        }
+
         public UInt32 GetRegister()
         {
             return this.register;

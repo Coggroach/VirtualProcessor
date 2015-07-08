@@ -20,29 +20,51 @@ namespace VProcessor.Software.Assembly
 
             for (var i = 0; i < memory.GetLength(); i++)
             {
-                var input = (i < lines.Length) ? lines[i] : "";
-                if (!String.IsNullOrWhiteSpace(input))
-                    memory.SetMemory(i, ParseValue64(input, mode));
-                else
-                    memory.SetMemory(i, 0);
+                try
+                {
+                    memory.SetMemory(i, ParseValue64(lines[i], mode));
+                }
+                catch (Exception ex)
+                {
+                    if (ex is FormatException || ex is IndexOutOfRangeException )
+                    {
+                        memory.SetMemory(i, 0);
+                        continue;
+                    }
+                    throw;
+                }      
             }
             return memory;
         }
 
         public Memory32 Compile32(SFile file, Int32 size)
         {
-            var lines = file.GetString().Split('\n');
+            var lines = file.GetString().Split(SFile.Delimiter);
             var memory = new Memory32(size);
             var mode = file.GetMode();
+            var index = 0;
 
-            for (var i = 0; i < memory.GetLength(); i++)
+            for (var i = 0; i < memory.GetLength(); i++, index++)
             {
-                var input = (i < lines.Length) ? lines[i] : "";
+                var input = (i < lines.Length) ? lines[index] : "";
                 if (!String.IsNullOrWhiteSpace(input))
                 {
-                    UInt32[] array = ParseValue32(input, mode);
-                    for(var j = 0; j < array.Length; j++, i++)
-                        memory.SetMemory(i, array[j]);
+                    try
+                    {
+                        UInt32[] array = ParseValue32(input, mode);
+                        for (var j = 0; j < array.Length; j++)
+                            memory.SetMemory(i, array[j]);
+                        i += array.Length - 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (ex is FormatException || ex is IndexOutOfRangeException)
+                        {
+                            memory.SetMemory(i, 0);
+                            continue;
+                        }
+                        throw;
+                    }  
                 }                    
                 else
                     memory.SetMemory(i, 0);

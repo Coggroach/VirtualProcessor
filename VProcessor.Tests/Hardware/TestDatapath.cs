@@ -81,8 +81,8 @@ namespace VProcessor.Tests.Hardware
         public void TestOverflowFlag()
         {
             var datapath = new Datapath();
-            datapath.SetRegister(1, UInt32.MaxValue);
-            datapath.SetRegister(0, UInt32.MaxValue);
+            datapath.SetRegister(1, Int32.MaxValue);
+            datapath.SetRegister(0, Int32.MaxValue);
             datapath.FunctionUnit(Opcode.ADD, 0, 1);
             datapath.GetStatusRegister().Mask(1);
             var nzcv = datapath.GetStatusRegister().Nzcv;
