@@ -15,14 +15,14 @@ namespace VProcessor.Gui
 {
     public partial class EditorForm : Form
     {
-        private ICompiler compiler;
+        private IAssembler compiler;
         private Processor processor;
         private SFile flashFile;
         private const String RegisterPrefix = "r";
 
         public EditorForm()
         {
-            this.compiler = new Compiler();
+            this.compiler = new Assembler();
             this.flashFile = new SFile(Settings.FlashMemoryLocation);
             
             this.processor = new Processor(
@@ -70,7 +70,7 @@ namespace VProcessor.Gui
         {
             //this.ToolFontType.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
             this.ToolFontSize.Items.AddRange(new Object[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 });
-            this.ToolFontSize.SelectedItem = 8;
+            this.ToolFontSize.SelectedItem = 12;
         }
 
         private void UpdateToolBar()
@@ -192,12 +192,32 @@ namespace VProcessor.Gui
 
         private void TickButton_Click(object sender, EventArgs e)
         {
-            var count = 0;
+            var count = 1;
             try { count = Int32.Parse(this.TickCounter.Text); }
             catch (Exception ex) { Logger.Instance().Log("TickCounter (TextBox): " + ex.ToString()); }
             for (int i = 0; i < count; i++)
                 this.processor.Tick();
             this.Update();
+        }
+
+        private void CommandBox_KeyPress(object sender, EventArgs e)
+        {
+            var k = (KeyEventArgs)e;
+            if(k.KeyCode == Keys.Enter)
+            {
+                UInt32 i = 0;
+                try
+                {
+                    i = UInt32.Parse(this.CommandBox.Text);
+                }
+                catch (Exception ex) { Logger.Instance().Log("CommandBox (TextBox): " + ex.ToString()); }
+                
+                if(this.processor.HasTerminated())
+                {
+                    this.processor.SetInstructionRegister(i);
+                    this.processor.Tick();
+                }
+            }         
         }
     }
 }

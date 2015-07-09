@@ -14,7 +14,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "ADD r0, r1, r2";
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -25,7 +25,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "  ADD  r0, r1,  r2  ";
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -36,7 +36,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "      ADD     r0,     r1,     r2  ";
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -49,7 +49,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "DD r0, r1, r2";
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreNotEqual(theoOutput, pracOutput[0]);
         }
@@ -61,7 +61,7 @@ namespace VProcessor.Tests.Software.Assembly
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("LDR") << 16) | 0x0000;
             const UInt64 theOutput2 = 14;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
             Assert.AreEqual(theOutput2, pracOutput[1]);
@@ -74,7 +74,7 @@ namespace VProcessor.Tests.Software.Assembly
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("LDR") << 16) | 0x0100;
             const UInt64 theOutput2 = 18;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
             Assert.AreEqual(theOutput2, pracOutput[1]);
@@ -87,7 +87,7 @@ namespace VProcessor.Tests.Software.Assembly
             var theoOutput = (UInt32)(Opcode.GetCodeAddress("LDR") << 16) | 0x0100;
             const UInt64 theOutput2 = 18;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
             Assert.AreEqual(theOutput2, pracOutput[1]);
@@ -99,7 +99,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "MOV r1, #1";
             var theoOutput = (UInt32)((Opcode.GetCodeAddress("MOV") + 1) << 16) | 0x0101;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -110,7 +110,7 @@ namespace VProcessor.Tests.Software.Assembly
             const String input = "MOV r1, #21";
             var theoOutput = (UInt32)((Opcode.GetCodeAddress("MOV") + 1) << 16) | 0x0105;
 
-            var pracOutput = CompilerHelper.Convert(input);
+            var pracOutput = Assembler.Convert(input);
 
             Assert.AreEqual(theoOutput, pracOutput[0]);
         }
@@ -120,7 +120,7 @@ namespace VProcessor.Tests.Software.Assembly
         {
             const Int32 length = 8;
 
-            var compiler = new Compiler();
+            var compiler = new Assembler();
 
             var testFile = new SFile("Software\\TestAssembly.txt", SFile.Assembly);
             var expectedFile = new SFile("Software\\TestAssemblyCode.txt", SFile.Hexadecimal);
@@ -138,7 +138,7 @@ namespace VProcessor.Tests.Software.Assembly
         {
             const Int32 length = 3;
 
-            var compiler = new Compiler();
+            var compiler = new Assembler();
 
             var file = new SFile("Software\\TempAssembly.txt", SFile.Assembly);
 

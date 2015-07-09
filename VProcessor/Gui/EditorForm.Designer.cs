@@ -81,6 +81,7 @@
             this.CommandBox.Name = "CommandBox";
             this.CommandBox.Size = new System.Drawing.Size(523, 20);
             this.CommandBox.TabIndex = 1;
+            this.CommandBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CommandBox_KeyPress);
             // 
             // EditorBox
             // 

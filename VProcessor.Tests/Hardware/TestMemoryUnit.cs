@@ -24,7 +24,7 @@ namespace VProcessor.Tests.Hardware
         internal void TestStartUp(String path)
         {            
             var file = new SFile(path);
-            var compiler = new Compiler();
+            var compiler = new Assembler();
 
             var memChunk = compiler.Compile32(file, 4);
             var memory = new MemoryUnit<UInt32>(memChunk);

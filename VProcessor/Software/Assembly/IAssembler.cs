@@ -8,7 +8,7 @@ namespace VProcessor.Software.Assembly
 {
     using VProcessor.Hardware;
 
-    interface ICompiler
+    interface IAssembler
     {
         Memory64 Compile64(SFile file, Int32 size);
         Memory32 Compile32(SFile file, Int32 size);

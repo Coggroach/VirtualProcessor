@@ -70,6 +70,16 @@ namespace VProcessor.Hardware
             this.instructionReg = this.flashMemory.GetMemory();
             this.branchControl.Nzcv = new StatusRegister();
         }
+
+        public Boolean HasTerminated()
+        {
+            return this.instructionReg == 0;
+        }
+
+        public void SetInstructionRegister(UInt32 i)
+        {
+            this.instructionReg = i;
+        }
                 
         public void Tick()
         { 
