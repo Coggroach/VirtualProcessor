@@ -48,9 +48,8 @@
     <Compile Include="Hardware\Memory\Memory32.cs" />
     <Compile Include="Hardware\Memory\Memory64.cs" />
     <Compile Include="Hardware\StatusRegister.cs" />
-    <Compile Include="Software\Assembly\Compiler.cs" />
-    <Compile Include="Software\Assembly\CompilerHelper.cs" />
-    <Compile Include="Software\Assembly\ICompiler.cs" />
+    <Compile Include="Software\Assembly\Assembler.cs" />
+    <Compile Include="Software\Assembly\IAssembler.cs" />
     <Compile Include="Software\Assembly\SFile.cs" />
     <Compile Include="Gui\EditorForm.cs">
       <SubType>Form</SubType>

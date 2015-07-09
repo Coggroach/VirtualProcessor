@@ -87,3 +87,38 @@
    at System.Number.ParseUInt32(String value, NumberStyles options, NumberFormatInfo numfmt)
    at System.UInt32.Parse(String s)
    at VProcessor.Gui.EditorForm.CommandBox_KeyPress(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 211
+[Logger][15:51:15]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][15:51:16]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][15:51:17]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][15:51:17]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][15:51:18]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][15:51:18]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][15:51:18]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196

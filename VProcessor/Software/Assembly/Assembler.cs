@@ -20,6 +20,18 @@ namespace VProcessor.Software.Assembly
         private const String ConstNumberStem = @"[#][\d]+";
         private const String FullNumberStem = @"[=][\d]+";
 
+        private Hashtable BranchLookup;
+        private Hashtable BranchRegistry;
+        private Int32 AssemblyLine;
+        private Int32 MachineLine;
+
+        public Assembler()
+        {
+            this.BranchLookup = new Hashtable();
+            this.BranchRegistry = new Hashtable();
+            this.AssemblyLine = 0;
+            this.MachineLine = 0;
+        }
 
         public Memory64 Compile64(SFile file, Int32 size)
         {
@@ -51,22 +63,29 @@ namespace VProcessor.Software.Assembly
             var lines = file.GetString().Split(SFile.Delimiter);
             var memory = new Memory32(size);
             var mode = file.GetMode();
-            var index = 0;
+            this.AssemblyLine = 0;            
 
-            for (var i = 0; i < memory.GetLength(); i++, index++)
+            for (this.MachineLine = 0, this.AssemblyLine = 0; 
+                this.MachineLine < memory.GetLength(); 
+                this.MachineLine++, this.AssemblyLine++)
             {
                 try
                 {
-                    UInt32[] array = ParseValue32(lines[index], mode);
+                    UInt32[] array = ParseValue32(lines[this.AssemblyLine], mode);
+                    if (array == null)
+                    {
+                        this.MachineLine--;
+                        continue;
+                    }                        
                     for (var j = 0; j < array.Length; j++)
-                        memory.SetMemory(i + j, array[j]);
-                    i += array.Length - 1;
+                        memory.SetMemory(this.MachineLine + j, array[j]);
+                    this.MachineLine += array.Length - 1;
                 }
                 catch (Exception ex)
                 {
                     if (ex is FormatException || ex is IndexOutOfRangeException)
                     {
-                        memory.SetMemory(i, 0);
+                        memory.SetMemory(this.MachineLine, 0);
                         continue;
                     }
                     throw;
@@ -75,7 +94,7 @@ namespace VProcessor.Software.Assembly
             return memory;
         }
 
-        public static UInt32[] Convert(String s)
+        public UInt32[] Convert(String s)
         {
             var table = CreatePropertyTable(s);
             var stem = (Int32)table["Stem"];
@@ -88,7 +107,17 @@ namespace VProcessor.Software.Assembly
             var parts = (String[])table["Code"];
             var type = (Int32)table["Type"];
 
-            var address = Opcode.GetCodeAddress(parts[0].ToUpper());
+            if (type == 3)
+                this.LinkBranch(parts[1]);
+
+            var upperCode = parts[0].ToUpper();
+
+            if (!Opcode.IsValidCode(upperCode))
+            {
+                this.RegisterBranch(upperCode);
+                return null;
+            }
+            var address = Opcode.GetCodeAddress(upperCode);
 
             for (var i = 1; i <= 3 - type; i++)
                 array[0] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
@@ -114,6 +143,48 @@ namespace VProcessor.Software.Assembly
             array[0] |= (UInt32)(address << 16);
 
             return array;
+        }
+
+        private void RegisterBranch(String branchName)
+        {
+            if(!this.BranchRegistry.ContainsKey(branchName))
+            {
+                var map = new Hashtable();
+
+                map.Add("MachineLine", this.MachineLine);
+                map.Add("AssemblyLine", this.AssemblyLine);
+
+                this.BranchRegistry.Add(branchName, map);
+            }
+        }
+
+        private void LinkBranch(String branchName)
+        {
+            var map = new Hashtable();
+
+            map.Add("LinkMachineLine", this.MachineLine);
+            map.Add("LinkAssemblyLine", this.AssemblyLine);
+            
+            map.Add("BranchKey", branchName);
+
+            this.BranchLookup.Add(branchName, map);
+        }
+
+        private void LinkBranches()
+        {
+            foreach(Hashtable lookup in this.BranchLookup)
+            {
+                lookup.Add("BranchRegistryKey", this.BranchRegistry.ContainsKey(lookup["BranchKey"]));                    
+            }
+        }
+
+        private void PostLinkBranches()
+        {
+            foreach (Hashtable lookup in this.BranchLookup)
+            {
+                if (!(Boolean)(lookup["BranchRegistryKey"]))
+                    ; //Set Memory at MachineLines to 1
+            }
         }
 
         private static Hashtable CreatePropertyTable(String s)
@@ -215,7 +286,7 @@ namespace VProcessor.Software.Assembly
             }
         }
 
-        private static UInt32[] ParseValue32(String s, Int32 mode)
+        private UInt32[] ParseValue32(String s, Int32 mode)
         {
             switch (mode)
             {

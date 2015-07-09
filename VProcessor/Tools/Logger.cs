@@ -24,7 +24,12 @@ namespace VProcessor.Tools
 
         public Logger()
         {
-            path = "LoggerDebug.txt";
+            this.path = "LoggerDebug.txt";
+        }
+
+        public Logger(String s)
+        {
+            this.path = s;
         }
 
         public void Log(String line)

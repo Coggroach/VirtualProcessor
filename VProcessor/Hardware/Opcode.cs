@@ -82,6 +82,11 @@ namespace VProcessor.Hardware
             return (Hashtable) CodeTable[code];
         }
 
+        public static Boolean IsValidCode(String code)
+        {
+            return CodeTable.ContainsKey(code);
+        }
+
         public static Int32 GetCodeIndexer(String code)
         {
             return (Int32)GetCode(code)["Value"];
