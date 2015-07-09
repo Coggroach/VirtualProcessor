@@ -1,0 +1,61 @@
+[Logger][11:48]:System.FormatException: Input string was not in a correct format.
+   at System.Number.ParseSingle(String value, NumberStyles options, NumberFormatInfo numfmt)
+   at System.Single.Parse(String s)
+   at VProcessor.Gui.EditorForm.UpdateToolBar() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 78
+   at VProcessor.Gui.EditorForm.Update() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 154
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 36
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][12:04:11]:System.NullReferenceException: Object reference not set to an instance of an object.
+   at VProcessor.Hardware.Opcode.GetCodeType(String code) in c:\code\VirtualProcessor\VProcessor\Hardware\Opcode.cs:line 92
+   at VProcessor.Software.Assembly.CompilerHelper.CreatePropertyTable(String s) in c:\code\VirtualProcessor\VProcessor\Software\Assembly\CompilerHelper.cs:line 70
+   at VProcessor.Software.Assembly.CompilerHelper.Convert(String s) in c:\code\VirtualProcessor\VProcessor\Software\Assembly\CompilerHelper.cs:line 25
+   at VProcessor.Software.Assembly.Compiler.ParseValue32(String s, Int32 mode) in c:\code\VirtualProcessor\VProcessor\Software\Assembly\Compiler.cs:line 91
+   at VProcessor.Software.Assembly.Compiler.Compile32(SFile file, Int32 size) in c:\code\VirtualProcessor\VProcessor\Software\Assembly\Compiler.cs:line 63
+   at VProcessor.Gui.EditorForm.saveToolStripMenuItem_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 164
+   at System.Windows.Forms.ToolStripItem.RaiseEvent(Object key, EventArgs e)
+   at System.Windows.Forms.ToolStripMenuItem.OnClick(EventArgs e)
+   at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)
+   at System.Windows.Forms.ToolStripItem.HandleMouseUp(MouseEventArgs e)
+   at System.Windows.Forms.ToolStripItem.FireEventInteractive(EventArgs e, ToolStripItemEventType met)
+   at System.Windows.Forms.ToolStripItem.FireEvent(EventArgs e, ToolStripItemEventType met)
+   at System.Windows.Forms.ToolStrip.OnMouseUp(MouseEventArgs mea)
+   at System.Windows.Forms.ToolStripDropDown.OnMouseUp(MouseEventArgs mea)
+   at System.Windows.Forms.Control.WmMouseUp(Message& m, MouseButtons button, Int32 clicks)
+   at System.Windows.Forms.Control.WndProc(Message& m)
+   at System.Windows.Forms.ScrollableControl.WndProc(Message& m)
+   at System.Windows.Forms.ToolStrip.WndProc(Message& m)
+   at System.Windows.Forms.ToolStripDropDown.WndProc(Message& m)
+   at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message& m)
+   at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message& m)
+   at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)
+   at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG& msg)
+   at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
+   at System.Windows.Forms.Application.Run(Form mainForm)
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][12:09:11]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][12:09:16]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][12:09:17]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][12:09:17]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196
+[Logger][12:09:18]:TickCounter (TextBox): System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.EditorForm.TickButton_Click(Object sender, EventArgs e) in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 196

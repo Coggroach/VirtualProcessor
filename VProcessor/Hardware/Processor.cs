@@ -26,7 +26,7 @@ namespace VProcessor.Hardware
             return this.datapath.GetRegisters();
         }
 
-        public Byte GetNzcv()
+        public Byte GetStatusRegister()
         {
             return this.branchControl.Nzcv.Nzcv;
         }

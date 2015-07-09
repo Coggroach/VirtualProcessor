@@ -68,7 +68,14 @@ namespace VProcessor.Hardware
         public const Int32 B_BASE = B;
 
         private static readonly Hashtable CodeTable;
+        private static Int32 CurrentAddress;
+        private static Int32 LastType;
+
+        private const Int32 K = 1;
+        private const Int32 F = 3;
+        private const Int32 R = 1;
         
+        private const Int32 FirstAddress = 1;
 
         public static Hashtable GetCode(String code)
         {
@@ -77,17 +84,17 @@ namespace VProcessor.Hardware
 
         public static Int32 GetCodeIndexer(String code)
         {
-            return (Int32) ((Hashtable) CodeTable[code])["Value"];
+            return (Int32)GetCode(code)["Value"];
         }
 
         public static Byte GetCodeType(String code)
         {
-            return (Byte) ((Hashtable) CodeTable[code])["Type"];
+            return (Byte)GetCode(code)["Type"];
         }
 
         public static Int32 GetCodeAddress(String code)
         {
-            return (Int32) ((Hashtable)CodeTable[code])["Address"];
+            return (Int32)GetCode(code)["Address"];
         }
 
         public static Hashtable GetCodeTable()
@@ -95,23 +102,71 @@ namespace VProcessor.Hardware
             return CodeTable;
         }
 
-        public static void Add(String name, Int32 value, Int32 address, Byte typeAndConstants)
-        {
+        public static void Add(String name, Int32 value, Byte typeAndConstants)
+        {            
+            CurrentAddress += GetNextAddress();
             CodeTable.Add(name, new Hashtable()
             {
-                {"Address", address},
+                {"Address", CurrentAddress},
                 {"Value", value},
                 {"Type", typeAndConstants}
             });
+            LastType = typeAndConstants & 7;            
+        }
+
+        public static void Add(String name, Int32 value, Int32 address, Byte typeAndConstants)
+        {
+            CurrentAddress = address;
+            CodeTable.Add(name, new Hashtable()
+            {
+                {"Address", CurrentAddress},
+                {"Value", value},
+                {"Type", typeAndConstants}
+            });
+            LastType = typeAndConstants & 7;
+        }
+
+        private static Int32 GetNextAddress()
+        {
+            switch(LastType)
+            {                
+                case 1:                    
+                    return K;
+                case 2:
+                    return F;
+                case 3:
+                    return F + K;
+                case 4:
+                    return R;
+                case 5:
+                    return R + K;
+                case 6:
+                    return R + F;
+                case 7:
+                    return R + F + K;
+                default:
+                    return 0;
+            }
         }
 
         static Opcode()
         {
             CodeTable = new Hashtable();
+            CurrentAddress = FirstAddress;
+            LastType = 0;
+            //Type 1: ADD rx, ry, C
+            //Type 2: LDR rx, C
+            //Type 3: BEQ C
+            
+            //001 - 1 : K   - 1
+            //010 - 2 : F   - 3
+            //011 - 3 : FK  - 4
+            //100 - 4 : R   - 1
+            //101 - 5 : RK  - 2
+            //110 - 6 : RF  - 4
+            //111 - 7 : RFK - 5
                         
-            Add("LDR", LDR, 1, 0x26);
-            Add("LDRR", LDR, 4, 0x26);
-            Add("LDRC", LDRC, 5, 0x26);
+            Add("LDR", LDR, 1, 0x27);
             Add("ADD", ADD, 6, 0x15);
             Add("INC", INC, 8, 0x24);
             Add("ADDI", ADDI, 9, 0x15);            
@@ -132,21 +187,21 @@ namespace VProcessor.Hardware
             Add("ROL", ROL, 35, 0x15);
             Add("ROR", ROR, 37, 0x15);
 
-            Add("B", B, 39, 0x32);
-            Add("BEQ", BEQ, 40, 0x32);
-            Add("BNE", BNE, 41, 0x32);
-            Add("BCS", BCS, 42, 0x32);
-            Add("BCC", BCC, 43, 0x32);
-            Add("BNS", BNS, 44, 0x32);
-            Add("BNC", BNC, 45, 0x32);
-            Add("BVS", BVS, 46, 0x32);
-            Add("BVC", BVC, 47, 0x32);
-            Add("BHI", BHI, 48, 0x32);
-            Add("BLS", BLS, 49, 0x32);
-            Add("BGE", BGE, 50, 0x32);
-            Add("BLT", BLT, 51, 0x32);
-            Add("BGT", BGT, 52, 0x32);
-            Add("BLE", BLE, 53, 0x32);
+            Add("B", B, 39, 0x31);
+            Add("BEQ", BEQ, 40, 0x31);
+            Add("BNE", BNE, 41, 0x31);
+            Add("BCS", BCS, 42, 0x31);
+            Add("BCC", BCC, 43, 0x31);
+            Add("BNS", BNS, 44, 0x31);
+            Add("BNC", BNC, 45, 0x31);
+            Add("BVS", BVS, 46, 0x31);
+            Add("BVC", BVC, 47, 0x31);
+            Add("BHI", BHI, 48, 0x31);
+            Add("BLS", BLS, 49, 0x31);
+            Add("BGE", BGE, 50, 0x31);
+            Add("BLT", BLT, 51, 0x31);
+            Add("BGT", BGT, 52, 0x31);
+            Add("BLE", BLE, 53, 0x31);
 
             Add("MUL", MUL, 54, 0x15);
             Add("MLA", MLA, 56, 0x15);

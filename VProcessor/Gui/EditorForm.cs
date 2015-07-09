@@ -32,7 +32,8 @@ namespace VProcessor.Gui
             this.InitializeComponent();
             this.SetupRegisterFile();
             this.SetupEditorBoxText();
-            this.UpdateMemoryDisplays();
+            this.SetupToolBar();
+            this.Update();
         }
 
         public void Tick()
@@ -46,30 +47,37 @@ namespace VProcessor.Gui
             var registers = this.processor.GetRegisters();
             var length = registers.Length;
             for (var i = 0; i < length; i++)
+            {
+                this.RegisterFile[0, i].Value = RegisterPrefix + i;
                 this.RegisterFile[1, i].Value = registers[i];
+            }
+            this.RegisterFile[0, length].Value = "pc";
             this.RegisterFile[1, length].Value = (Int32)this.processor.GetProgramCounter();
+            this.RegisterFile[0, length+1].Value = "car";
             this.RegisterFile[1, length+1].Value = this.processor.GetControlAddressRegister();
-            this.RegisterFile[1, length+2].Value = this.processor.GetNzcv();
-            this.UpdateMemoryDisplays();
+            this.RegisterFile[0, length+2].Value = "nzcv";
+            this.RegisterFile[1, length+2].Value = this.processor.GetStatusRegister();           
         }
 
         public void SetupRegisterFile()
         {
             var registers = this.processor.GetRegisters();
             this.RegisterFile.ColumnCount = 2;
-            for (var i = 0; i < registers.Length; i++)
-            {
-                Object[] row =
-                {
-                    String.Concat(RegisterPrefix, i), 
-                    registers[i]
-                };
-                this.RegisterFile.Rows.Add(row);
-            }
+            this.RegisterFile.RowCount = this.processor.GetRegisters().Length + 3;
+        }
 
-            this.RegisterFile.Rows.Add("pc", this.processor.GetProgramCounter());
-            this.RegisterFile.Rows.Add("car", this.processor.GetControlAddressRegister());
-            this.RegisterFile.Rows.Add("nzcv", this.processor.GetNzcv());
+        private void SetupToolBar()
+        {
+            //this.ToolFontType.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
+            this.ToolFontSize.Items.AddRange(new Object[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 });
+            this.ToolFontSize.SelectedItem = 8;
+        }
+
+        private void UpdateToolBar()
+        {
+            this.EditorBox.SelectAll();
+            this.EditorBox.SelectionFont = new Font("Arial", Single.Parse(this.ToolFontSize.Text)); 
+            this.EditorBox.DeselectAll();
         }
 
         private void SetupEditorBoxText()
@@ -108,12 +116,13 @@ namespace VProcessor.Gui
 
             this.CurrentCommandTextBox.Text = carM.ToUpper();
             this.FlashMemoryBox.Text = ConvertMemoryToString(this.processor.GetUserMemory());
+            var colour = this.EditorBox.BackColor;
             for(var i = 0; i < this.EditorBox.Lines.Length; i++)
             {
                 var charIndex = this.FlashMemoryBox.GetFirstCharIndexFromLine(i);
                 var current = this.FlashMemoryBox.Lines[i];
                 this.FlashMemoryBox.Select(charIndex, current.Length);
-                this.FlashMemoryBox.SelectionBackColor = (i != pc) ? this.EditorBox.BackColor : Color.PaleVioletRed;
+                this.FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : colour;
             }            
         }
 
@@ -144,6 +153,7 @@ namespace VProcessor.Gui
         {
             this.UpdateRegisterFile();
             this.UpdateMemoryDisplays();
+            this.UpdateToolBar();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -173,6 +183,21 @@ namespace VProcessor.Gui
         private void assemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.flashFile.SetMode(SFile.Assembly);
+        }
+
+        private void ToolFontSize_Click(object sender, EventArgs e)
+        {
+            this.Update();
+        }
+
+        private void TickButton_Click(object sender, EventArgs e)
+        {
+            var count = 0;
+            try { count = Int32.Parse(this.TickCounter.Text); }
+            catch (Exception ex) { Logger.Instance().Log("TickCounter (TextBox): " + ex.ToString()); }
+            for (int i = 0; i < count; i++)
+                this.processor.Tick();
+            this.Update();
         }
     }
 }

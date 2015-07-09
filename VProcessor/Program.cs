@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using VProcessor.Gui;
+using VProcessor.Tools;
 
 namespace VProcessor
 {
@@ -14,7 +15,14 @@ namespace VProcessor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new EditorForm());
+            try
+            {
+                Application.Run(new EditorForm());
+            }
+            catch(Exception ex)
+            {
+                Logger.Instance().Log(ex.ToString());
+            }            
         }
     }
 }

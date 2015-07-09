@@ -33,17 +33,30 @@ namespace VProcessor.Software.Assembly
             var parts = (String[])table["Code"];
             var type = (Int32)table["Type"];
 
-            array[0] |= (UInt32)(Opcode.GetCodeAddress(parts[0].ToUpper()) << 16);
+            var address = Opcode.GetCodeAddress(parts[0].ToUpper());
+            
             for (var i = 1; i <= 3 - type; i++)
                 array[0] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
 
             var lastElement = parts.Length - 1;
-            if (Regex.Match(parts[lastElement], RegisterStem).Success)
+            if (Regex.Match(parts[lastElement], RegisterStem).Success && (stem & 4) == 4)
+            {
                 array[0] |= GetRegisterCode(parts[lastElement]);
-            if (Regex.Match(parts[lastElement], ConstNumberStem).Success)
+                if ((stem & 2) == 2)
+                    address += 3;
+            }
+            else if (Regex.Match(parts[lastElement], ConstNumberStem).Success && (stem & 1) == 1)
+            {
                 array[0] |= GetConstantNumberCode(parts[lastElement]);
-            if (Regex.Match(parts[lastElement], FullNumberStem).Success)
-                array[1] |= (UInt32)GetFullNumberCode(parts[lastElement]);
+                if ((stem & 2) == 2)
+                    address += 3;
+                if ((stem & 4) == 4)
+                    address += 1;
+            }
+            else if (Regex.Match(parts[lastElement], FullNumberStem).Success && (stem & 2) == 2)
+                array[1] |= (UInt32)GetFullNumberCode(parts[lastElement]);             
+
+            array[0] |= (UInt32)(address << 16);
 
             return array;
         }

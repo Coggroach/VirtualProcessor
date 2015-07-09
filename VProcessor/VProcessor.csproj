@@ -66,6 +66,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\BitHelper.cs" />
+    <Compile Include="Tools\Logger.cs" />
     <Compile Include="Tools\Settings.cs" />
     <EmbeddedResource Include="Gui\EditorForm.resx">
       <DependentUpon>EditorForm.cs</DependentUpon>

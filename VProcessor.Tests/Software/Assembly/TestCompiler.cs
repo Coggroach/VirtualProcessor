@@ -97,7 +97,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2_SingleElement()
         {
             const String input = "MOV r1, #1";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("MOV") << 16) | 0x0101;
+            var theoOutput = (UInt32)((Opcode.GetCodeAddress("MOV") + 1) << 16) | 0x0101;
 
             var pracOutput = CompilerHelper.Convert(input);
 
@@ -108,7 +108,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2_ConstantTooLarge()
         {
             const String input = "MOV r1, #21";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("MOV") << 16) | 0x0105;
+            var theoOutput = (UInt32)((Opcode.GetCodeAddress("MOV") + 1) << 16) | 0x0105;
 
             var pracOutput = CompilerHelper.Convert(input);
 
@@ -131,6 +131,23 @@ namespace VProcessor.Tests.Software.Assembly
             Assert.AreEqual(length, testMemory.GetLength());
             for (var i = 0; i < length; i++)
                 Assert.AreEqual(expectedMemory.GetMemory(i), testMemory.GetMemory(i));            
+        }
+
+        [TestMethod]
+        public void Test_Mov_Registers()
+        {
+            const Int32 length = 3;
+
+            var compiler = new Compiler();
+
+            var file = new SFile("Software\\TempAssembly.txt", SFile.Assembly);
+
+            file.SetString("MOV r0, r2");
+            file.Save();
+            file.Load();
+
+            var memory = compiler.Compile32(file, length);
+            Assert.AreEqual((UInt32) 0x000B0002, memory.GetMemory(0));
         }
     }
 }

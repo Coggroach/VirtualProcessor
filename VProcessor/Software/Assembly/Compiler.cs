@@ -46,28 +46,22 @@ namespace VProcessor.Software.Assembly
 
             for (var i = 0; i < memory.GetLength(); i++, index++)
             {
-                var input = (i < lines.Length) ? lines[index] : "";
-                if (!String.IsNullOrWhiteSpace(input))
+                try
                 {
-                    try
+                    UInt32[] array = ParseValue32(lines[index], mode);
+                    for (var j = 0; j < array.Length; j++)
+                        memory.SetMemory(i + j, array[j]);
+                    i += array.Length - 1;
+                }
+                catch (Exception ex)
+                {
+                    if (ex is FormatException || ex is IndexOutOfRangeException)
                     {
-                        UInt32[] array = ParseValue32(input, mode);
-                        for (var j = 0; j < array.Length; j++)
-                            memory.SetMemory(i, array[j]);
-                        i += array.Length - 1;
+                        memory.SetMemory(i, 0);
+                        continue;
                     }
-                    catch (Exception ex)
-                    {
-                        if (ex is FormatException || ex is IndexOutOfRangeException)
-                        {
-                            memory.SetMemory(i, 0);
-                            continue;
-                        }
-                        throw;
-                    }  
-                }                    
-                else
-                    memory.SetMemory(i, 0);
+                    throw;
+                }  
             }
             return memory;
         }
