@@ -76,8 +76,9 @@ namespace VProcessor.Hardware
         public void FunctionUnit(Byte code, Byte destination = 0, Byte load = 0, Boolean useConst = false)
         {
             var a = this.registers[this.channels[0]];
-            var b = useConst ? this.constIn : this.registers[this.channels[1]];            
-            var f = this.FunctionUnit(code, a, b);
+            var b = useConst ? this.constIn : this.registers[this.channels[1]];
+            var d = this.registers[destination];
+            var f = this.FunctionUnit(code, d, a, b);
 
             if (load != 1) return;
             this.registers[destination] = f;
@@ -109,17 +110,22 @@ namespace VProcessor.Hardware
             }
         }
 
-        private UInt32 FunctionUnit(Byte code, UInt32 a, UInt32 b)
+        private UInt32 FunctionUnit(Byte code, UInt32 d, UInt32 a, UInt32 b)
         {
             UInt32 result = 0;
             switch (code)
             {
+                //Data Movement
                 case Opcode.LDR:
                     result = a;
                     break;
                 case Opcode.LDRC:
                     result = b;
                     break;
+                case Opcode.MOV:
+                    result = b;
+                    break;
+
                 //Arithmetic
                 case Opcode.INC:
                     result = this.RippleAdder(a, 0, 1);
@@ -187,10 +193,10 @@ namespace VProcessor.Hardware
 
                 //Comparisons
                 case Opcode.CMP:
-                    result = this.RippleAdder(a, ~b, 1);
+                    result = this.RippleAdder(d, ~b, 1);
                     break;
                 case Opcode.CMN:
-                    result = this.RippleAdder(a, b);
+                    result = this.RippleAdder(d, b);
                     break;
                 case Opcode.TEQ:
                     result = a ^ b;

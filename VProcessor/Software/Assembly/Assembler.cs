@@ -10,7 +10,7 @@ using VProcessor.Hardware;
 
 namespace VProcessor.Software.Assembly
 {
-    public class Assembler : IAssembler
+    public class Assembler : IAssembler, IDisposable
     {
         private const String GeneralRoot = @"^[\w][\w]+[,][rR][\d]+[,][rR][\d]+[,]";
         private const String DataRoot = @"^[\w][\w]+[,][rR][\d]+[,]";
@@ -23,7 +23,7 @@ namespace VProcessor.Software.Assembly
         private Hashtable BranchLookup;
         private Hashtable BranchRegistry;
         private Int32 AssemblyLine;
-        private Int32 MachineLine;
+        private Int32 MachineLine;        
 
         public Assembler()
         {
@@ -35,7 +35,7 @@ namespace VProcessor.Software.Assembly
 
         public Memory64 Compile64(SFile file, Int32 size)
         {
-            var lines = file.GetString().Split(';');
+            var lines = file.GetString().Split(SFile.Delimiter);
             var memory = new Memory64(size);
             var mode = file.GetMode();
 
@@ -63,7 +63,6 @@ namespace VProcessor.Software.Assembly
             var lines = file.GetString().Split(SFile.Delimiter);
             var memory = new Memory32(size);
             var mode = file.GetMode();
-            this.AssemblyLine = 0;            
 
             for (this.MachineLine = 0, this.AssemblyLine = 0; 
                 this.MachineLine < memory.GetLength(); 
@@ -91,12 +90,25 @@ namespace VProcessor.Software.Assembly
                     throw;
                 }
             }
+
+            this.LinkBranches();
+            this.PostLinkBranches(memory);
+            this.Dispose();
+
             return memory;
         }
 
         public UInt32[] Convert(String s)
         {
-            var table = CreatePropertyTable(s);
+            var line = CleanUp(s);
+            var table = CreatePropertyTable(line);
+
+            if(table == null)
+            {
+                this.RegisterBranch(line);
+                return null;
+            }
+
             var stem = (Int32)table["Stem"];
 
             var array = new UInt32[
@@ -108,15 +120,12 @@ namespace VProcessor.Software.Assembly
             var type = (Int32)table["Type"];
 
             if (type == 3)
-                this.LinkBranch(parts[1]);
-
-            var upperCode = parts[0].ToUpper();
-
-            if (!Opcode.IsValidCode(upperCode))
             {
-                this.RegisterBranch(upperCode);
-                return null;
+                this.LinkBranch(parts[1]);
+                array[0] |= 1;
             }
+                
+            var upperCode = parts[0].ToUpper();
             var address = Opcode.GetCodeAddress(upperCode);
 
             for (var i = 1; i <= 3 - type; i++)
@@ -172,33 +181,62 @@ namespace VProcessor.Software.Assembly
 
         private void LinkBranches()
         {
-            foreach(Hashtable lookup in this.BranchLookup)
+            foreach(DictionaryEntry dictionary in this.BranchLookup)
             {
+                var lookup = (Hashtable)dictionary.Value;
                 lookup.Add("BranchRegistryKey", this.BranchRegistry.ContainsKey(lookup["BranchKey"]));                    
             }
         }
 
-        private void PostLinkBranches()
+        private void PostLinkBranches(Memory32 memory)
         {
-            foreach (Hashtable lookup in this.BranchLookup)
+            foreach (DictionaryEntry dictionary in this.BranchLookup)
             {
-                if (!(Boolean)(lookup["BranchRegistryKey"]))
-                    ; //Set Memory at MachineLines to 1
+                var lookup = (Hashtable) dictionary.Value;
+                if ((Boolean)(lookup["BranchRegistryKey"]))
+                {
+                    var regLine = (Int32) ((Hashtable) this.BranchRegistry[lookup["BranchKey"]])["MachineLine"];
+                    var linkLine = (Int32) lookup["LinkMachineLine"];
+
+                    var difference = Subtract(regLine, linkLine);
+                    var currentValue = memory.GetMemory(linkLine);
+
+                    currentValue &= 0xFFFF0000;
+                    currentValue |= difference;
+
+                    memory.SetMemory(linkLine, currentValue);
+                } 
+                
             }
         }
 
-        private static Hashtable CreatePropertyTable(String s)
+        private static UInt32 Subtract(Int32 i, Int32 j)
+        {
+            var result = i - j;
+            UInt32 extract = 0;
+            if (result < 0)
+                extract =  (~(UInt32)Math.Abs(result) + 1);
+            else
+                extract = (UInt32) result;
+
+            return extract & 0xFFFF;
+        }
+
+        private static Hashtable CreatePropertyTable(String line)
         {
             var table = new Hashtable();
-            var line = CleanUp(s);
             var parts = line.Split(',');
+            var upperCode = parts[0].ToUpper();
 
-            var type = Opcode.GetCodeType(parts[0].ToUpper());
+            if(!Opcode.IsValidCode(parts[0].ToUpper()))
+                return null;
+
+            var type = Opcode.GetCodeType(upperCode);
 
             table.Add("Code", parts);
             table.Add("Type", (type & 0xF0) >> 4);
             table.Add("Stem", type & 0x0F);
-            table.Add("Contains", GetStemSymbols(line).Count);
+            table.Add("Contains", GetStemSymbols(line).Count);            
 
             return table;
         }
@@ -299,6 +337,14 @@ namespace VProcessor.Software.Assembly
                 default:
                     return new UInt32[] { 0 };
             }
+        }
+
+        public void Dispose()
+        {
+            this.BranchLookup.Clear();
+            this.BranchRegistry.Clear();
+            this.MachineLine = 0;
+            this.AssemblyLine = 0;
         }
     }
 }

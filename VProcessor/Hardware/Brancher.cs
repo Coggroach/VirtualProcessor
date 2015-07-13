@@ -4,10 +4,20 @@ namespace VProcessor.Hardware
 {
     public class Brancher
     {
-        public StatusRegister Nzcv;      
+        private StatusRegister Nzcv;      
         public Brancher()
         {
             this.Nzcv = new StatusRegister();
+        }
+
+        public StatusRegister GetNzcv()
+        {
+            return this.Nzcv;
+        }
+
+        public void SetNzcv(StatusRegister reg)
+        {
+            this.Nzcv = new StatusRegister(reg);
         }
        
         public Boolean Branch(UInt32 code)

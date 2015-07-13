@@ -28,7 +28,7 @@ namespace VProcessor.Hardware
 
         public Byte GetStatusRegister()
         {
-            return this.branchControl.Nzcv.Nzcv;
+            return this.branchControl.GetNzcv().Nzcv;
         }
 
         public UInt32 GetProgramCounter()
@@ -68,7 +68,7 @@ namespace VProcessor.Hardware
             this.controlMemory.Reset();
             this.datapath.Reset();
             this.instructionReg = this.flashMemory.GetMemory();
-            this.branchControl.Nzcv = new StatusRegister();
+            this.branchControl.SetNzcv(new StatusRegister());
         }
 
         public Boolean HasTerminated()
@@ -111,9 +111,6 @@ namespace VProcessor.Hardware
             if (Din && Lr == 1) this.datapath.SetRegister(dest, (UInt32)this.flashMemory.GetMemory());
             else this.datapath.FunctionUnit(fs, dest, Lr, Cin);
 
-            //Update Branch
-            if (Bu == 1)
-                this.branchControl.Nzcv = this.datapath.GetStatusRegister();
             
             //Set up CAR
             var muxCar = (Cion & 2) == 2 ? opcode : na;
@@ -133,7 +130,11 @@ namespace VProcessor.Hardware
                 this.flashMemory += extract;
             }
             else if ((Pc & 1) == 1)
-                this.flashMemory++;            
+                this.flashMemory++;
+
+            //Update Branch
+            if (Bu == 1)
+                this.branchControl.SetNzcv(this.datapath.GetStatusRegister());
 
             //Set up IR
             if (IL == 1) this.instructionReg = this.flashMemory.GetMemory();

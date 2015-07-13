@@ -15,6 +15,16 @@ namespace VProcessor.Hardware
             this.Nzcv = 0;
         }
 
+        public StatusRegister(Byte b)
+        {
+            this.Nzcv = b;
+        }
+
+        public StatusRegister(StatusRegister reg)
+        {
+            this.Nzcv = reg.Nzcv;
+        }
+
         public Boolean BitMatch(Byte bitPos, Byte matchBit)
         {
             return ((this.Nzcv >> bitPos) & 1) == matchBit;

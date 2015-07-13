@@ -6,7 +6,7 @@ using VProcessor.Software.Assembly;
 namespace VProcessor.Tests.Software.Assembly
 {
     [TestClass]
-    public class TestCompiler
+    public class TestAssembler
     {
         [TestMethod]
         public void Test_ValidInput_Type1()
@@ -148,6 +148,23 @@ namespace VProcessor.Tests.Software.Assembly
 
             var memory = compiler.Compile32(file, length);
             Assert.AreEqual((UInt32) 0x000B0002, memory.GetMemory(0));
+        }
+
+        [TestMethod]
+        public void Test_BranchRegistering()
+        {
+            const Int32 length = 12;
+
+            var compiler = new Assembler();
+
+            var file = new SFile("Software\\TempAssembly.txt", SFile.Assembly);
+
+            file.SetString("CMP r0, #1; BEQ branch; LDR r0, =14; branch; ADD r0, r0, #1");
+            file.Save();
+            file.Load();
+
+            var memory = compiler.Compile32(file, length);
+            
         }
     }
 }
