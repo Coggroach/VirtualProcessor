@@ -44,6 +44,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Hardware\DDRMemoryController.cs" />
+    <Compile Include="Hardware\DDRMemoryBus.cs" />
+    <Compile Include="Hardware\IInformable.cs" />
+    <Compile Include="Hardware\Machine.cs" />
+    <Compile Include="Hardware\MemoryConnector.cs" />
     <Compile Include="Hardware\Memory\Memory.cs" />
     <Compile Include="Hardware\Memory\Memory32.cs" />
     <Compile Include="Hardware\Memory\Memory64.cs" />

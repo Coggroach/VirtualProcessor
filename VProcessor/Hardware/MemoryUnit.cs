@@ -10,8 +10,8 @@ namespace VProcessor.Hardware
     public class MemoryUnit<T>
     {
         private UInt32 register;
-        private Memory<T> memory;
-        public MemoryUnit(Memory<T> m)
+        private IMemory<T> memory;
+        public MemoryUnit(IMemory<T> m)
         {
             this.Init();
             this.memory = m;
@@ -27,7 +27,7 @@ namespace VProcessor.Hardware
             this.Init();            
         }
       
-        public void SetMemory(Memory<T> m)
+        public void SetMemory(IMemory<T> m)
         {
             this.memory = m;
         }
@@ -37,7 +37,7 @@ namespace VProcessor.Hardware
             return this.memory.GetMemory(this.register);
         }
 
-        public Memory<T> GetMemoryChunk()
+        public IMemory<T> GetMemoryChunk()
         {
             return this.memory;
         }

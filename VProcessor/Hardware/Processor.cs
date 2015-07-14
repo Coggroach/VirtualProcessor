@@ -5,13 +5,15 @@ namespace VProcessor.Hardware
     using VProcessor.Tools;
     using VProcessor.Software.Assembly;
      
-    public class Processor
+    public class Processor : IInformable
     {
         private Datapath datapath;
         private MemoryUnit<UInt64> controlMemory;
         private MemoryUnit<UInt32> flashMemory;
         private Brancher branchControl;
-        private UInt64 instructionReg;
+        private UInt32 instructionReg;
+        private MemoryConnector connector;
+
         public Processor(Memory64 control, Memory32 flash)
         {
             this.datapath = new Datapath();
@@ -19,6 +21,22 @@ namespace VProcessor.Hardware
             this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.branchControl = new Brancher();
             this.instructionReg = this.flashMemory.GetMemory();
+            this.connector = new MemoryConnector();
+        }
+
+        public MemoryConnector GetMemoryConnector()
+        {
+            return this.connector;
+        }
+
+        private void SetMemoryCommand(Boolean Min, Boolean Mout)
+        {
+            if (Min && !Mout)
+                this.connector.Command = MemoryConnector.Fetch;
+            else if (!Min && Mout)
+                this.connector.Command = MemoryConnector.Store;
+            else
+                this.connector.Command = MemoryConnector.Idle;
         }
 
         public UInt32[] GetRegisters()
@@ -46,12 +64,12 @@ namespace VProcessor.Hardware
             return this.controlMemory;
         }
 
-        public UInt64 GetInstructionRegister()
+        public UInt32 GetInstructionRegister()
         {
             return this.instructionReg;
         }
 
-        public MemoryUnit<UInt32> GetUserMemory()
+        public MemoryUnit<UInt32> GetFlashMemory()
         {
             return this.flashMemory;
         }
@@ -75,7 +93,7 @@ namespace VProcessor.Hardware
         {
             return this.instructionReg == 0;
         }
-
+    
         public void SetInstructionRegister(UInt32 i)
         {
             this.instructionReg = i;
@@ -92,35 +110,56 @@ namespace VProcessor.Hardware
 
             //Split Control into Parts
             var Lr = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 3));            // 3
-            var Pc = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 4, 3));                 // 5:4
-            var Cion = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 6, 3));             // 7:6
-            var Bx = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 8, 0xF) + Opcode.B_BASE);      // 11:8
+            var Pc = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 4, 3));         // 5:4
+            var Cion = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 6, 3));       // 7:6
+
+            var Cmem = BitHelper.BitMatch(this.controlMemory.GetMemory(), 8, 1);
+            var Min = BitHelper.BitMatch(this.controlMemory.GetMemory(), 9, 1);
+            var Mout = BitHelper.BitMatch(this.controlMemory.GetMemory(), 10, 1);
+           
             var IL = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 12));
             var Cin = BitHelper.BitMatch(this.controlMemory.GetMemory(), 13, 1);
             var Din = BitHelper.BitMatch(this.controlMemory.GetMemory(), 14, 1);
             var Bu = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15));
 
-            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 16, 0x1F));
+            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 16, 0x3F)); 
 
-            var na = (UInt32)BitHelper.BitExtract(this.controlMemory.GetMemory(), 48, 0xFFFF);            // 63:48   
+            var na = (UInt32)BitHelper.BitExtract(this.controlMemory.GetMemory(), 48, 0xFFFF); // 63:48   
             
             //Set up Datapath
             this.datapath.SetChannel(0, srcA);
             this.datapath.SetChannel(1, srcB);
             this.datapath.SetConstIn(cnst);
+
+            //Move Data in Datapath
             if (Din && Lr == 1) this.datapath.SetRegister(dest, (UInt32)this.flashMemory.GetMemory());
+            else if (this.connector.Command == MemoryConnector.Received && Lr == 1) this.datapath.SetRegister(dest, this.connector.Value);
             else this.datapath.FunctionUnit(fs, dest, Lr, Cin);
 
+            if (this.connector.Command == MemoryConnector.Store)
+                this.connector.Value = this.datapath.GetRegister(0);                
             
+            this.connector.Address = (Int32)this.datapath.GetRegister(1);
+            this.SetMemoryCommand(Min, Mout);
+
             //Set up CAR
             var muxCar = (Cion & 2) == 2 ? opcode : na;
-            if((Cion & 1) == 0) 
+            if (Cmem)
+            {
+                if (this.connector.Command == MemoryConnector.Received)
+                {
+                    this.controlMemory++;
+                    this.connector.Flush();
+                }
+                //else wait
+            }
+            else if ((Cion & 1) == 0)
                 this.controlMemory.SetRegister(muxCar);
             else
                 this.controlMemory++;
 
             //Set up PC
-            if ((Pc & 2) == 2 && this.branchControl.Branch(Bx))
+            if ((Pc & 2) == 2 && this.branchControl.Branch(fs))
             {
                 var extract = (UInt32) BitHelper.BitExtract(this.instructionReg, 0, 0xFFFF);
 

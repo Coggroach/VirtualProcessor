@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Hardware
 {
-    public class Memory32 : Memory<UInt32>
+    public class Memory32 : IMemory<UInt32>
     {
         private readonly UInt32[] memory;       
 

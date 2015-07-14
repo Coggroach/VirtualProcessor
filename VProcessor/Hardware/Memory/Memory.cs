@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Hardware
 {
-    public interface Memory<T>
+    public interface IMemory<T>
     {
         void Reset();
         T GetMemory(Int32 index);

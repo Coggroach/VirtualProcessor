@@ -1,0 +1,57 @@
+ControlMemoryCode
+-----------------
+
+Na		Next Address in Car
+X		
+Fs5		Branch Code/
+Fs4		Function Code
+
+Fs3		
+Fs2		
+Fs1		
+Fs0		
+
+Bu		Update Branch Flags
+Din		Data In (Has Priority over Min)
+Cin		Constant In
+Il		Store Instruction
+
+Cir		Other Interrupt
+Mout 	Memory Out
+Min		Memory In
+Cmem	Memory Interrupt (Wait) (Has Priority over Ci and Con)
+
+Con		0 -> Load Na  1 -> Load Opcode
+Ci		0 -> Load Car 1 -> Increment Car
+Pl		Load PC
+Pi		Increment PC
+
+Lr		Load Register
+Td		Use Temp as Destination
+Ta		Use Temp in Channel A
+Tb		Use Temp in Channel B
+
+FlashMemoryCode
+---------------
+
+ControlMemoryAddress (16 Bit)
+Extra Register Slot	 (4 Bit)
+Destination Register (4 Bit)
+Source A Register	 (4 Bit)
+Source B Register    (4 Bit)
+
+
+Opcodes for Assembler
+---------------------
+
+Type 1: ADD rx, ry, C
+Type 2: LDR rx, C
+Type 3: BEQ C
+            
+001 - 1 : K   - 1
+010 - 2 : F   - 3
+011 - 3 : FK  - 4
+100 - 4 : R   - 1
+101 - 5 : RK  - 2
+110 - 6 : RF  - 4
+111 - 7 : RFK - 5

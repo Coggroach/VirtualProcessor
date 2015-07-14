@@ -19,6 +19,7 @@ namespace VProcessor.Software.Assembly
         private const String RegisterStem = @"[rR][\d]+";
         private const String ConstNumberStem = @"[#][\d]+";
         private const String FullNumberStem = @"[=][\d]+";
+        private const String AddressStem = @"[\[][\w,#]+[\]]";
 
         private Hashtable BranchLookup;
         private Hashtable BranchRegistry;
@@ -308,7 +309,7 @@ namespace VProcessor.Software.Assembly
 
         private static String CleanUp(String s)
         {
-            return new Regex(@"[ ]{2,}", RegexOptions.None).Replace(s.Replace("\t", " "), @" ").Trim().Replace(" ", ",").Replace(",,,", ",").Replace(",,", ",");
+            return new Regex(@"[ ]{2,}", RegexOptions.None).Replace(s.Replace("\t", " "), @" ").Trim().Replace(" ", ",").Replace("[", "").Replace("]", "").Replace(",,,", ",").Replace(",,", ",");
         }
 
         private static UInt64 ParseValue64(String s, Int32 mode)

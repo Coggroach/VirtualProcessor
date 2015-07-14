@@ -50,8 +50,8 @@
             this.CurrentCommandTextBox = new System.Windows.Forms.TextBox();
             this.FlashMemoryBox = new System.Windows.Forms.RichTextBox();
             this.ToolBar = new System.Windows.Forms.ToolStrip();
-            this.ToolFontSize = new System.Windows.Forms.ToolStripComboBox();
             this.TickButton = new System.Windows.Forms.ToolStripButton();
+            this.ToolFontSize = new System.Windows.Forms.ToolStripComboBox();
             this.TickCounter = new System.Windows.Forms.ToolStripTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
@@ -121,7 +121,7 @@
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Text = "Assemble";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // restartToolStripMenuItem
@@ -174,6 +174,9 @@
             // 
             // hexadecimalToolStripMenuItem
             // 
+            this.hexadecimalToolStripMenuItem.Checked = true;
+            this.hexadecimalToolStripMenuItem.CheckOnClick = true;
+            this.hexadecimalToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.hexadecimalToolStripMenuItem.Name = "hexadecimalToolStripMenuItem";
             this.hexadecimalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.hexadecimalToolStripMenuItem.Text = "Hexadecimal";
@@ -181,6 +184,7 @@
             // 
             // decimalToolStripMenuItem
             // 
+            this.decimalToolStripMenuItem.CheckOnClick = true;
             this.decimalToolStripMenuItem.Name = "decimalToolStripMenuItem";
             this.decimalToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.decimalToolStripMenuItem.Text = "Decimal";
@@ -188,6 +192,7 @@
             // 
             // assemblyToolStripMenuItem
             // 
+            this.assemblyToolStripMenuItem.CheckOnClick = true;
             this.assemblyToolStripMenuItem.Name = "assemblyToolStripMenuItem";
             this.assemblyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assemblyToolStripMenuItem.Text = "Assembly";
@@ -242,14 +247,6 @@
             this.ToolBar.TabIndex = 6;
             this.ToolBar.Text = "toolStrip1";
             // 
-            // ToolFontSize
-            // 
-            this.ToolFontSize.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.ToolFontSize.Name = "ToolFontSize";
-            this.ToolFontSize.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.ToolFontSize.Size = new System.Drawing.Size(75, 25);
-            this.ToolFontSize.Click += new System.EventHandler(this.ToolFontSize_Click);
-            // 
             // TickButton
             // 
             this.TickButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -257,14 +254,24 @@
             this.TickButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.TickButton.Name = "TickButton";
             this.TickButton.Size = new System.Drawing.Size(23, 22);
-            this.TickButton.Text = "toolStripButton1";
+            this.TickButton.Text = "Tick";
             this.TickButton.Click += new System.EventHandler(this.TickButton_Click);
+            // 
+            // ToolFontSize
+            // 
+            this.ToolFontSize.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.ToolFontSize.Name = "ToolFontSize";
+            this.ToolFontSize.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ToolFontSize.Size = new System.Drawing.Size(75, 25);
+            this.ToolFontSize.Text = "12";
+            this.ToolFontSize.Click += new System.EventHandler(this.ToolFontSize_Click);
             // 
             // TickCounter
             // 
             this.TickCounter.Name = "TickCounter";
             this.TickCounter.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.TickCounter.Size = new System.Drawing.Size(50, 25);
+            this.TickCounter.Text = "1";
             // 
             // EditorForm
             // 

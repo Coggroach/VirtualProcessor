@@ -12,5 +12,8 @@ namespace VProcessor.Tools
         public const Int32 FlashMemorySize = 32;
         public const String ControlMemoryLocation = "Software\\ControlMemory.txt";
         public const String FlashMemoryLocation = "Software\\UserMemory.txt";
+        public const Int32 RandomAccessMemorySize = 128;
+        public const Int32 RandomAccessMemorySpeed = 4;
+        public const Int32 RandomAccessMemorySpread = 2;
     }
 }

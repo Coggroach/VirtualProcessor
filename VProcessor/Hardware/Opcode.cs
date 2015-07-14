@@ -7,9 +7,10 @@ namespace VProcessor.Hardware
     public class Opcode
     {
         //http://simplemachines.it/doc/arm_inst.pdf
-        //General Flags
+        //Data Movement Flags
         public const Int32 LDR = 0;
-        public const Int32 LDRC = 0xD;
+        public const Int32 LDRC = 0xD;        
+        public const Int32 STR = 0xE;
 
         //Arithmetic Flags
         public const Int32 INC = 1;
@@ -50,22 +51,21 @@ namespace VProcessor.Hardware
         public const Int32 CMP = 0x1F;
         
         //Branch Flags
-        public const Int32 B   = 0x21;
-        public const Int32 BEQ = 0x22;
-        public const Int32 BNE = 0x23;
-        public const Int32 BCS = 0x24;
-        public const Int32 BCC = 0x25;
-        public const Int32 BNS = 0x26;
-        public const Int32 BNC = 0x27;
-        public const Int32 BVS = 0x28;
-        public const Int32 BVC = 0x29;
-        public const Int32 BHI = 0x2A;
-        public const Int32 BLS = 0x2B;
-        public const Int32 BGE = 0x2C;
-        public const Int32 BLT = 0x2D;
-        public const Int32 BGT = 0x2E;
-        public const Int32 BLE = 0x2F;
-        public const Int32 B_BASE = B;
+        public const Int32 B   = 0x0;
+        public const Int32 BEQ = 0x1;
+        public const Int32 BNE = 0x2;
+        public const Int32 BCS = 0x3;
+        public const Int32 BCC = 0x4;
+        public const Int32 BNS = 0x5;
+        public const Int32 BNC = 0x6;
+        public const Int32 BVS = 0x7;
+        public const Int32 BVC = 0x8;
+        public const Int32 BHI = 0x9;
+        public const Int32 BLS = 0xA;
+        public const Int32 BGE = 0xB;
+        public const Int32 BLT = 0xC;
+        public const Int32 BGT = 0xD;
+        public const Int32 BLE = 0xE;
 
         private static readonly Hashtable CodeTable;
         private static Int32 CurrentAddress;
@@ -74,6 +74,7 @@ namespace VProcessor.Hardware
         private const Int32 K = 1;
         private const Int32 F = 3;
         private const Int32 R = 1;
+        private const Int32 A = 3;
         
         private const Int32 FirstAddress = 1;
 
@@ -169,55 +170,58 @@ namespace VProcessor.Hardware
             //100 - 4 : R   - 1
             //101 - 5 : RK  - 2
             //110 - 6 : RF  - 4
-            //111 - 7 : RFK - 5
+            //111 - 7 : RFK - 5    
                         
-            Add("LDR", LDR, 1, 0x27);
-            Add("ADD", ADD, 6, 0x15);
-            Add("INC", INC, 8, 0x24);
-            Add("ADDI", ADDI, 9, 0x15);            
-            Add("MOV", MOV, 11, 0x25);
-            Add("MNV", MNV, 13, 0x25);
-            Add("CMP", CMP, 15, 0x25);
-            Add("CMN", CMN, 17, 0x25);
-            Add("TST", TST, 19, 0x25);
-            Add("TEQ", TEQ, 21, 0x25);
+            Add("LDR", LDR, 0x27);
+            Add("ADD", ADD, 0x15);
+            Add("INC", INC, 0x24);
+            Add("ADDI", ADDI, 0x15);            
+            Add("MOV", MOV, 0x25);
+            Add("MNV", MNV, 0x25);
+            Add("CMP", CMP, 0x25);
+            Add("CMN", CMN, 0x25);
+            Add("TST", TST, 0x25);
+            Add("TEQ", TEQ, 0x25);
 
-            Add("AND", AND, 23, 0x15);
-            Add("EOR", EOR, 25, 0x15);
-            Add("ORR", ORR, 27, 0x15);
-            Add("BIC", BIC, 29, 0x15);
+            Add("AND", AND, 0x15);
+            Add("EOR", EOR, 0x15);
+            Add("ORR", ORR, 0x15);
+            Add("BIC", BIC, 0x15);
 
-            Add("LSL", LSL, 31, 0x15);
-            Add("LSR", LSR, 33, 0x15);
-            Add("ROL", ROL, 35, 0x15);
-            Add("ROR", ROR, 37, 0x15);
+            Add("LSL", LSL, 0x15);
+            Add("LSR", LSR, 0x15);
+            Add("ROL", ROL, 0x15);
+            Add("ROR", ROR, 0x15);
 
-            Add("B", B, 39, 0x31);
-            Add("BEQ", BEQ, 40, 0x31);
-            Add("BNE", BNE, 41, 0x31);
-            Add("BCS", BCS, 42, 0x31);
-            Add("BCC", BCC, 43, 0x31);
-            Add("BNS", BNS, 44, 0x31);
-            Add("BNC", BNC, 45, 0x31);
-            Add("BVS", BVS, 46, 0x31);
-            Add("BVC", BVC, 47, 0x31);
-            Add("BHI", BHI, 48, 0x31);
-            Add("BLS", BLS, 49, 0x31);
-            Add("BGE", BGE, 50, 0x31);
-            Add("BLT", BLT, 51, 0x31);
-            Add("BGT", BGT, 52, 0x31);
-            Add("BLE", BLE, 53, 0x31);
+            Add("B", B, 0x31);
+            Add("BEQ", BEQ, 0x31);
+            Add("BNE", BNE, 0x31);
+            Add("BCS", BCS, 0x31);
+            Add("BCC", BCC, 0x31);
+            Add("BNS", BNS, 0x31);
+            Add("BNC", BNC, 0x31);
+            Add("BVS", BVS, 0x31);
+            Add("BVC", BVC, 0x31);
+            Add("BHI", BHI, 0x31);
+            Add("BLS", BLS, 0x31);
+            Add("BGE", BGE, 0x31);
+            Add("BLT", BLT, 0x31);
+            Add("BGT", BGT, 0x31);
+            Add("BLE", BLE, 0x31);
 
-            Add("MUL", MUL, 54, 0x15);
-            Add("MLA", MLA, 56, 0x15);
+            Add("MUL", MUL, 0x15);
+            Add("MLA", MLA, 0x15);
 
-            Add("ADC", ADC, 58, 0x15);
-            Add("SUBD", SUBD, 60, 0x15);
-            Add("SUB", SUB, 62, 0x15);
-            Add("SBC", SBC, 64, 0x15);
-            Add("DEC", DEC, 66, 0x24);
-            Add("RSB", RSB, 68, 0x15);
-            Add("RSC", RSC, 70, 0x15);
+            Add("ADC", ADC, 0x15);
+            Add("SUBD", SUBD, 0x15);
+            Add("SUB", SUB, 0x15);
+            Add("SBC", SBC, 0x15);
+            Add("DEC", DEC, 0x24);
+            Add("RSB", RSB, 0x15);
+            Add("RSC", RSC, 0x15);
+
+            Add("STR", STR, 0x15);
+            Add("LDRST", LDR, CurrentAddress + A, 0x15);
         }
     }
 }
