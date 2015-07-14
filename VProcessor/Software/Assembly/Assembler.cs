@@ -118,7 +118,7 @@ namespace VProcessor.Software.Assembly
             var upperCode = parts[0].ToUpper();
 
             var array = new UInt32[
-                (stem & 2) == 2 ? (Int32)table["Contains"] + 1 : 1];
+                ((stem & 2) == 2 || (type & 4) == 4 ) ? (Int32)table["Contains"] + 1 : 1];
             for (var i = 0; i < array.Length; i++)
                 array[i] = 0;
 

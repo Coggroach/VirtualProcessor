@@ -8,7 +8,8 @@ namespace VProcessor.Hardware
 {
     public class Memory64 : IMemory<UInt64>
     {
-        private readonly UInt64[] memory;       
+        private readonly UInt64[] memory;
+        private readonly Int32 mask;
 
         public Memory64(Int32 i)
         {
