@@ -132,14 +132,16 @@ namespace VProcessor.Hardware
             this.datapath.SetConstIn(cnst);
 
             //Move Data in Datapath
+            var dataOut = (UInt32) 0;
             if (Din && Lr == 1) this.datapath.SetRegister(dest, (UInt32)this.flashMemory.GetMemory());
             else if (this.connector.Command == MemoryConnector.Received && Lr == 1) this.datapath.SetRegister(dest, this.connector.Value);
-            else this.datapath.FunctionUnit(fs, dest, Lr, Cin);
+            else dataOut = this.datapath.FunctionUnit(fs, dest, Lr, Cin);
 
             if (this.connector.Command == MemoryConnector.Store)
-                this.connector.Value = this.datapath.GetRegister(0);                
+                this.connector.Value = dataOut;              
             
-            this.connector.Address = (Int32)this.datapath.GetRegister(1);
+            this.connector.Address = (Int32)this.datapath.GetRegister(0);
+            this.connector.Offset = (Int32)this.datapath.GetRegister(1);
             this.SetMemoryCommand(Min, Mout);
 
             //Set up CAR

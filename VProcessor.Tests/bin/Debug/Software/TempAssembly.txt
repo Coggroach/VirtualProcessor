@@ -1,1 +1,1 @@
-CMP r0, #1; BEQ branch; LDR r0, =14; branch; ADD r0, r0, #1
+STR r0, [r1, #1]

@@ -111,46 +111,55 @@ namespace VProcessor.Software.Assembly
             }
 
             var stem = (Int32)table["Stem"];
+            var parts = (String[])table["Code"];
+            var type = (Int32)table["Type"];
+            var lastElement = parts.Length - 1;
+            var index = 0;
+            var upperCode = parts[0].ToUpper();
 
             var array = new UInt32[
                 (stem & 2) == 2 ? (Int32)table["Contains"] + 1 : 1];
             for (var i = 0; i < array.Length; i++)
                 array[i] = 0;
 
-            var parts = (String[])table["Code"];
-            var type = (Int32)table["Type"];
-
+            if (Regex.Match(parts[lastElement], ConstNumberStem).Success && (type & 4) == 4)
+            {
+                array[index] = this.Convert("MOV r15," + parts[lastElement])[0];
+                parts[lastElement] = "r15";
+                index++;
+            }
+            
             if (type == 3)
             {
                 this.LinkBranch(parts[1]);
-                array[0] |= 1;
+                array[index] |= 1;
             }
                 
-            var upperCode = parts[0].ToUpper();
+            
             var address = Opcode.GetCodeAddress(upperCode);
 
-            for (var i = 1; i <= 3 - type; i++)
-                array[0] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
+            for (var i = 1; i <= 3 - (type & 3); i++)
+                array[index] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
 
-            var lastElement = parts.Length - 1;
+            
             if (Regex.Match(parts[lastElement], RegisterStem).Success && (stem & 4) == 4)
             {
-                array[0] |= GetRegisterCode(parts[lastElement]);
+                array[index] |= GetRegisterCode(parts[lastElement]);
                 if ((stem & 2) == 2)
                     address += 3;
             }
             else if (Regex.Match(parts[lastElement], ConstNumberStem).Success && (stem & 1) == 1)
             {
-                array[0] |= GetConstantNumberCode(parts[lastElement]);
+                array[index] |= GetConstantNumberCode(parts[lastElement]);
                 if ((stem & 2) == 2)
                     address += 3;
                 if ((stem & 4) == 4)
                     address += 1;
             }
             else if (Regex.Match(parts[lastElement], FullNumberStem).Success && (stem & 2) == 2)
-                array[1] |= (UInt32)GetFullNumberCode(parts[lastElement]);
+                array[index ^ 1] |= (UInt32)GetFullNumberCode(parts[lastElement]);
 
-            array[0] |= (UInt32)(address << 16);
+            array[index] |= (UInt32)(address << 16);
 
             return array;
         }

@@ -16,10 +16,11 @@ namespace VProcessor.Hardware
         public Int32 Address { get; set; }
         public UInt32 Value { get; set; }
         public Byte Command { get; set; }
+        public Int32 Offset { get; set; }
 
         public MemoryConnector(Int32 a, UInt32 v, Byte c)
         {
-            this.Set(a, v, c);
+            this.Set(a, v, c, 0);
         }
 
         public MemoryConnector()
@@ -29,14 +30,15 @@ namespace VProcessor.Hardware
 
         public void Flush()
         {
-            this.Set(0, 0, 0);
+            this.Set(0, 0, 0, 0);
         }
 
-        public void Set(Int32 a, UInt32 v, Byte c)
+        public void Set(Int32 a, UInt32 v, Byte c, Int32 o = 0)
         {
             this.Address = a;
             this.Value = v;
             this.Command = c;
+            this.Offset = o;
         }    
     }
 }

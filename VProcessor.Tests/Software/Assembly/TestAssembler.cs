@@ -166,5 +166,22 @@ namespace VProcessor.Tests.Software.Assembly
             var memory = compiler.Compile32(file, length);
             
         }
+
+        [TestMethod]
+        public void Test_Str_WithConstant()
+        {
+            const Int32 length = 12;
+
+            var compiler = new Assembler();
+
+            var file = new SFile("Software\\TempAssembly.txt", SFile.Assembly);
+
+            file.SetString("STR r0, [r1, #1]");
+            file.Save();
+            file.Load();
+
+            var memory = compiler.Compile32(file, length);
+            Assert.AreNotEqual(0, memory.GetMemory(0));
+        }
     }
 }

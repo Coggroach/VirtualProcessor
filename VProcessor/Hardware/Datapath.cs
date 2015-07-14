@@ -73,15 +73,16 @@ namespace VProcessor.Hardware
             return this.nzcv;
         }
                 
-        public void FunctionUnit(Byte code, Byte destination = 0, Byte load = 0, Boolean useConst = false)
+        public UInt32 FunctionUnit(Byte code, Byte destination = 0, Byte load = 0, Boolean useConst = false)
         {
-            var a = this.registers[this.channels[0]];
-            var b = useConst ? this.constIn : this.registers[this.channels[1]];
+            var a = this.GetRegister(0);
+            var b = useConst ? this.constIn : this.GetRegister(1);
             var d = this.registers[destination];
             var f = this.FunctionUnit(code, d, a, b);
 
-            if (load != 1) return;
-            this.registers[destination] = f;
+            if (load == 1) 
+                this.registers[destination] = f;
+            return f;
         }
 
         private UInt32 Shifter(UInt32 b, UInt32 direction, Boolean barrel = false)
@@ -125,6 +126,9 @@ namespace VProcessor.Hardware
                 case Opcode.MOV:
                     result = b;
                     break;
+                case Opcode.STR:
+                    result = d;
+                    break;                
 
                 //Arithmetic
                 case Opcode.INC:

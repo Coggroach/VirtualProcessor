@@ -48,7 +48,7 @@ namespace VProcessor.Hardware
         {
             if(this.cycle <= 0)
             {
-                this.connector.Value = this.controller.Read(this.connector.Address);
+                this.connector.Value = this.controller.Read(this.connector.Address + this.connector.Offset);
                 this.connector.Command = MemoryConnector.Received;
             }
         }
@@ -56,7 +56,7 @@ namespace VProcessor.Hardware
         private void Store()
         {
             if (this.cycle <= 0)
-                this.controller.Write(this.connector.Address, this.connector.Value);
+                this.controller.Write(this.connector.Address + this.connector.Offset, this.connector.Value);
         }
 
         public void Tick()

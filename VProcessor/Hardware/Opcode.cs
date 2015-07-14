@@ -220,8 +220,8 @@ namespace VProcessor.Hardware
             Add("RSB", RSB, 0x15);
             Add("RSC", RSC, 0x15);
 
-            Add("STR", STR, 0x15);
-            Add("LDRST", LDR, CurrentAddress + A, 0x15);
+            Add("STR", STR, 0x54);
+            Add("LDRST", LDR, CurrentAddress + A, 0x54);
         }
     }
 }
