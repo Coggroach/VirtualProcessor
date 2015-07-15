@@ -50,14 +50,14 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Hardware\TestDatapath.cs" />
-    <Compile Include="Hardware\TestMemoryUnit.cs" />
-    <Compile Include="Hardware\TestBrancher.cs" />
-    <Compile Include="Hardware\TestProcessor.cs" />
-    <Compile Include="Hardware\TestOpcode.cs" />
-    <Compile Include="Hardware\TestHelper.cs" />
+    <Compile Include="Tests\TestDatapath.cs" />
+    <Compile Include="Tests\TestMemoryUnit.cs" />
+    <Compile Include="Tests\TestBrancher.cs" />
+    <Compile Include="Tests\TestOpcode.cs" />
+    <Compile Include="Tests\TestHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Software\Assembly\TestAssembler.cs" />
+    <Compile Include="Tests\TestAssembler.cs" />
+    <Compile Include="Tests\TestUserSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VProcessor\VProcessor.csproj">
@@ -66,18 +66,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Software\TestAssembly.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\TestAssemblyCode.txt">
+    <None Include="Res\TempAssembly.vps">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\TestUserMemory.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\TestControlMemory.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
+    <None Include="Res\TestAssembly.vps">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Res\TestAssemblyCode.vpo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Res\TestUserMemory.vpo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Res\TestControlMemory.vpo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

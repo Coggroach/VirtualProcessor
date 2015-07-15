@@ -8,10 +8,11 @@ namespace VProcessor.Tools
 {
     public class Settings
     {
-        public const Int32 ControlMemorySize = 64;
+        public const Int32 ControlMemorySize = 100;
         public const Int32 FlashMemorySize = 32;
-        public const String ControlMemoryLocation = "Software\\ControlMemory.txt";
-        public const String FlashMemoryLocation = "Software\\UserMemory.txt";
+        public const String ControlMemoryLocation = "Software\\ControlMemory.vpo";
+        public const String FlashMemoryLocation = "Assembly\\UserMemory.vpo";
+        public const String UserSettingsLocation = "Gui\\UserSettings.txt";
         public const Int32 RandomAccessMemorySize = 128;
         public const Int32 RandomAccessMemorySpeed = 4;
         public const Int32 RandomAccessMemorySpread = 2;

@@ -47,6 +47,7 @@ Opcodes for Assembler
 Type 1: ADD rx, ry, C
 Type 2: LDR rx, C
 Type 3: BEQ C
+Type 5: STR rx, [ry, C]
             
 001 - 1 : K   - 1
 010 - 2 : F   - 3

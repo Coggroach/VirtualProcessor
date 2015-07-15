@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VProcessor.Hardware;
@@ -17,13 +19,15 @@ namespace VProcessor.Gui
     {
         private IAssembler compiler;
         private Machine machine;
-        private SFile flashFile;
+        private UserSettings settings;
+        private VPFile flashFile;
         private const String RegisterPrefix = "r";
 
         public EditorForm()
         {
             this.compiler = new Assembler();
-            this.flashFile = new SFile(Settings.FlashMemoryLocation);
+            this.settings = new UserSettings().Load();
+            this.flashFile = new VPFile(this.settings.FlashFileLocation);
 
             this.machine = new Machine(this.compiler);
             
@@ -41,9 +45,19 @@ namespace VProcessor.Gui
         #region Setup
         public void Setup()
         {
+            this.SetupUserSettings();
             this.SetupRegisterFile();
             this.SetupEditorBoxText();
-            this.SetupToolBar();
+            this.SetupToolBar();         
+        }
+
+        public void SetupUserSettings()
+        {
+            this.tabsToolStripMenuItem.Checked = this.settings.IndentMode == 0;
+            this.spacesToolStripMenuItem.Checked = this.settings.IndentMode == 1;
+            this.size1toolStripMenuItem.Checked = this.settings.IndentSize == 1;
+            this.size2toolStripMenuItem.Checked = this.settings.IndentSize == 2;
+            this.size4toolStripMenuItem.Checked = this.settings.IndentSize == 4;
         }
 
         public void SetupRegisterFile()
@@ -62,7 +76,7 @@ namespace VProcessor.Gui
 
         private void SetupEditorBoxText()
         {
-            this.EditorBox.Text = this.flashFile.GetString().Replace(SFile.Delimiter, '\n');
+            this.UpdateEditorBox();   
             this.FlashMemoryBox.Text = ConvertMemoryToString(this.machine.GetFlashMemory());
         }
 
@@ -86,6 +100,21 @@ namespace VProcessor.Gui
             this.UpdateRegisterFile();
             this.UpdateMemoryDisplays();
             this.UpdateToolBar();
+            this.UpdateEditorBox();
+        }
+
+        private void UpdateEditorBox()
+        {
+            var parser = this.flashFile.GetString().Replace(VPFile.Delimiter, '\n');
+
+            parser = Regex.Replace(parser, @"[ ]{2,}", " ");            
+            parser = Regex.Replace(parser, @"[\t]{1,}", " ");            
+
+            var indentMode = this.settings.IndentMode == UserSettings.IndentTab ? "\t" : " ";
+            for (var i = 0; i < this.settings.IndentSize; i++)
+                indentMode += indentMode;
+
+            this.EditorBox.Text = parser.Replace(" ", indentMode);
         }
 
         public void UpdateRegisterFile()
@@ -164,15 +193,6 @@ namespace VProcessor.Gui
             this.Update();
         } 
 
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.flashFile.SetString(this.EditorBox.Text);
-            this.flashFile.Save();
-            this.flashFile.Load();
-            this.machine.Reset(this.compiler.Compile32(this.flashFile, Settings.FlashMemorySize));
-            this.Update();
-        }
-
         private void modeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             
@@ -185,25 +205,40 @@ namespace VProcessor.Gui
             this.assemblyToolStripMenuItem.Checked = false;
         }
 
+        private ToolStripMenuItem GetToolStripMenuItemMode()
+        {
+            switch (this.flashFile.GetMode())
+            {
+                case VPFile.Assembly:
+                    return this.assemblyToolStripMenuItem;
+                case VPFile.Decimal:
+                    return this.decimalToolStripMenuItem;
+                case VPFile.Hexadecimal:
+                    return this.hexadecimalToolStripMenuItem;
+            }
+            return null;
+        }
+
+        private void ModeToolStripMenuItem_Click(Int32 mode)
+        {
+            this.flashFile.SetMode(mode);
+            this.UncheckToolStripMenuItems();
+            this.GetToolStripMenuItemMode().Checked = true;  
+        }
+
         private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.flashFile.SetMode(SFile.Hexadecimal);
-            this.UncheckToolStripMenuItems();            
-            this.hexadecimalToolStripMenuItem.Checked = true;
+            this.ModeToolStripMenuItem_Click(VPFile.Hexadecimal);
         }
 
         private void decimalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.flashFile.SetMode(SFile.Decimal);
-            this.UncheckToolStripMenuItems();
-            this.decimalToolStripMenuItem.Checked = true;
+            this.ModeToolStripMenuItem_Click(VPFile.Decimal);
         }
 
         private void assemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.flashFile.SetMode(SFile.Assembly);
-            this.UncheckToolStripMenuItems();
-            this.assemblyToolStripMenuItem.Checked = true;
+            this.ModeToolStripMenuItem_Click(VPFile.Assembly);        
         }
 
         private void ToolFontSize_Click(object sender, EventArgs e)
@@ -223,23 +258,110 @@ namespace VProcessor.Gui
 
         private void CommandBox_KeyPress(object sender, EventArgs e)
         {
-            var k = (KeyEventArgs)e;
-            if(k.KeyCode == Keys.Enter)
+    
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.settings.Save();
+            Application.Exit();
+        }
+
+
+        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            
+            dialog.Filter = "vps files (*.vps)|*.vps|vpo files (*.vpo)|*.vpo|All files (*.*)|*.*";
+            dialog.FilterIndex = 2;
+            dialog.RestoreDirectory = true;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                UInt32 i = 0;
-                try
-                {
-                    i = UInt32.Parse(this.CommandBox.Text);
-                }
-                catch (Exception ex) { Logger.Instance().Log("CommandBox (TextBox): " + ex.ToString()); }
-                
-                //if(this.machine.HasTerminated())
-                //{
-                 //   this.machine.SetInstructionRegister(i);
-                  //  this.machine.Tick();
-                //}
+                this.flashFile.SetString(this.EditorBox.Text);
+                this.flashFile.Save(dialog.FileName);
+                this.UncheckToolStripMenuItems();
+                this.GetToolStripMenuItemMode().Checked = true;
             }
         }
+
+             
+
+        private void assembleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.flashFile.SetString(this.EditorBox.Text);
+            this.flashFile.Save();
+            this.flashFile.Load();
+            this.machine.Reset(this.compiler.Compile32(this.flashFile, Settings.FlashMemorySize));
+            this.Update();
+        }
+
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+
+            dialog.Filter = "vps files (*.vps)|*.vps|vpo files (*.vpo)|*.vpo|All files (*.*)|*.*";
+            dialog.FilterIndex = 2;
+            dialog.RestoreDirectory = true;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {                
+                this.flashFile.Load(dialog.FileName);
+                this.SetupEditorBoxText();
+                this.UncheckToolStripMenuItems();
+                this.GetToolStripMenuItemMode().Checked = true;
+            }
+        }
+                
+        private void indentModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }        
+
+        private void tabsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.indentModeToolStripMenuItem_Click(UserSettings.IndentTab);
+        }
+
+        private void spacesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.indentModeToolStripMenuItem_Click(UserSettings.IndentSpace);
+        }     
+  
+        private void indentModeToolStripMenuItem_Click(Int32 index)
+        {
+            this.tabsToolStripMenuItem.Checked = UserSettings.IndentTab == index;
+            this.spacesToolStripMenuItem.Checked = UserSettings.IndentSpace == index;
+            this.settings.IndentMode = index;
+            this.Update();
+        }
+
+        private void size1toolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.sizeXtoolStripMenuItem_Click(UserSettings.IndentSize1);
+        }
+
+        private void size2toolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.sizeXtoolStripMenuItem_Click(UserSettings.IndentSize2);
+        }
+
+        private void size4toolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.sizeXtoolStripMenuItem_Click(UserSettings.IndentSize4);
+        }
+
+        private void sizeXtoolStripMenuItem_Click(Int32 number)
+        {
+            this.size1toolStripMenuItem.Checked = UserSettings.IndentSize1 == number;
+            this.size2toolStripMenuItem.Checked = UserSettings.IndentSize2 == number;
+            this.size4toolStripMenuItem.Checked = UserSettings.IndentSize4 == number;
+            this.settings.IndentSize = number;
+            this.Update();
+        }
+
+
         #endregion EventHandling
     }
 }

@@ -44,29 +44,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hardware\DDRMemoryController.cs" />
-    <Compile Include="Hardware\DDRMemoryBus.cs" />
-    <Compile Include="Hardware\IInformable.cs" />
+    <Compile Include="Gui\UserSettings.cs" />
+    <Compile Include="Hardware\Memory\MemoryController.cs" />
+    <Compile Include="Hardware\Memory\MemoryBus.cs" />
+    <Compile Include="Common\IInformable.cs" />
     <Compile Include="Hardware\Machine.cs" />
-    <Compile Include="Hardware\MemoryConnector.cs" />
-    <Compile Include="Hardware\Memory\Memory.cs" />
+    <Compile Include="Hardware\Memory\MemoryConnector.cs" />
+    <Compile Include="Hardware\Memory\IMemory.cs" />
     <Compile Include="Hardware\Memory\Memory32.cs" />
     <Compile Include="Hardware\Memory\Memory64.cs" />
-    <Compile Include="Hardware\StatusRegister.cs" />
-    <Compile Include="Software\Assembly\Assembler.cs" />
-    <Compile Include="Software\Assembly\IAssembler.cs" />
-    <Compile Include="Software\Assembly\SFile.cs" />
+    <Compile Include="Hardware\Components\Register.cs" />
+    <Compile Include="Software\Assembler.cs" />
+    <Compile Include="Common\VPFile.cs" />
     <Compile Include="Gui\EditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Gui\EditorForm.Designer.cs">
       <DependentUpon>EditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Hardware\Brancher.cs" />
-    <Compile Include="Hardware\MemoryUnit.cs" />
-    <Compile Include="Hardware\Opcode.cs" />
-    <Compile Include="Hardware\Datapath.cs" />
-    <Compile Include="Hardware\Processor.cs" />
+    <Compile Include="Hardware\Components\Brancher.cs" />
+    <Compile Include="Hardware\Memory\MemoryUnit.cs" />
+    <Compile Include="Common\Opcode.cs" />
+    <Compile Include="Hardware\Components\Datapath.cs" />
+    <Compile Include="Hardware\Components\Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\BitHelper.cs" />
@@ -98,25 +98,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Software\Assembly.txt">
+    <None Include="Assembly\Assembly.vps">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Software\ControlMemory.vpo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Gui\UserSettings.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Software\ControlMemory.txt">
+    <None Include="Assembly\Beq_Cmp_Const_UM.vpo" />
+    <None Include="Assembly\Ldr_FullNum_UM.vpo" />
+    <None Include="Assembly\Ldr_Register_UM.vpo" />
+    <None Include="Assembly\Ldr_ConstNum_UM.vpo" />
+    <None Include="Assembly\UserMemory.vpo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\Testing\Beq_Cmp_Const_UM.txt" />
-    <Content Include="Software\Testing\Ldr_FullNum_UM.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\Testing\Ldr_Register_UM.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\Testing\Ldr_ConstNum_UM.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Software\UserMemory.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

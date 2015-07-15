@@ -11,24 +11,28 @@ namespace VProcessor.Hardware
     public class Machine : IInformable
     {
         private Processor processor;
-        private DDRMemoryBus bus;
-        private DDRMemoryController controller;
+        private MemoryBus bus;
+        private MemoryController controller;
         private IAssembler assembler;
+
+        public Machine() : this(new Assembler())
+        {
+
+        }
 
         public Machine(IAssembler assembler)
         {
             this.assembler = assembler;
             this.processor = new Processor(
-                this.assembler.Compile64(new SFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
-                this.assembler.Compile32(new SFile(Settings.FlashMemoryLocation), Settings.FlashMemorySize));
-            this.controller = new DDRMemoryController();
-            this.bus = new DDRMemoryBus(this.processor, this.controller);
+                this.assembler.Compile64(new VPFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
+                this.assembler.Compile32(new VPFile(Settings.FlashMemoryLocation), Settings.FlashMemorySize));
+            this.controller = new MemoryController();
+            this.bus = new MemoryBus(this.processor, this.controller);
         }
 
         public void Tick()
         {
             this.processor.Tick();
-            //this.bus.SetCommand(this.processor.GetMemoryCommand(), this.)
             this.bus.Tick();            
         }
 

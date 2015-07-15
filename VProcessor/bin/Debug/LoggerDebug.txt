@@ -264,3 +264,97 @@
    at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)
    at System.Windows.Forms.Application.Run(Form mainForm)
    at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][11:51:34]:System.IO.DirectoryNotFoundException: Could not find a part of the path 'C:\code\VirtualProcessor\VProcessor\bin\Debug\Gui\UserSettings.txt'.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamReader..ctor(String path)
+   at System.IO.File.OpenText(String path)
+   at VProcessor.Gui.UserSettings.Init() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 26
+   at VProcessor.Gui.UserSettings..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 21
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][11:52:27]:System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.UserSettings.GetParsedValue(String[] s, String match) in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 39
+   at VProcessor.Gui.UserSettings.Init() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 31
+   at VProcessor.Gui.UserSettings..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 21
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][11:56:01]:System.ArgumentNullException: Value cannot be null.
+Parameter name: String
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Int32.Parse(String s)
+   at VProcessor.Gui.UserSettings.GetParsedValue(String[] s, String match) in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 39
+   at VProcessor.Gui.UserSettings.Init() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 31
+   at VProcessor.Gui.UserSettings..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 21
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][12:08:35]:System.TypeInitializationException: The type initializer for 'VProcessor.Gui.UserSettings' threw an exception. ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at VProcessor.Gui.UserSettings.Init() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 47
+   at VProcessor.Gui.UserSettings..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 37
+   at VProcessor.Gui.UserSettings..cctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 19
+   --- End of inner exception stack trace ---
+   at VProcessor.Gui.UserSettings..ctor()
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][14:12:19]:System.TypeInitializationException: The type initializer for 'VProcessor.Gui.UserSettings' threw an exception. ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at VProcessor.Gui.UserSettings.Init() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 47
+   at VProcessor.Gui.UserSettings..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 37
+   at VProcessor.Gui.UserSettings..cctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 19
+   --- End of inner exception stack trace ---
+   at VProcessor.Gui.UserSettings..ctor()
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][14:14:06]:System.TypeInitializationException: The type initializer for 'VProcessor.Gui.UserSettings' threw an exception. ---> System.NullReferenceException: Object reference not set to an instance of an object.
+   at VProcessor.Gui.UserSettings.Init() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 47
+   at VProcessor.Gui.UserSettings..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 37
+   at VProcessor.Gui.UserSettings..cctor() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 19
+   --- End of inner exception stack trace ---
+   at VProcessor.Gui.UserSettings..ctor()
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][15:00:03]:System.ArgumentException: parsing "s:FlashFileLocation=Assembly\UserMemory.vpo" - Unrecognized escape sequence \U.
+   at System.Text.RegularExpressions.RegexParser.ScanCharEscape()
+   at System.Text.RegularExpressions.RegexParser.ScanBasicBackslash()
+   at System.Text.RegularExpressions.RegexParser.ScanBackslash()
+   at System.Text.RegularExpressions.RegexParser.ScanRegex()
+   at System.Text.RegularExpressions.RegexParser.Parse(String re, RegexOptions op)
+   at System.Text.RegularExpressions.Regex..ctor(String pattern, RegexOptions options, TimeSpan matchTimeout, Boolean useCache)
+   at System.Text.RegularExpressions.Regex.IsMatch(String input, String pattern)
+   at VProcessor.Gui.UserSettings.GetUnparsedValue(String match) in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 84
+   at VProcessor.Gui.UserSettings.GetStringValue(String match, String defaultValue) in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 72
+   at VProcessor.Gui.UserSettings.Load() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 52
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][15:01:51]:System.ArgumentException: parsing "s:FlashFileLocation=Assembly\UserMemory.vpo" - Unrecognized escape sequence \U.
+   at System.Text.RegularExpressions.RegexParser.ScanCharEscape()
+   at System.Text.RegularExpressions.RegexParser.ScanBasicBackslash()
+   at System.Text.RegularExpressions.RegexParser.ScanBackslash()
+   at System.Text.RegularExpressions.RegexParser.ScanRegex()
+   at System.Text.RegularExpressions.RegexParser.Parse(String re, RegexOptions op)
+   at System.Text.RegularExpressions.Regex..ctor(String pattern, RegexOptions options, TimeSpan matchTimeout, Boolean useCache)
+   at System.Text.RegularExpressions.Regex.IsMatch(String input, String pattern, RegexOptions options)
+   at VProcessor.Gui.UserSettings.GetUnparsedValue(String match) in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 84
+   at VProcessor.Gui.UserSettings.GetStringValue(String match, String defaultValue) in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 72
+   at VProcessor.Gui.UserSettings.Load() in c:\code\VirtualProcessor\VProcessor\Gui\UserSettings.cs:line 52
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 29
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][15:18:03]:System.IO.FileNotFoundException: Could not find file 'C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Assembly.vps'.
+File name: 'C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Assembly.vps'
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamReader..ctor(String path, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamReader..ctor(String path)
+   at System.IO.File.OpenText(String path)
+   at VProcessor.Software.Assembly.VPFile.Load(String path) in c:\code\VirtualProcessor\VProcessor\Common\VPFile.cs:line 85
+   at VProcessor.Software.Assembly.VPFile.Load() in c:\code\VirtualProcessor\VProcessor\Common\VPFile.cs:line 63
+   at VProcessor.Software.Assembly.VPFile.Init() in c:\code\VirtualProcessor\VProcessor\Common\VPFile.cs:line 42
+   at VProcessor.Software.Assembly.VPFile..ctor(String path, Int32 mode) in c:\code\VirtualProcessor\VProcessor\Common\VPFile.cs:line 27
+   at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 30
+   at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
