@@ -138,13 +138,6 @@ namespace VProcessor.Hardware
             else if (this.connector.Command == MemoryConnector.Received && Lr == 1) this.datapath.SetRegister(dest, this.connector.Value);
             else dataOut = this.datapath.FunctionUnit(fs, Lr);
 
-            if (this.connector.Command == MemoryConnector.Store)
-                this.connector.Value = dataOut;              
-            
-            this.connector.Address = (Int32)this.datapath.GetRegister(0);
-            this.connector.Offset = (Int32)this.datapath.GetRegister(1);
-            this.SetMemoryCommand(Min, Mout);
-
             //Set up CAR
             var muxCar = (Cion & 2) == 2 ? opcode : na;
             if (Cmem)
@@ -160,6 +153,16 @@ namespace VProcessor.Hardware
                 this.controlMemory.SetRegister(muxCar);
             else
                 this.controlMemory++;
+
+            //Moving Data to RAM
+            if(this.connector.Command != MemoryConnector.Received)
+                this.SetMemoryCommand(Min, Mout);
+            if (this.connector.Command == MemoryConnector.Store)
+                this.connector.Value = dataOut;
+
+            this.connector.Address = (Int32)this.datapath.GetRegister(0);
+            this.connector.Offset = (Int32)this.datapath.GetRegister(1);            
+
 
             //Set up PC
             if ((Pc & 2) == 2 && this.branchControl.Branch(fs))

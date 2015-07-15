@@ -1,0 +1,9 @@
+[Logger][16:29:46]:Memory at 31 doesnt match Opcode 26:24
+[Logger][16:33:28]:Code: LSL
+Address: 31
+Internal: 26
+External: 24
+[Logger][16:34:09]:Code: LSL
+Address: 31
+Internal: 26
+External: 24

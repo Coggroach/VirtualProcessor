@@ -1,6 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VProcessor.Hardware;
+using VProcessor.Software.Assembly;
+using VProcessor.Tools;
+using System.Collections;
 
 namespace VProcessor.Tests.Hardware
 {
@@ -142,6 +145,30 @@ namespace VProcessor.Tests.Hardware
             const UInt32 b = 15;
             var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.RSC);
             Assert.IsTrue(2 == reg);
+        }
+
+        [TestMethod]
+        public void TestOpcodeAddressMapping()
+        {
+            var control = new VPFile(Settings.ControlMemoryLocation);
+            var assembler = new Assembler();
+            var memoryChunk = assembler.Compile64(control, Settings.ControlMemorySize);
+
+            var opcodes = Opcode.GetCodeTable();
+
+            foreach(String code in opcodes.Keys)
+            {
+                var address = Opcode.GetCodeAddress(code);
+                var value = Opcode.GetCodeIndexer(code);
+                var memory = memoryChunk.GetMemory(address);
+
+                memory >>= 16;
+                memory &= 0xFFFFF;
+
+                var compare = (Int32) memory == value;
+                if (!compare) Logger.Instance().Log("Code: " + code + " Address: " + address + " Internal: " + value + "External: " + memory);
+                Assert.IsTrue(compare);
+            }
         }
     }
 }

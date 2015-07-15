@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using VProcessor.Tools;
 
 namespace VProcessor.Hardware
 {
@@ -70,6 +71,7 @@ namespace VProcessor.Hardware
         private static readonly Hashtable CodeTable;
         private static Int32 CurrentAddress;
         private static Int32 LastType;
+        private static Logger Logger;
 
         private const Int32 K = 1;
         private const Int32 F = 3;
@@ -109,20 +111,13 @@ namespace VProcessor.Hardware
         }
 
         public static void Add(String name, Int32 value, Byte typeAndConstants)
-        {            
-            CurrentAddress += GetNextAddress();
-            CodeTable.Add(name, new Hashtable()
-            {
-                {"Address", CurrentAddress},
-                {"Value", value},
-                {"Type", typeAndConstants}
-            });
-            LastType = typeAndConstants & 7;            
+        {
+            Add(name, value, GetNextAddress(), typeAndConstants);
         }
 
         public static void Add(String name, Int32 value, Int32 address, Byte typeAndConstants)
         {
-            CurrentAddress = address;
+            CurrentAddress += address;
             CodeTable.Add(name, new Hashtable()
             {
                 {"Address", CurrentAddress},
@@ -130,6 +125,7 @@ namespace VProcessor.Hardware
                 {"Type", typeAndConstants}
             });
             LastType = typeAndConstants & 7;
+            Logger.Log(name + ":" + CurrentAddress + " : " + GetNextAddress());
         }
 
         private static Int32 GetNextAddress()
@@ -158,6 +154,7 @@ namespace VProcessor.Hardware
         static Opcode()
         {
             CodeTable = new Hashtable();
+            Logger = new Logger("LoggerControl.txt", false);            
             CurrentAddress = FirstAddress;
             LastType = 0;
             //Type 1: ADD rx, ry, C
@@ -188,10 +185,10 @@ namespace VProcessor.Hardware
             Add("ORR", ORR, 0x15);
             Add("BIC", BIC, 0x15);
 
-            Add("LSL", LSL, 0x15);
-            Add("LSR", LSR, 0x15);
             Add("ROL", ROL, 0x15);
             Add("ROR", ROR, 0x15);
+            Add("LSL", LSL, 0x15);
+            Add("LSR", LSR, 0x15); 
 
             Add("B", B, 0x31);
             Add("BEQ", BEQ, 0x31);
@@ -217,7 +214,7 @@ namespace VProcessor.Hardware
             Add("SUB", SUB, 0x15);
             Add("SBC", SBC, 0x15);
             Add("DEC", DEC, 0x24);
-            Add("RSB", RSB, 0x15);
+            Add("RSB", RSB, 0x15);          
             Add("RSC", RSC, 0x15);
 
             Add("STR", STR, 0x54);

@@ -1,4 +1,4 @@
-﻿s:FlashFileLocation=Software\\Assembly.vps;
-i:FileMode=2;
-s:IndentMode=0;
-i:IndentSize=2;
+s:FlashFileLocation=;
+i:FileMode=0;
+i:IndentMode=0;
+i:IndentSize=0;

@@ -358,3 +358,9 @@ File name: 'C:\code\VirtualProcessor\VProcessor\bin\Debug\Software\Assembly.vps'
    at VProcessor.Software.Assembly.VPFile..ctor(String path, Int32 mode) in c:\code\VirtualProcessor\VProcessor\Common\VPFile.cs:line 27
    at VProcessor.Gui.EditorForm..ctor() in c:\code\VirtualProcessor\VProcessor\Gui\EditorForm.cs:line 30
    at VProcessor.Program.Main() in c:\code\VirtualProcessor\VProcessor\Program.cs:line 20
+[Logger][15:33:35]:RSC: 67
+[Logger][15:33:35]:STR: 71
+[Logger][15:42:03]:RSC: 67
+[Logger][15:42:03]:STR: 71
+[Logger][15:45:47]:RSC: 67
+[Logger][15:45:47]:STR: 71

@@ -21,22 +21,24 @@ namespace VProcessor.Tools
         }
 
         private String path;
-        private Boolean mode;
+        private Boolean mode;        
 
-        public Logger()
+        public Logger() : this("LoggerDebug.txt", true)
         {
-            this.path = "LoggerDebug.txt";
-            this.mode = true;
+            
         }
 
-        public Logger(String s)
+        public Logger(String s, Boolean b)
         {
             this.path = s;
+            this.mode = b;
+            if(!mode)
+                System.IO.File.Delete(this.path);
         }
 
         public void Log(String line)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.path, mode))
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.path, true))
             {
                 file.WriteLine(AddInfo(line));
                 file.Close();
