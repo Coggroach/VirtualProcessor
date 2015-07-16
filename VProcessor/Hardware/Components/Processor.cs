@@ -1,10 +1,11 @@
 ﻿using System;
+using VProcessor.Tools;
+using VProcessor.Software.Assembly;
+using VProcessor.Hardware.Memory;
+using VProcessor.Common;
 
-namespace VProcessor.Hardware
-{
-    using VProcessor.Tools;
-    using VProcessor.Software.Assembly;
-     
+namespace VProcessor.Hardware.Components
+{    
     public class Processor : IInformable
     {
         private Datapath datapath;
@@ -12,7 +13,13 @@ namespace VProcessor.Hardware
         private MemoryUnit<UInt32> flashMemory;
         private Brancher branchControl;
         private UInt32 instructionReg;
-        private MemoryConnector connector;
+        private MemoryDualChannel channel;
+
+        public MemoryChannelPacket ChannelPacket { get; set; }
+        public Int32 MemoryPullRequest { get; set; }
+        public const Int32 None = 0;
+        public const Int32 Pull = 1;
+        public const Int32 Complete = 2;
 
         public Processor(Memory64 control, Memory32 flash)
         {
@@ -21,22 +28,12 @@ namespace VProcessor.Hardware
             this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.branchControl = new Brancher();
             this.instructionReg = this.flashMemory.GetMemory();
-            this.connector = new MemoryConnector();
+            this.channel = new MemoryDualChannel();
         }
 
-        public MemoryConnector GetMemoryConnector()
+        public MemoryDualChannel GetMemoryDualChannel()
         {
-            return this.connector;
-        }
-
-        private void SetMemoryCommand(Boolean Min, Boolean Mout)
-        {
-            if (Min && !Mout)
-                this.connector.Command = MemoryConnector.Fetch;
-            else if (!Min && Mout)
-                this.connector.Command = MemoryConnector.Store;
-            else
-                this.connector.Command = MemoryConnector.Idle;
+            return this.channel;
         }
 
         public UInt32[] GetRegisters()
@@ -135,35 +132,39 @@ namespace VProcessor.Hardware
             //Move Data in Datapath
             var dataOut = (UInt32) 0;
             if (Din && Lr == 1) this.datapath.SetRegister(dest, (UInt32)this.flashMemory.GetMemory());
-            else if (this.connector.Command == MemoryConnector.Received && Lr == 1) this.datapath.SetRegister(dest, this.connector.Value);
+            else if (this.MemoryPullRequest == Complete && Lr == 1)
+            {
+                this.datapath.SetRegister(dest, this.ChannelPacket.Value);
+                this.MemoryPullRequest = None;
+            }
             else dataOut = this.datapath.FunctionUnit(fs, Lr);
 
             //Set up CAR
             var muxCar = (Cion & 2) == 2 ? opcode : na;
             if (Cmem)
             {
-                if (this.connector.Command == MemoryConnector.Received)
-                {
+                if (this.MemoryPullRequest == Complete)
                     this.controlMemory++;
-                    this.connector.Flush();
-                }
-                //else wait
             }
             else if ((Cion & 1) == 0)
                 this.controlMemory.SetRegister(muxCar);
             else
                 this.controlMemory++;
 
+
             //Moving Data to RAM
-            if(this.connector.Command != MemoryConnector.Received)
-                this.SetMemoryCommand(Min, Mout);
-            if (this.connector.Command == MemoryConnector.Store)
-                this.connector.Value = dataOut;
-
-            this.connector.Address = (Int32)this.datapath.GetRegister(0);
-            this.connector.Offset = (Int32)this.datapath.GetRegister(1);            
-
-
+            if (Min ^ Mout && this.MemoryPullRequest != Complete)
+            {
+                this.ChannelPacket = new MemoryChannelPacket()
+                {
+                    Value = dataOut,
+                    Address = (Int32)this.datapath.GetRegister(Datapath.ChannelA),
+                    Offset = (Int32)this.datapath.GetRegister(Datapath.ChannelB)
+                };
+                if (Mout) this.channel.PushOutput(this.ChannelPacket);
+                if (Min) this.MemoryPullRequest = Pull;
+            }
+            
             //Set up PC
             if ((Pc & 2) == 2 && this.branchControl.Branch(fs))
             {

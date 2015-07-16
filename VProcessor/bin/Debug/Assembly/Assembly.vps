@@ -1,8 +1,5 @@
-LDR  r0,  =14
-STR  r0,  [r1]
-STR  r0,  [r1,  #1]
-STR  r0,  [r1,  #2]
-LDR  r0,  =0
-LDRST  r0,  [r1]
-LDRST  r2,  [r1,  #1]
-LDRST  r3,  [r1,  #2]
+MOV    r0,    #14
+MOV    r1,    #10
+STR    r0,    [r1]
+MOV    r0,    #1
+LDRST    r0,    [r1,    #1]

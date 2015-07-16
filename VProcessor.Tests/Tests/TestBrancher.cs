@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VProcessor.Hardware;
+using VProcessor.Hardware.Components;
+using VProcessor.Common;
 
 namespace VProcessor.Tests.Hardware
 {

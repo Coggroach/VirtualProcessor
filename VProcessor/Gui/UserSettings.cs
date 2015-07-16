@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VProcessor.Software.Assembly;
 using VProcessor.Tools;
+using VProcessor.Common;
 
 namespace VProcessor.Gui
 {

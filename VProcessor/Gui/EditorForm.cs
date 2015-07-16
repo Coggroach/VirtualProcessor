@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using VProcessor.Hardware;
 using VProcessor.Software.Assembly;
 using VProcessor.Tools;
+using VProcessor.Common;
+using VProcessor.Hardware.Memory;
 
 namespace VProcessor.Gui
 {

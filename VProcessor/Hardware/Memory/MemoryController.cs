@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VProcessor.Tools;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Hardware.Memory
 {
     public class MemoryController
     {

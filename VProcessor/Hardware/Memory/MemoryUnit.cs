@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Hardware.Memory
 {
     using VProcessor.Tools;
     using VProcessor.Software.Assembly;

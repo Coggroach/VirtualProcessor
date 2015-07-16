@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VProcessor.Common;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Hardware.Components
 {
     public class Datapath
     {

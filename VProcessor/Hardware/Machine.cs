@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using VProcessor.Software.Assembly;
 using VProcessor.Tools;
+using VProcessor.Hardware.Components;
+using VProcessor.Hardware.Memory;
+using VProcessor.Common;
 
 namespace VProcessor.Hardware
 {

@@ -5,6 +5,8 @@ namespace VProcessor.Tests.Hardware
 {
     using VProcessor.Hardware;
     using VProcessor.Software.Assembly;
+    using VProcessor.Common;
+    using VProcessor.Hardware.Memory;
 
     [TestClass]
     public class TestMemoryUnit

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace VProcessor.Software.Assembly
+namespace VProcessor.Common
 {
     public class VPFile
     {

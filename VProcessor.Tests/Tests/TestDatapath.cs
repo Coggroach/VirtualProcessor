@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace VProcessor.Tests.Hardware
 {
     using VProcessor.Hardware;
+    using VProcessor.Hardware.Components;
+    using VProcessor.Common;
 
     [TestClass]
     public class TestDatapath

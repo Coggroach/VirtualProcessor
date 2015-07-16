@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VProcessor.Hardware.Memory;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Common
 {
     interface IInformable
     {

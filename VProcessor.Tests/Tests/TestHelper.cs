@@ -1,5 +1,6 @@
 ﻿using System;
 using VProcessor.Hardware;
+using VProcessor.Hardware.Components;
 
 namespace VProcessor.Tests.Hardware
 {

@@ -45,15 +45,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gui\UserSettings.cs" />
+    <Compile Include="Hardware\Memory\MemoryChannel.cs" />
     <Compile Include="Hardware\Memory\MemoryController.cs" />
     <Compile Include="Hardware\Memory\MemoryBus.cs" />
     <Compile Include="Common\IInformable.cs" />
     <Compile Include="Hardware\Machine.cs" />
-    <Compile Include="Hardware\Memory\MemoryConnector.cs" />
+    <Compile Include="Hardware\Memory\MemoryChannelPacket.cs" />
     <Compile Include="Hardware\Memory\IMemory.cs" />
     <Compile Include="Hardware\Memory\Memory32.cs" />
     <Compile Include="Hardware\Memory\Memory64.cs" />
     <Compile Include="Hardware\Components\Register.cs" />
+    <Compile Include="Hardware\Memory\MemoryDualChannel.cs" />
     <Compile Include="Software\Assembler.cs" />
     <Compile Include="Common\VPFile.cs" />
     <Compile Include="Gui\EditorForm.cs">

@@ -4,6 +4,7 @@ using VProcessor.Hardware;
 using VProcessor.Software.Assembly;
 using VProcessor.Tools;
 using System.Collections;
+using VProcessor.Common;
 
 namespace VProcessor.Tests.Hardware
 {

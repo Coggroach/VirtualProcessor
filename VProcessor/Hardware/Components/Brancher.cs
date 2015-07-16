@@ -1,6 +1,7 @@
 ﻿using System;
+using VProcessor.Common;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Hardware.Components
 {
     public class Brancher
     {

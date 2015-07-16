@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using VProcessor.Hardware;
+using VProcessor.Hardware.Memory;
+using VProcessor.Common;
 
 namespace VProcessor.Software.Assembly
 {
@@ -30,7 +31,9 @@ namespace VProcessor.Software.Assembly
         private Hashtable BranchLookup;
         private Hashtable BranchRegistry;
         private Int32 AssemblyLine;
-        private Int32 MachineLine;        
+        private Int32 MachineLine;
+        private Hashtable KeywordLookup;
+        private List<UInt32> CurrentLines;
 
         public Assembler()
         {
@@ -38,6 +41,17 @@ namespace VProcessor.Software.Assembly
             this.BranchRegistry = new Hashtable();
             this.AssemblyLine = 0;
             this.MachineLine = 0;
+            this.KeywordLookup = new Hashtable();
+            this.InitKeywordLookup();
+            this.CurrentLines = new List<UInt32>();
+        }
+
+        public void InitKeywordLookup()
+        {
+            this.KeywordLookup.Add("sp", "r14");
+            this.KeywordLookup.Add("lr", "r13");
+            this.KeywordLookup.Add("tr", "r15");
+            this.KeywordLookup.Add("rt", "r15");
         }
 
         public Memory64 Compile64(VPFile file, Int32 size)
@@ -105,7 +119,7 @@ namespace VProcessor.Software.Assembly
             return memory;
         }
 
-        public UInt32[] Convert(String s)
+        public UInt32[] ConvertLine32(String s)
         {
             var line = CleanUp(s);
             var table = CreatePropertyTable(line);
@@ -130,8 +144,21 @@ namespace VProcessor.Software.Assembly
 
             if (Regex.Match(parts[lastElement], ConstNumberStem).Success && (type & 4) == 4)
             {
-                array[index] = this.Convert("MOV r15," + parts[lastElement])[0];
+                array[index] = this.ConvertLine32("MOV r15," + parts[lastElement])[0];
                 parts[lastElement] = "r15";
+                index++;
+            }
+
+            if((type & 1) == 1 && parts.Length < 4)
+            {
+                array[index] = this.ConvertLine32("MOV r15,#0")[0];
+                var newArray = array.ToList<UInt32>();
+                newArray.Add(0);
+                array = newArray.ToArray();
+                var newParts = parts.ToList<String>();
+                newParts.Add("r15");                
+                parts = newParts.ToArray();
+                lastElement++;
                 index++;
             }
             
@@ -349,7 +376,7 @@ namespace VProcessor.Software.Assembly
                 case VPFile.Decimal:
                     return new UInt32[] { UInt32.Parse(s, NumberStyles.Number) };
                 case VPFile.Assembly:
-                    return Convert(s);
+                    return this.ConvertLine32(s);
                 default:
                     return new UInt32[] { 0 };
             }

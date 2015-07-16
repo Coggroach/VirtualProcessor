@@ -16,6 +16,7 @@ E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\
 E:\Development\C#\Projects\VirtualProcessor\VProcessor.Tests\bin\Debug\Software\TestControlMemory.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Gui\UserSettings.txt
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Assembly\Assembly.vps
+C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Res\TempAssembly.vps
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Res\TestAssembly.vps
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Res\TestAssemblyCode.vpo
 C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Res\TestUserMemory.vpo
@@ -29,4 +30,3 @@ C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\VProcessor.pdb
 C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.csprojResolveAssemblyReference.cache
 C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.dll
 C:\code\VirtualProcessor\VProcessor.Tests\obj\Debug\VProcessor.Tests.pdb
-C:\code\VirtualProcessor\VProcessor.Tests\bin\Debug\Res\TempAssembly.vps

@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VProcessor.Hardware.Components;
 using VProcessor.Tools;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Hardware.Memory
 {
     public class MemoryBus
     {
         private Random rand; 
-        private Int32 cycle;
+        private Int32 inCycle;
+        private Int32 outCycle;
         private MemoryController controller;
         private Processor processor;
-        private MemoryConnector connector;
+        private MemoryDualChannel channel;
 
         public MemoryBus() : this(null, null)
         {
@@ -23,10 +25,11 @@ namespace VProcessor.Hardware
         public MemoryBus(Processor processor, MemoryController controller)
         {
             this.rand = new Random();
-            this.cycle = 0;
+            this.inCycle = 0;
+            this.outCycle = 0;
             this.controller = controller;
             this.processor = processor;
-            this.connector = this.processor.GetMemoryConnector();
+            this.channel = this.processor.GetMemoryDualChannel();            
         }
 
         public void SetProcessorReference(Processor processor)
@@ -39,41 +42,63 @@ namespace VProcessor.Hardware
             this.controller = controller;
         }
 
-        private void IssueCommand()
+        private void GenerateInputCycleDelay()
         {
-            this.cycle = this.rand.Next(Settings.RandomAccessMemorySpeed, Settings.RandomAccessMemorySpread + Settings.RandomAccessMemorySpeed);
+            this.inCycle = this.rand.Next(Settings.RandomAccessMemorySpeed, Settings.RandomAccessMemorySpread + Settings.RandomAccessMemorySpeed);
+        }       
+
+        private void GenerateOutputCycleDelay()
+        {
+            this.outCycle = this.rand.Next(Settings.RandomAccessMemorySpeed, Settings.RandomAccessMemorySpread + Settings.RandomAccessMemorySpeed);
         }
 
-        private void Fetch()
+        private void PopInput()
         {
-            if(this.cycle <= 0)
+            if (this.inCycle == 0)
             {
-                this.connector.Value = this.controller.Read(this.connector.Address + this.connector.Offset);
-                this.connector.Command = MemoryConnector.Received;
+                var packet = this.channel.PopInput();
+                if (packet != null)
+                {
+                    packet.Value = this.controller.Read(packet.Address, packet.Offset);
+                    //Give Packet to Processor
+                }
             }
         }
 
-        private void Store()
+        private void PopOutput()
         {
-            if (this.cycle <= 0)
+            if (this.outCycle == 0)
             {
-                this.controller.Write(this.connector.Address + this.connector.Offset, this.connector.Value);
-                this.connector.Command = MemoryConnector.Idle;
+                var packet = this.channel.PopOutput();
+                if (packet != null)
+                {
+                    this.controller.Write(packet.Address, packet.Value, packet.Offset);
+                    //Delete Packet
+                }
+            }
+        }
+
+        private void PushInput()
+        {
+            if (this.processor.MemoryPullRequest == Processor.Pull)
+            {
+                this.channel.PushInput(this.processor.ChannelPacket);
+                this.processor.MemoryPullRequest = Processor.Complete;
             }
         }
 
         public void Tick()
         {
-            if(this.cycle > 0) this.cycle--;
-            switch(this.connector.Command)
-            {
-                case MemoryConnector.Store:
-                    this.Store();
-                    break;
-                case MemoryConnector.Fetch:
-                    this.Fetch();
-                    break;
-            }
+            this.PushInput();
+
+            if(this.channel.Status == MemoryChannel.Idle)
+                return;
+            
+            this.PopInput();
+            this.PopOutput();
+
+            //this.inCycle--;
+            //this.outCycle--;
         }
     }
 }

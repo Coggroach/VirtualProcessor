@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using VProcessor.Tools;
 
-namespace VProcessor.Hardware
+namespace VProcessor.Common
 {
     public class Opcode
     {
