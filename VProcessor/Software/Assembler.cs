@@ -85,19 +85,20 @@ namespace VProcessor.Software.Assembly
             var lines = file.GetString().Split(VPFile.Delimiter);
             var memory = new Memory32(size);
             var mode = file.GetMode();
-
+            UInt32[] array = null;
             for (this.MachineLine = 0, this.AssemblyLine = 0; 
                 this.MachineLine < memory.GetLength(); 
                 this.MachineLine++, this.AssemblyLine++)
             {
                 try
                 {
-                    UInt32[] array = ParseValue32(lines[this.AssemblyLine], mode);
+                    array = ParseValue32(lines[this.AssemblyLine], mode);
                     if (array == null)
                     {
                         this.MachineLine--;
                         continue;
-                    }                        
+                    }
+                                         
                     for (var j = 0; j < array.Length; j++)
                         memory.SetMemory(this.MachineLine + j, array[j]);
                     this.MachineLine += array.Length - 1;
@@ -157,7 +158,7 @@ namespace VProcessor.Software.Assembly
             var table = CreatePropertyTable(line);
 
             if(table == null)
-            {
+            {                
                 this.RegisterBranch(line);
                 return null;
             }
@@ -192,7 +193,7 @@ namespace VProcessor.Software.Assembly
                 index++;
             }
 
-            if((type & 1) == 1 && parts.Length < 4)
+            if((type & 5) == 5 && parts.Length < 4)
             {
                 array[index] = this.ConvertLine32("MOV r15,#0")[0];
                 var newArray = array.ToList<UInt32>();
@@ -202,7 +203,7 @@ namespace VProcessor.Software.Assembly
                 newParts.Add("r15");                
                 parts = newParts.ToArray();
                 lastElement++;
-                index++;
+                index++;                
             }
             
             if (type == 3)

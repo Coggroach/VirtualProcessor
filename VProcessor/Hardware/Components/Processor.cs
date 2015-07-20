@@ -176,8 +176,7 @@ namespace VProcessor.Hardware.Components
                 this.flashMemory++;
 
             //Update Branch
-            if (Bu == 1)
-                this.branchControl.SetNzcv(this.datapath.GetStatusRegister());
+            if (Bu == 1) this.branchControl.SetNzcv(this.datapath.GetStatusRegister());
 
             //Set up IR
             if (IL == 1) this.instructionReg = this.flashMemory.GetMemory();

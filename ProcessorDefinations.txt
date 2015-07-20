@@ -2,7 +2,10 @@ ControlMemoryCode
 -----------------
 
 Na		Next Address in Car
-X		
+X	
+
+LDPC	Expose PC
+STPC	Set PC
 Fs5		Branch Code/
 Fs4		Function Code
 
@@ -23,7 +26,7 @@ Cmem	Memory Interrupt (Wait) (Has Priority over Ci and Con)
 
 Con		0 -> Load Na  1 -> Load Opcode
 Ci		0 -> Load Car 1 -> Increment Car
-Pl		Load PC
+Pl		Add To PC
 Pi		Increment PC
 
 Lr		Load Register
@@ -80,12 +83,17 @@ PCST lr
 
 LDM sp {r0-r1, r3, r4-r5}^
 
+MOV rt, #0
+LDRST r0, [sp, rt]
+SUB rt, rt, #1
+LDRST r1, [sp, rt]
+SUB rt, rt, #1
+LDRST r3, [sp, rt]
+SUB rt, rt, #1
+LDRST r4, [sp, rt]
+SUB rt, rt, #1
+LDRST r5, [sp, rt]
+SUB rt, rt, #1
+PCST lr
+
 STM sp{r0-r1, r3, r4-r5}
-
-STR r0, [sp, #0]
-STR r1, [sp, #1]
-STR r3, [sp, #2]
-STR r4, [sp, #3]
-STR r5, [sp, #4]
-
-
