@@ -219,6 +219,9 @@ namespace VProcessor.Common
 
             Add("STR", STR, 0x54);
             Add("LDRST", LDR, 0x54); //3 Lines
+
+            Add("LDM", 0, 3, 0x80);
+            Add("STM", 0, 0x80);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VProcessor.Hardware.Memory;
 using VProcessor.Common;
+using VProcessor.Tools;
 
 namespace VProcessor.Software.Assembly
 {
@@ -24,8 +25,8 @@ namespace VProcessor.Software.Assembly
         private const String BranchRoot = @"^[\w]+[,][\d]+";
         private const String ReferenceRoot = @"^[\d]+$";
         private const String RegisterStem = @"[rR][\d]+";
-        private const String ConstNumberStem = @"[#][\d]+";
-        private const String FullNumberStem = @"[=][\d]+";
+        private const String ConstNumberStem = @"[#][-\d]+";
+        private const String FullNumberStem = @"[=][-\d]+";
         private const String AddressStem = @"[\[][\w,#]+[\]]";
 
         private Hashtable BranchLookup;
@@ -119,6 +120,37 @@ namespace VProcessor.Software.Assembly
             return memory;
         }
 
+        private UInt32[] MemoryCompoundLine(String s, String cmd, String cmd2)
+        {
+            List<UInt32> lines = new List<UInt32>();
+            List<String> assemblies = new List<String>();
+
+            var mode = s.Contains('!');
+            var match = Regex.Matches(this.CleanUp(s), RegisterStem);
+
+            if (mode)
+                assemblies.Add("MOV r15, #0");
+            var incrementReg = (mode) ? "r14" : "r15";
+            foreach (Capture capture in match)
+            {
+                var value = (String)capture.Value;
+
+                if (value == "r15") continue;
+
+                assemblies.Add(cmd + " " + value + ", [r14, r15]");
+
+                if (mode)
+                    assemblies.Add(cmd2 + incrementReg + ", " + incrementReg + ", #1");
+            }
+            foreach (String assemblyLine in assemblies)
+            {
+                var lineConversion = this.ConvertLine32(assemblyLine);
+                if(lineConversion != null)
+                    lines.AddRange(lineConversion);
+            }
+            return lines.ToArray();
+        }
+
         public UInt32[] ConvertLine32(String s)
         {
             var line = CleanUp(s);
@@ -136,6 +168,17 @@ namespace VProcessor.Software.Assembly
             var lastElement = parts.Length - 1;
             var index = 0;
             var upperCode = parts[0].ToUpper();
+
+            if((type & 8) == 8)
+            {
+                switch(upperCode)
+                {
+                    case "LDM":
+                        return this.MemoryCompoundLine(s, "LDRST", "SUB");
+                    case "STM":
+                        return this.MemoryCompoundLine(s, "STR", "ADD");
+                }
+            }
 
             var array = new UInt32[
                 ((stem & 2) == 2 || (type & 4) == 4 ) ? (Int32)table["Contains"] + 1 : 1];
@@ -241,7 +284,7 @@ namespace VProcessor.Software.Assembly
                     var regLine = (Int32) ((Hashtable) this.BranchRegistry[lookup["BranchKey"]])["MachineLine"];
                     var linkLine = (Int32) lookup["LinkMachineLine"];
 
-                    var difference = Subtract(regLine, linkLine);
+                    var difference = BitHelper.Subtract(regLine, linkLine);
                     var currentValue = memory.GetMemory(linkLine);
 
                     currentValue &= 0xFFFF0000;
@@ -253,17 +296,7 @@ namespace VProcessor.Software.Assembly
             }
         }
 
-        private static UInt32 Subtract(Int32 i, Int32 j)
-        {
-            var result = i - j;
-            UInt32 extract = 0;
-            if (result < 0)
-                extract =  (~(UInt32)Math.Abs(result) + 1);
-            else
-                extract = (UInt32) result;
-
-            return extract & 0xFFFF;
-        }
+        
 
         private static Hashtable CreatePropertyTable(String line)
         {
@@ -336,7 +369,10 @@ namespace VProcessor.Software.Assembly
         private static Byte GetConstantNumberCode(String s)
         {
             if (s.Contains("#0x"))
-                return Byte.Parse(s.Replace("#0x", ""), NumberStyles.HexNumber);
+                return (Byte)(Byte.Parse(s.Replace("#0x", ""), NumberStyles.HexNumber) & 0xF);
+
+            if (s.Contains("#-"))
+                return (Byte)(BitHelper.Negate(Int32.Parse(s.Replace("#", ""), NumberStyles.Number)) & 0xF);
 
             return (Byte)(Byte.Parse(s.Replace("#", "")) & 0xF);
         }
@@ -346,12 +382,20 @@ namespace VProcessor.Software.Assembly
             if (s.Contains("=0x"))
                 return Int32.Parse(s.Replace("=0x", ""), NumberStyles.HexNumber);
 
+            if (s.Contains("=-"))
+                return (Int32)BitHelper.Negate(Int32.Parse(s.Replace("=", ""), NumberStyles.Number));
+
             return Int32.Parse(s.Replace("=", ""));
         }
 
-        private static String CleanUp(String s)
+        private String CleanUp(String s)
         {
-            return new Regex(@"[ ]{2,}", RegexOptions.None).Replace(s.Replace("\t", " "), @" ").Trim().Replace(" ", ",").Replace("[", "").Replace("]", "").Replace(",,,", ",").Replace(",,", ",");
+            var keyword = s;
+            foreach(DictionaryEntry entry in this.KeywordLookup)
+            {
+                keyword = Regex.Replace(keyword, (String) entry.Key, (String) entry.Value);
+            }
+            return Regex.Replace(keyword.Replace("\t", " "), @"[ ]{2,}", @" ").Trim().Replace(" ", ",").Replace("[", "").Replace("]", "").Replace(",,,", ",").Replace(",,", ",");
         }
 
         private static UInt64 ParseValue64(String s, Int32 mode)

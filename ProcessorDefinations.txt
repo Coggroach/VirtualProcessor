@@ -48,7 +48,10 @@ Type 1: ADD rx, ry, C
 Type 2: LDR rx, C
 Type 3: BEQ C
 Type 5: STR rx, [ry, C]
+Type 7: INC rx
+Type 8: Compound Command.
             
+000 - 0 : C   - 0
 001 - 1 : K   - 1
 010 - 2 : F   - 3
 011 - 3 : FK  - 4
@@ -56,3 +59,33 @@ Type 5: STR rx, [ry, C]
 101 - 5 : RK  - 2
 110 - 6 : RF  - 4
 111 - 7 : RFK - 5
+
+Compound Commands
+-----------------
+
+LDM sp! {r0-r1, r3, r4-r5}^
+
+MOV rt, #0
+LDRST r0, [sp, rt]
+SUB sp, sp, #1
+LDRST r1, [sp, rt]
+SUB sp, sp, #1
+LDRST r3, [sp, rt]
+SUB sp, sp, #1
+LDRST r4, [sp, rt]
+SUB sp, sp, #1
+LDRST r5, [sp, rt]
+SUB sp, sp, #1
+PCST lr
+
+LDM sp {r0-r1, r3, r4-r5}^
+
+STM sp{r0-r1, r3, r4-r5}
+
+STR r0, [sp, #0]
+STR r1, [sp, #1]
+STR r3, [sp, #2]
+STR r4, [sp, #3]
+STR r5, [sp, #4]
+
+

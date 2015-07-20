@@ -170,10 +170,7 @@ namespace VProcessor.Hardware.Components
             {
                 var extract = (UInt32) BitHelper.BitExtract(this.instructionReg, 0, 0xFFFF);
 
-                if(extract >= 0x8000)
-                    extract = ~(~extract ^ 0xFFFF0000);
-
-                this.flashMemory += extract;
+                this.flashMemory += BitHelper.Negate4Bits(extract);
             }
             else if ((Pc & 1) == 1)
                 this.flashMemory++;
