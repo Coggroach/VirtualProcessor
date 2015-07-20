@@ -119,7 +119,9 @@ namespace VProcessor.Hardware.Components
             var Din = BitHelper.BitMatch(this.controlMemory.GetMemory(), 14, 1);
             var Bu = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15));
 
-            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 16, 0x3F)); 
+            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 16, 0x3F));
+            var stpc = BitHelper.BitMatch(this.controlMemory.GetMemory(), 22, 1);
+            var ldpc = BitHelper.BitMatch(this.controlMemory.GetMemory(), 23, 1);
 
             var na = (UInt32)BitHelper.BitExtract(this.controlMemory.GetMemory(), 48, 0xFFFF); // 63:48   
             
@@ -137,6 +139,8 @@ namespace VProcessor.Hardware.Components
                 this.datapath.SetRegister(dest, this.ChannelPacket.Value);
                 this.MemoryPullRequest = None;
             }
+            else if (ldpc && Lr == 1)
+                this.datapath.SetRegister(dest, this.flashMemory.GetRegister());
             else dataOut = this.datapath.FunctionUnit(fs, Lr);
 
             //Set up CAR
@@ -166,7 +170,9 @@ namespace VProcessor.Hardware.Components
             }
             
             //Set up PC
-            if ((Pc & 2) == 2 && this.branchControl.Branch(fs))
+            if(stpc && !ldpc)            
+                this.flashMemory.SetRegister(dataOut);            
+            else if ((Pc & 2) == 2 && this.branchControl.Branch(fs))
             {
                 var extract = (UInt32) BitHelper.BitExtract(this.instructionReg, 0, 0xFFFF);
 

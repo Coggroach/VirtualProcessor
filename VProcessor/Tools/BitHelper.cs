@@ -28,6 +28,11 @@ namespace VProcessor.Tools
             return (value >> bitPos) & mask;
         }
 
+        public static Boolean MatchMask(Byte value, Byte mask)
+        {
+            return (value & mask) == mask;
+        }
+
         public static UInt32 Negate4Bits(UInt32 extract)
         {
              if(extract >= 0x8000)

@@ -121,6 +121,29 @@ namespace VProcessor.Software.Assembly
             return memory;
         }
 
+        private UInt32[] PCCompoundLine(String[] parts, Int32 mode)
+        {            
+            var upperCode = parts[0].ToUpper();
+
+            var movLine = "MOV ";
+
+            movLine += mode == 0 ? "rt" : parts[1];
+            movLine += ", ";
+            movLine += mode == 1 ? "rt" : parts[1];
+
+            List<UInt32> lines = new List<UInt32>();
+
+            var code = (UInt32) Opcode.GetCodeAddress(upperCode) << 16;
+
+            if(mode == 1)
+                lines.Add(code);
+            lines.AddRange(this.ConvertLine32(movLine));
+            if(mode == 0)
+                lines.Add(code);
+
+            return lines.ToArray();
+        }
+
         private UInt32[] MemoryCompoundLine(String s, String cmd, String cmd2)
         {
             List<UInt32> lines = new List<UInt32>();
@@ -152,6 +175,11 @@ namespace VProcessor.Software.Assembly
             return lines.ToArray();
         }
 
+        private UInt32[] SubroutineCompoundLine(String[] parts, String type)
+        {
+
+        }
+
         public UInt32[] ConvertLine32(String s)
         {
             var line = CleanUp(s);
@@ -178,6 +206,14 @@ namespace VProcessor.Software.Assembly
                         return this.MemoryCompoundLine(s, "LDRST", "SUB");
                     case "STM":
                         return this.MemoryCompoundLine(s, "STR", "ADD");
+                    case "LDPC":
+                        return this.PCCompoundLine(parts, 1);
+                    case "STPC":
+                        return this.PCCompoundLine(parts, 0);
+                    case "BX":
+                        return this.SubroutineCompoundLine(parts, "Branch");
+                    case "^":
+                        return this.SubroutineCompoundLine(parts, "Return");
                 }
             }
 

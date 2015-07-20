@@ -162,6 +162,10 @@ namespace VProcessor.Tests.Hardware
                 var address = Opcode.GetCodeAddress(code);
                 var value = Opcode.GetCodeIndexer(code);
                 var memory = memoryChunk.GetMemory(address);
+                var type = Opcode.GetCodeType(code);
+
+                if ((type & 0xF) == 0)
+                    continue;
 
                 memory >>= 16;
                 memory &= 0xFFFFF;

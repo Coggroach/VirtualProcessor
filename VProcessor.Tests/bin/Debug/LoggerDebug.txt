@@ -7,3 +7,9 @@ External: 24
 Address: 31
 Internal: 26
 External: 24
+[Logger][16:00:06]:Code: LDPC Address: 75 Internal: 0External: 128
+[Logger][16:00:43]:Code: LDPC Address: 75 Internal: 0External: 128
+[Logger][16:02:31]:Code: LDPC Address: 76 Internal: 0External: 64
+[Logger][16:03:49]:Code: LDPC Address: 75 Internal: 0External: 128
+[Logger][16:04:25]:Code: LDM Address: 75 Internal: 0External: 128
+[Logger][16:08:46]:Code: LDM Address: 75 Internal: 0External: 128

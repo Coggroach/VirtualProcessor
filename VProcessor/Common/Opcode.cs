@@ -68,6 +68,9 @@ namespace VProcessor.Common
         public const Int32 BGT = 0xD;
         public const Int32 BLE = 0xE;
 
+        public const Int32 LDPC = 0x80;
+        public const Int32 STPC = 0x40;
+
         private static readonly Hashtable CodeTable;
         private static Int32 CurrentAddress;
         private static Int32 LastType;
@@ -160,6 +163,10 @@ namespace VProcessor.Common
             //Type 1: ADD rx, ry, C
             //Type 2: LDR rx, C
             //Type 3: BEQ C
+            //Type 4: LDPC
+            //Type 5: STR rx, [ry, C]
+            //Type 7: INC rx
+            //Type 8: Compound Command.
             
             //001 - 1 : K   - 1
             //010 - 2 : F   - 3
@@ -222,6 +229,9 @@ namespace VProcessor.Common
 
             Add("LDM", 0, 3, 0x80);
             Add("STM", 0, 0x80);
+
+            Add("LDPC", LDPC, 0x84);
+            Add("STPC", STPC, 0x84);
         }
     }
 }
