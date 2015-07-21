@@ -1,5 +1,13 @@
-MOV    r0,    #1
-MOV    r2,    #2
-LDPC    r13
-MOV    r0,    #0
-STPC    r0
+MOV    r0,    #14
+MOV    r1,    #12
+BX    subroutine
+ADD    r2,    r2,    #1
+B    end
+subroutine
+STM    sp!,    {r0,    r1}
+ADD    r2,    r1,    r2
+MOV r0, #0
+MOV r1, #0
+LDM    sp!,    {r0,    r1}
+^
+end

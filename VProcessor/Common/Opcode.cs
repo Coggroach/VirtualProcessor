@@ -232,6 +232,9 @@ namespace VProcessor.Common
 
             Add("LDPC", LDPC, 0x84);
             Add("STPC", STPC, 0x84);
+
+            Add("BX", 0, 0x80);
+            Add("^", 0, 0x80);
         }
     }
 }

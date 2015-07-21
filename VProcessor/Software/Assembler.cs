@@ -121,24 +121,24 @@ namespace VProcessor.Software.Assembly
             return memory;
         }
 
-        private UInt32[] PCCompoundLine(String[] parts, Int32 mode)
+        private UInt32[] PCCompoundLine(String[] parts, String mode)
         {            
             var upperCode = parts[0].ToUpper();
 
             var movLine = "MOV ";
 
-            movLine += mode == 0 ? "rt" : parts[1];
+            movLine += mode == "STPC" ? "rt" : parts[1];
             movLine += ", ";
-            movLine += mode == 1 ? "rt" : parts[1];
+            movLine += mode == "LDPC" ? "rt" : parts[1];
 
             List<UInt32> lines = new List<UInt32>();
 
             var code = (UInt32) Opcode.GetCodeAddress(upperCode) << 16;
 
-            if(mode == 1)
+            if (mode == "LDPC")
                 lines.Add(code);
             lines.AddRange(this.ConvertLine32(movLine));
-            if(mode == 0)
+            if (mode == "STPC")
                 lines.Add(code);
 
             return lines.ToArray();
@@ -159,12 +159,12 @@ namespace VProcessor.Software.Assembly
             {
                 var value = (String)capture.Value;
 
-                if (value == "r15") continue;
+                if (value == "r15" || value == "r14") continue;
 
                 assemblies.Add(cmd + " " + value + ", [r14, r15]");
 
                 if (mode)
-                    assemblies.Add(cmd2 + incrementReg + ", " + incrementReg + ", #1");
+                    assemblies.Add(cmd2 + " " + incrementReg + ", " + incrementReg + ", #1");
             }
             foreach (String assemblyLine in assemblies)
             {
@@ -177,10 +177,29 @@ namespace VProcessor.Software.Assembly
 
         private UInt32[] SubroutineCompoundLine(String[] parts, String type)
         {
+            if (parts.Length <= 0)
+                return null;
 
+            List<UInt32> list = new List<UInt32>();
+
+            if(parts[0] == type)
+            {
+                switch(type)
+                {
+                    case "BX":
+                        list.AddRange(this.ConvertLine32("LDPC lr"));
+                        list.AddRange(this.ConvertLine32("ADD lr, lr, #4"));
+                        list.AddRange(this.ConvertLine32("B " + parts[1], 3));
+                        break;
+                    case "^":
+                        list.AddRange(this.ConvertLine32("STPC lr"));
+                        break;
+                }
+            }
+            return list.ToArray();
         }
 
-        public UInt32[] ConvertLine32(String s)
+        public UInt32[] ConvertLine32(String s, Int32 machineBranchOffset = 0)
         {
             var line = CleanUp(s);
             var table = CreatePropertyTable(line);
@@ -207,20 +226,18 @@ namespace VProcessor.Software.Assembly
                     case "STM":
                         return this.MemoryCompoundLine(s, "STR", "ADD");
                     case "LDPC":
-                        return this.PCCompoundLine(parts, 1);
+                        return this.PCCompoundLine(parts, "LDPC");
                     case "STPC":
-                        return this.PCCompoundLine(parts, 0);
+                        return this.PCCompoundLine(parts, "STPC");
                     case "BX":
-                        return this.SubroutineCompoundLine(parts, "Branch");
+                        return this.SubroutineCompoundLine(parts, "BX");
                     case "^":
-                        return this.SubroutineCompoundLine(parts, "Return");
+                        return this.SubroutineCompoundLine(parts, "^");
                 }
             }
 
             var array = new UInt32[
                 ((stem & 2) == 2 || (type & 4) == 4 ) ? (Int32)table["Contains"] + 1 : 1];
-            for (var i = 0; i < array.Length; i++)
-                array[i] = 0;
 
             if (Regex.Match(parts[lastElement], ConstNumberStem).Success && (type & 4) == 4)
             {
@@ -244,7 +261,7 @@ namespace VProcessor.Software.Assembly
             
             if (type == 3)
             {
-                this.LinkBranch(parts[1]);
+                this.LinkBranch(parts[1], machineBranchOffset);
                 array[index] |= 1;
             }
                 
@@ -277,24 +294,24 @@ namespace VProcessor.Software.Assembly
             return array;
         }
 
-        private void RegisterBranch(String branchName)
+        private void RegisterBranch(String branchName, Int32 offset = 0)
         {
             if(!this.BranchRegistry.ContainsKey(branchName))
             {
                 var map = new Hashtable();
 
-                map.Add("MachineLine", this.MachineLine);
+                map.Add("MachineLine", this.MachineLine + offset);
                 map.Add("AssemblyLine", this.AssemblyLine);
 
                 this.BranchRegistry.Add(branchName, map);
             }
         }
 
-        private void LinkBranch(String branchName)
+        private void LinkBranch(String branchName, Int32 offset = 0)
         {
             var map = new Hashtable();
 
-            map.Add("LinkMachineLine", this.MachineLine);
+            map.Add("LinkMachineLine", this.MachineLine + offset);
             map.Add("LinkAssemblyLine", this.AssemblyLine);
             
             map.Add("BranchKey", branchName);
