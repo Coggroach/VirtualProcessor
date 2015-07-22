@@ -6,8 +6,8 @@ B    end
 subroutine
 STM    sp!,    {r0,    r1}
 ADD    r2,    r1,    r2
-MOV r0, #0
-MOV r1, #0
-LDM    sp!,    {r0,    r1}
+MOV    r0,    #0
+MOV    r1,    #0
+LDM    sp!,    {r1,    r0}
 ^
 end

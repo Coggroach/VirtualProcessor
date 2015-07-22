@@ -155,13 +155,13 @@ namespace VProcessor.Gui
 
             this.CurrentCommandTextBox.Text = carM.ToUpper();
             this.FlashMemoryBox.Text = ConvertMemoryToString(this.machine.GetFlashMemory());
-            var colour = this.EditorBox.BackColor;
-            for (var i = 0; i < this.EditorBox.Lines.Length; i++)
+
+            for (var i = 0; i < this.FlashMemoryBox.Lines.Length; i++)
             {
                 var charIndex = this.FlashMemoryBox.GetFirstCharIndexFromLine(i);
                 var current = this.FlashMemoryBox.Lines[i];
                 this.FlashMemoryBox.Select(charIndex, current.Length);
-                this.FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : colour;
+                this.FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : Color.WhiteSmoke;
             }
         }
         #endregion Update

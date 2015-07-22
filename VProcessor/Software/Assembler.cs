@@ -161,9 +161,12 @@ namespace VProcessor.Software.Assembly
 
                 if (value == "r15" || value == "r14") continue;
 
+                if (mode && cmd == "LDRST")
+                    assemblies.Add(cmd2 + " " + incrementReg + ", " + incrementReg + ", #1");
+
                 assemblies.Add(cmd + " " + value + ", [r14, r15]");
 
-                if (mode)
+                if (mode && cmd == "STR")
                     assemblies.Add(cmd2 + " " + incrementReg + ", " + incrementReg + ", #1");
             }
             foreach (String assemblyLine in assemblies)

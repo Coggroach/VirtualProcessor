@@ -4,38 +4,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VProcessor.Common;
+using VProcessor.Hardware.Interfacing;
 
 namespace VProcessor.Hardware.Components
 {
-    public class Datapath
+    public class Datapath : IDatapath
     {
         public static readonly Byte RegisterFileSize = (Byte) Math.Ceiling(Math.Log(UInt16.MaxValue, 2));
         private static readonly Byte RegisterContentsSize = (Byte) (RegisterFileSize*2);
         private const Byte ChannelOutSize = 3;
+
         public const Byte ChannelA = 0;
         public const Byte ChannelB = 1;
         public const Byte ChannelD = 2;
 
-        private UInt32[] registers;
+        public const Byte System = 0;
+        public const Byte Interupt = 1;
+        public const Byte Previlaged = 2;
+        public const Byte UnPrevilaged = 3;
+        public const Byte Modes = 2;
+
+        private RegisterFile[] registers;
+        private Byte mode;
         private Byte[] channels;
         private UInt32 constIn;
         private Boolean constEnable;
         private Register nzcv;
         public Datapath()
         {
-            this.registers = new UInt32[RegisterFileSize];
+            this.registers = new RegisterFile[Modes];
             this.channels = new Byte[ChannelOutSize];
             this.constIn = 0;
+            this.mode = System;
             this.Reset();
         }
 
         public void Reset()
         {
             for (var i = 0; i < this.registers.Length; i++)
-                this.registers[i] = 0;
+                this.registers[i].Reset();
             for (var i = 0; i < this.channels.Length; i++)
                 this.channels[i] = 0;
             this.nzcv = new Register();
+        }
+
+        public void SetMode(Byte mode)
+        {
+            this.mode = mode;
         }
 
         public void SetChannel(Byte channel, Byte value)
@@ -45,7 +60,7 @@ namespace VProcessor.Hardware.Components
 
         public void SetRegister(Byte register, UInt32 value)
         {
-            this.registers[register] = value;
+            this.registers[this.mode].SetRegister(register, value);
         }
 
         public void SetConstIn(Boolean b, UInt32 i)
@@ -56,17 +71,17 @@ namespace VProcessor.Hardware.Components
 
         public UInt32[] GetRegisters()
         {
-            return this.registers;
+            return this.registers[this.mode].GetRegisters();
         }
 
         public UInt32 GetRegister(Byte channel = 0)
         {
-            return (channel == ChannelB && this.constEnable) ? this.constIn : this.registers[this.channels[channel]];
+            return (channel == ChannelB && this.constEnable) ? this.constIn : this.registers[this.mode].GetRegister(this.channels[channel]);
         }
 
         private void SetChannelD(UInt32 value)
         {
-            this.registers[this.channels[ChannelD]] = value;
+            this.registers[this.mode].SetRegister(this.channels[ChannelD], value);
         }
 
         public Byte GetChannel(Byte channel)
