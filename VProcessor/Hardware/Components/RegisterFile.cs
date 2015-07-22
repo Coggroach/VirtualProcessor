@@ -18,22 +18,23 @@ namespace VProcessor.Hardware.Components
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            for (var i = 0; i < registers.Length; i++)
+                this.registers[i] = 0;
         }
 
-        public void SetRegister(byte register, uint value)
+        public void SetRegister(Byte register, UInt32 value)
         {
-            throw new NotImplementedException();
-        }
-        
-        public uint[] GetRegisters()
-        {
-            throw new NotImplementedException();
+            this.registers[register] = value;
         }
 
-        public uint GetRegister(byte register)
+        public UInt32[] GetRegisters()
         {
-            throw new NotImplementedException();
+            return this.registers;
+        }
+
+        public UInt32 GetRegister(Byte register)
+        {
+            return this.registers[register];
         }
     }
 }

@@ -42,7 +42,10 @@ namespace VProcessor.Hardware.Components
         public void Reset()
         {
             for (var i = 0; i < this.registers.Length; i++)
+            {
+                this.registers[i] = new RegisterFile();
                 this.registers[i].Reset();
+            }            
             for (var i = 0; i < this.channels.Length; i++)
                 this.channels[i] = 0;
             this.nzcv = new Register();
