@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Hardware.Interfacing
 {
-    public interface IPacket
+    public interface ITickable
     {
-
+        void Tick();
     }
 }

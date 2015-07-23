@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using VProcessor.Tools;
+using VProcessor.Software.Assembly;
 
 namespace VProcessor.Hardware.Memory
 {
-    using VProcessor.Tools;
-    using VProcessor.Software.Assembly;
 
     public class MemoryUnit<T>
     {
