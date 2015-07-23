@@ -87,6 +87,25 @@ SUB 	sp, sp, #1
 LDRST 	r5, [sp, rt]
 PCST 	lr
 
+LDM sp {r0-r1, r3, r4-r5}^
+
+MOV 	rt, sp
+SUB 	rt, rt, #1
+LDRST 	r0, [sp, rt]
+MOV 	rt, sp
+SUB 	rt, sp, #2
+LDRST 	r1, [sp, rt]
+MOV 	rt, sp
+SUB 	rt, rt, #3
+LDRST 	r3, [sp, rt]
+MOV 	rt, sp
+SUB 	rt, rt, #4
+LDRST 	r4, [sp, rt]
+MOV 	rt, sp
+SUB 	rt, rt, #5
+LDRST 	r5, [sp, rt]
+PCST 	lr
+
 STM sp {r0-r1, r3, r4-r5}
 
 MOV 	rt, #0
