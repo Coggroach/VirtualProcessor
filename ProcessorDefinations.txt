@@ -69,20 +69,22 @@ Compound Commands
 LDM sp! {r0-r1, r3, r4-r5}^
 
 MOV 	rt, #0
+SUB 	sp, sp, #1
 LDRST 	r0, [sp, rt]
-SUB 	sp, sp, #1
 MOV 	rt, #0
+SUB 	sp, sp, #1
 LDRST 	r1, [sp, rt]
+MOV 	rt, #0
 SUB 	sp, sp, #1
 MOV 	rt, #0
+SUB 	sp, sp, #1
 LDRST 	r3, [sp, rt]
-SUB 	sp, sp, #1
 MOV 	rt, #0
+SUB 	sp, sp, #1
 LDRST 	r4, [sp, rt]
-SUB 	sp, sp, #1
 MOV 	rt, #0
-LDRST 	r5, [sp, rt]
 SUB 	sp, sp, #1
+LDRST 	r5, [sp, rt]
 PCST 	lr
 
 STM sp {r0-r1, r3, r4-r5}

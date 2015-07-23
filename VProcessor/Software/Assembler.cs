@@ -162,11 +162,10 @@ namespace VProcessor.Software.Assembly
                 if (value == "r15" || value == "r14") continue;
 
                 if (mode && cmd == "LDRST")
+                {
                     assemblies.Add("MOV r15, #0");
-
-                if (mode && cmd == "LDRST")
                     assemblies.Add(cmd2 + " " + incrementReg + ", " + incrementReg + ", #1");
-
+                }
                 assemblies.Add(cmd + " " + value + ", [r14, r15]");
 
                 if (mode && cmd == "STR")
