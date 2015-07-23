@@ -152,7 +152,7 @@ namespace VProcessor.Software.Assembly
             var mode = s.Contains('!');
             var match = Regex.Matches(this.CleanUp(s), RegisterStem);
 
-            if (mode)
+            if (mode && cmd == "STR")
                 assemblies.Add("MOV r15, #0");
             var incrementReg = (mode) ? "r14" : "r15";
             foreach (Capture capture in match)
@@ -160,6 +160,9 @@ namespace VProcessor.Software.Assembly
                 var value = (String)capture.Value;
 
                 if (value == "r15" || value == "r14") continue;
+
+                if (mode && cmd == "LDRST")
+                    assemblies.Add("MOV r15, #0");
 
                 if (mode && cmd == "LDRST")
                     assemblies.Add(cmd2 + " " + incrementReg + ", " + incrementReg + ", #1");

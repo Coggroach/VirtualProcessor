@@ -68,32 +68,33 @@ Compound Commands
 
 LDM sp! {r0-r1, r3, r4-r5}^
 
-MOV rt, #0
-LDRST r0, [sp, rt]
-SUB sp, sp, #1
-LDRST r1, [sp, rt]
-SUB sp, sp, #1
-LDRST r3, [sp, rt]
-SUB sp, sp, #1
-LDRST r4, [sp, rt]
-SUB sp, sp, #1
-LDRST r5, [sp, rt]
-SUB sp, sp, #1
-PCST lr
+MOV 	rt, #0
+LDRST 	r0, [sp, rt]
+SUB 	sp, sp, #1
+MOV 	rt, #0
+LDRST 	r1, [sp, rt]
+SUB 	sp, sp, #1
+MOV 	rt, #0
+LDRST 	r3, [sp, rt]
+SUB 	sp, sp, #1
+MOV 	rt, #0
+LDRST 	r4, [sp, rt]
+SUB 	sp, sp, #1
+MOV 	rt, #0
+LDRST 	r5, [sp, rt]
+SUB 	sp, sp, #1
+PCST 	lr
 
-LDM sp {r0-r1, r3, r4-r5}^
+STM sp {r0-r1, r3, r4-r5}
 
-MOV rt, #0
-LDRST r0, [sp, rt]
-SUB rt, rt, #1
-LDRST r1, [sp, rt]
-SUB rt, rt, #1
-LDRST r3, [sp, rt]
-SUB rt, rt, #1
-LDRST r4, [sp, rt]
-SUB rt, rt, #1
-LDRST r5, [sp, rt]
-SUB rt, rt, #1
-PCST lr
-
-STM sp{r0-r1, r3, r4-r5}
+MOV 	rt, #0
+STR 	r0, [sp, rt]
+ADD 	rt, rt, #1
+STR 	r1, [sp, rt]
+ADD 	rt, rt, #1
+STR 	r3, [sp, rt]
+ADD 	rt, rt, #1
+STR 	r4, [sp, rt]
+ADD 	rt, rt, #1
+STR 	r5, [sp, rt]
+ADD 	rt, rt, #1
