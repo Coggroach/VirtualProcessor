@@ -30,7 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditorForm));
             this.RegisterFile = new System.Windows.Forms.DataGridView();
-            this.CommandBox = new System.Windows.Forms.TextBox();
             this.EditorBox = new System.Windows.Forms.RichTextBox();
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,29 +74,23 @@
             this.RegisterFile.AllowUserToResizeRows = false;
             this.RegisterFile.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.RegisterFile.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.RegisterFile.ColumnHeadersVisible = false;
             this.RegisterFile.GridColor = System.Drawing.SystemColors.Control;
             this.RegisterFile.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.RegisterFile.Location = new System.Drawing.Point(12, 55);
             this.RegisterFile.Name = "RegisterFile";
+            this.RegisterFile.RowHeadersVisible = false;
             this.RegisterFile.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.RegisterFile.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.RegisterFile.Size = new System.Drawing.Size(231, 495);
+            this.RegisterFile.Size = new System.Drawing.Size(201, 495);
             this.RegisterFile.TabIndex = 0;
-            // 
-            // CommandBox
-            // 
-            this.CommandBox.Location = new System.Drawing.Point(249, 530);
-            this.CommandBox.Name = "CommandBox";
-            this.CommandBox.Size = new System.Drawing.Size(523, 20);
-            this.CommandBox.TabIndex = 1;
-            this.CommandBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CommandBox_KeyPress);
             // 
             // EditorBox
             // 
             this.EditorBox.AcceptsTab = true;
-            this.EditorBox.Location = new System.Drawing.Point(249, 81);
+            this.EditorBox.Location = new System.Drawing.Point(219, 55);
             this.EditorBox.Name = "EditorBox";
-            this.EditorBox.Size = new System.Drawing.Size(444, 443);
+            this.EditorBox.Size = new System.Drawing.Size(420, 495);
             this.EditorBox.TabIndex = 2;
             this.EditorBox.Text = "";
             this.EditorBox.SelectionChanged += new System.EventHandler(this.EditorBox_SelectionChanged);
@@ -239,14 +232,14 @@
             this.spacesToolStripMenuItem,
             this.tabsToolStripMenuItem});
             this.indentModeToolStripMenuItem.Name = "indentModeToolStripMenuItem";
-            this.indentModeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.indentModeToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.indentModeToolStripMenuItem.Text = "Indent Mode";
             // 
             // spacesToolStripMenuItem
             // 
             this.spacesToolStripMenuItem.CheckOnClick = true;
             this.spacesToolStripMenuItem.Name = "spacesToolStripMenuItem";
-            this.spacesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.spacesToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.spacesToolStripMenuItem.Text = "Spaces";
             this.spacesToolStripMenuItem.Click += new System.EventHandler(this.spacesToolStripMenuItem_Click);
             // 
@@ -256,7 +249,7 @@
             this.tabsToolStripMenuItem.CheckOnClick = true;
             this.tabsToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tabsToolStripMenuItem.Name = "tabsToolStripMenuItem";
-            this.tabsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tabsToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.tabsToolStripMenuItem.Text = "Tabs";
             this.tabsToolStripMenuItem.Click += new System.EventHandler(this.tabsToolStripMenuItem_Click);
             // 
@@ -267,14 +260,14 @@
             this.size2toolStripMenuItem,
             this.size4toolStripMenuItem});
             this.indentSizeToolStripMenuItem.Name = "indentSizeToolStripMenuItem";
-            this.indentSizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.indentSizeToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.indentSizeToolStripMenuItem.Text = "Indent Size";
             // 
             // size1toolStripMenuItem
             // 
             this.size1toolStripMenuItem.CheckOnClick = true;
             this.size1toolStripMenuItem.Name = "size1toolStripMenuItem";
-            this.size1toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.size1toolStripMenuItem.Size = new System.Drawing.Size(80, 22);
             this.size1toolStripMenuItem.Text = "1";
             this.size1toolStripMenuItem.Click += new System.EventHandler(this.size1toolStripMenuItem_Click);
             // 
@@ -284,7 +277,7 @@
             this.size2toolStripMenuItem.CheckOnClick = true;
             this.size2toolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.size2toolStripMenuItem.Name = "size2toolStripMenuItem";
-            this.size2toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.size2toolStripMenuItem.Size = new System.Drawing.Size(80, 22);
             this.size2toolStripMenuItem.Text = "2";
             this.size2toolStripMenuItem.Click += new System.EventHandler(this.size2toolStripMenuItem_Click);
             // 
@@ -292,7 +285,7 @@
             // 
             this.size4toolStripMenuItem.CheckOnClick = true;
             this.size4toolStripMenuItem.Name = "size4toolStripMenuItem";
-            this.size4toolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.size4toolStripMenuItem.Size = new System.Drawing.Size(80, 22);
             this.size4toolStripMenuItem.Text = "4";
             this.size4toolStripMenuItem.Click += new System.EventHandler(this.size4toolStripMenuItem_Click);
             // 
@@ -312,18 +305,18 @@
             // 
             // CurrentCommandTextBox
             // 
-            this.CurrentCommandTextBox.Location = new System.Drawing.Point(249, 55);
+            this.CurrentCommandTextBox.Location = new System.Drawing.Point(645, 55);
             this.CurrentCommandTextBox.Name = "CurrentCommandTextBox";
             this.CurrentCommandTextBox.ReadOnly = true;
-            this.CurrentCommandTextBox.Size = new System.Drawing.Size(522, 20);
+            this.CurrentCommandTextBox.Size = new System.Drawing.Size(126, 20);
             this.CurrentCommandTextBox.TabIndex = 4;
             // 
             // FlashMemoryBox
             // 
-            this.FlashMemoryBox.Location = new System.Drawing.Point(699, 81);
+            this.FlashMemoryBox.Location = new System.Drawing.Point(645, 81);
             this.FlashMemoryBox.Name = "FlashMemoryBox";
             this.FlashMemoryBox.ReadOnly = true;
-            this.FlashMemoryBox.Size = new System.Drawing.Size(73, 443);
+            this.FlashMemoryBox.Size = new System.Drawing.Size(127, 469);
             this.FlashMemoryBox.TabIndex = 5;
             this.FlashMemoryBox.Text = "";
             // 
@@ -374,12 +367,12 @@
             this.Controls.Add(this.FlashMemoryBox);
             this.Controls.Add(this.CurrentCommandTextBox);
             this.Controls.Add(this.EditorBox);
-            this.Controls.Add(this.CommandBox);
             this.Controls.Add(this.RegisterFile);
             this.Controls.Add(this.MenuStrip);
             this.MainMenuStrip = this.MenuStrip;
             this.Name = "EditorForm";
             this.Text = "Virtual Processor";
+            this.Load += new System.EventHandler(this.EditorForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).EndInit();
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
@@ -393,7 +386,6 @@
         #endregion
 
         private System.Windows.Forms.DataGridView RegisterFile;
-        private System.Windows.Forms.TextBox CommandBox;
         private System.Windows.Forms.RichTextBox EditorBox;
         private System.Windows.Forms.MenuStrip MenuStrip;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

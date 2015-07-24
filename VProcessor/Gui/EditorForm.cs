@@ -67,13 +67,14 @@ namespace VProcessor.Gui
             var registers = this.machine.GetRegisters();
             this.RegisterFile.ColumnCount = 2;
             this.RegisterFile.RowCount = this.machine.GetRegisters().Length + 3;
+            this.RegisterFile.Font = new Font("Arial", 12);
         }
 
         private void SetupToolBar()
         {
             //this.ToolFontType.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
             this.ToolFontSize.Items.AddRange(new Object[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 });
-            this.ToolFontSize.SelectedItem = 12;
+            this.ToolFontSize.SelectedItem = 14;
         }
 
         private void SetupEditorBoxText()
@@ -156,12 +157,16 @@ namespace VProcessor.Gui
             this.CurrentCommandTextBox.Text = carM.ToUpper();
             this.FlashMemoryBox.Text = ConvertMemoryToString(this.machine.GetFlashMemory());
 
+            this.FlashMemoryBox.SelectAll();
+            this.FlashMemoryBox.SelectionFont = new Font("Arial", 12);
+            this.FlashMemoryBox.DeselectAll();
+
             for (var i = 0; i < this.FlashMemoryBox.Lines.Length; i++)
             {
                 var charIndex = this.FlashMemoryBox.GetFirstCharIndexFromLine(i);
                 var current = this.FlashMemoryBox.Lines[i];
                 this.FlashMemoryBox.Select(charIndex, current.Length);
-                this.FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : Color.WhiteSmoke;
+                this.FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : Color.WhiteSmoke;                
             }
         }
         #endregion Update
@@ -365,5 +370,10 @@ namespace VProcessor.Gui
 
 
         #endregion EventHandling
+
+        private void EditorForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
