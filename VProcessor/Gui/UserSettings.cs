@@ -22,7 +22,8 @@ namespace VProcessor.Gui
                 FlashFileLocation = Settings.FlashMemoryLocation,
                 FileMode = VPFile.Hexadecimal,
                 IndentMode = IndentSpace,
-                IndentSize = IndentSize1
+                IndentSize = IndentSize1,
+                Highlight = true
             };
         }
 
@@ -30,12 +31,13 @@ namespace VProcessor.Gui
         public const Int32 IndentTab = 1;
         public const Int32 IndentSize1 = 1;
         public const Int32 IndentSize2 = 2;
-        public const Int32 IndentSize4 = 4;
+        public const Int32 IndentSize4 = 4;        
 
         public String FlashFileLocation;
         public Int32 FileMode;
         public Int32 IndentMode;
         public Int32 IndentSize;
+        public Boolean Highlight;
 
         private String[] lines;        
 
@@ -54,6 +56,7 @@ namespace VProcessor.Gui
                 this.FileMode = this.GetInt32Value("FileMode", defaultSettings.FileMode);
                 this.IndentMode = this.GetInt32Value("IndentMode", defaultSettings.IndentMode);
                 this.IndentSize = this.GetInt32Value("IndentSize", defaultSettings.IndentSize);
+                this.Highlight = this.GetBooleanValue("Highlight", defaultSettings.Highlight);
             }
             return this;
         }
@@ -76,6 +79,16 @@ namespace VProcessor.Gui
                 return defaultValue;
 
             return unparsed;
+        }
+
+        private Boolean GetBooleanValue(String match, Boolean defaultValue)
+        {
+            var unparsed = this.GetUnparsedValue(match);
+
+            if (unparsed == null)
+                return defaultValue;
+
+            return Boolean.Parse(unparsed);
         }
 
         private String GetUnparsedValue(String match)

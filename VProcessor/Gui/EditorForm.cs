@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using VProcessor.Hardware;
 using VProcessor.Software.Assembly;
@@ -120,6 +113,72 @@ namespace VProcessor.Gui
             this.EditorBox.Text = parser.Replace(" ", indentMode);
         }
 
+        private Int32 HighlightDefaultEditorBox()
+        {
+            var save = this.EditorBox.SelectionStart;
+            this.EditorBox.SelectAll();
+            this.EditorBox.SelectionColor = Color.Black;
+            this.EditorBox.DeselectAll();
+            return save;
+        }
+
+        private void HighlightEditorBox()
+        {
+            
+            var save = this.HighlightDefaultEditorBox();
+
+            if (!this.settings.Highlight)
+                return;
+
+            for (var i = 0; i < this.EditorBox.Lines.Length; i++)
+            {
+                var charIndex = this.EditorBox.GetFirstCharIndexFromLine(i);
+
+                try
+                {
+                    this.HighlightOpcodes(charIndex);
+                    this.HighlightRegisters(charIndex);
+                    this.HighlightNumbers(i, charIndex);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is ArgumentOutOfRangeException)
+                        break;
+
+                    if (!(ex is IndexOutOfRangeException))
+                        throw;
+                }
+            }
+            this.EditorBox.DeselectAll();
+            this.EditorBox.SelectionStart = save;
+        }
+        private void HighlightOpcodes(int index)
+        {
+            this.EditorBox.Select(index, 3);
+
+            var selection = this.EditorBox.SelectedText.Trim();
+            if (Opcode.IsValidCode(selection))
+                this.EditorBox.SelectionColor = Color.DarkCyan;
+        }
+
+        private void HighlightRegisters(int index)
+        {
+
+        }
+
+        private void HighlightNumbers(int index, int charIndex)
+        {
+            var current = this.EditorBox.Lines[index];
+            var numIndicatorArray = new String[] {"#", "="};
+
+            for(var i = 0; i < numIndicatorArray.Length; i++)
+            if (current.Contains(numIndicatorArray[i]))
+            {
+                var numIndex = current.IndexOf(numIndicatorArray[i]);
+                this.EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
+                this.EditorBox.SelectionColor = Color.PaleVioletRed;
+            }
+        }
         public void UpdateRegisterFile()
         {
             var registers = this.machine.GetRegisters();
@@ -179,7 +238,7 @@ namespace VProcessor.Gui
 
         private void EditorBox_TextChanged(Object sender, EventArgs e)
         {
-
+            this.HighlightEditorBox();
         }
 
         private void tickToolStripMenuItem_Click(Object sender, EventArgs e)
@@ -368,12 +427,19 @@ namespace VProcessor.Gui
             this.Update();
         }
 
-
-        #endregion EventHandling
-
         private void EditorForm_Load(object sender, EventArgs e)
         {
 
         }
+
+        private void highlightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.highlightToolStripMenuItem.Checked = !this.highlightToolStripMenuItem.Checked;
+            this.settings.Highlight = this.highlightToolStripMenuItem.Checked;
+            this.HighlightEditorBox();
+        }
+
+        #endregion EventHandling
+
     }
 }

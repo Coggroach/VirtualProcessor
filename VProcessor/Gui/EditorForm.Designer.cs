@@ -61,6 +61,7 @@
             this.TickButton = new System.Windows.Forms.ToolStripButton();
             this.ToolFontSize = new System.Windows.Forms.ToolStripComboBox();
             this.TickCounter = new System.Windows.Forms.ToolStripTextBox();
+            this.highlightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.ToolBar.SuspendLayout();
@@ -221,7 +222,8 @@
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.indentModeToolStripMenuItem,
-            this.indentSizeToolStripMenuItem});
+            this.indentSizeToolStripMenuItem,
+            this.highlightToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -358,6 +360,16 @@
             this.TickCounter.Size = new System.Drawing.Size(50, 25);
             this.TickCounter.Text = "1";
             // 
+            // highlightToolStripMenuItem
+            // 
+            this.highlightToolStripMenuItem.Checked = true;
+            this.highlightToolStripMenuItem.CheckOnClick = true;
+            this.highlightToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.highlightToolStripMenuItem.Name = "highlightToolStripMenuItem";
+            this.highlightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.highlightToolStripMenuItem.Text = "Highlight";
+            this.highlightToolStripMenuItem.Click += new System.EventHandler(this.highlightToolStripMenuItem_Click);
+            // 
             // EditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -417,5 +429,6 @@
         private System.Windows.Forms.ToolStripMenuItem size1toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem size2toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem size4toolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem highlightToolStripMenuItem;
     }
 }
