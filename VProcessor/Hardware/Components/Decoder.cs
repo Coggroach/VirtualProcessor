@@ -7,7 +7,7 @@ using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Components
 {
-    class Decoder
+    public class Decoder
     {
         public UInt64 Memory { get; set; }
 

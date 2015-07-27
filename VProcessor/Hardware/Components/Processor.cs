@@ -1,6 +1,5 @@
 ﻿using System;
 using VProcessor.Tools;
-using VProcessor.Software.Assembly;
 using VProcessor.Hardware.Memory;
 using VProcessor.Common;
 

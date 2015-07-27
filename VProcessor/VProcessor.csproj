@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Gui\UserSettings.cs" />
+    <Compile Include="Hardware\Components\Decoder.cs" />
     <Compile Include="Hardware\Components\RegisterFile.cs" />
     <Compile Include="Hardware\Interfacing\IBus.cs" />
     <Compile Include="Hardware\Interfacing\IConnectable.cs" />
@@ -52,7 +53,7 @@
     <Compile Include="Hardware\Interfacing\IPacket.cs" />
     <Compile Include="Hardware\Interfacing\ITickable.cs" />
     <Compile Include="Hardware\Memory\MemoryChannel.cs" />
-    <Compile Include="Hardware\Memory\MemoryController.cs" />    
+    <Compile Include="Hardware\Memory\MemoryController.cs" />
     <Compile Include="Common\IInformable.cs" />
     <Compile Include="Hardware\Machine.cs" />
     <Compile Include="Hardware\Memory\MemoryChannelPacket.cs" />

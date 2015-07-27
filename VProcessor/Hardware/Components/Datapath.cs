@@ -146,6 +146,11 @@ namespace VProcessor.Hardware.Components
             return f;
         }
 
+        public UInt32 FunctionUnit(Byte code, Byte load)
+        {
+            return this.FunctionUnit(code, load == 1);
+        }
+
         private UInt32 Shifter(UInt32 b, UInt32 direction, Boolean barrel = false)
         {
             switch (direction)
