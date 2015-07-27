@@ -52,8 +52,7 @@
     <Compile Include="Hardware\Interfacing\IPacket.cs" />
     <Compile Include="Hardware\Interfacing\ITickable.cs" />
     <Compile Include="Hardware\Memory\MemoryChannel.cs" />
-    <Compile Include="Hardware\Memory\MemoryController.cs" />
-    <Compile Include="Hardware\Memory\MemoryBus.cs" />
+    <Compile Include="Hardware\Memory\MemoryController.cs" />    
     <Compile Include="Common\IInformable.cs" />
     <Compile Include="Hardware\Machine.cs" />
     <Compile Include="Hardware\Memory\MemoryChannelPacket.cs" />
