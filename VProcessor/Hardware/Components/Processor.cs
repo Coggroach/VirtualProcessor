@@ -115,7 +115,15 @@ namespace VProcessor.Hardware.Components
             this.datapath.SetConstIn(this.decoder.ConstantIn, this.decoder.Constant);
 
             //Change Mode
-            if (this.decoder.Mode != 0) this.datapath.SetMode(this.decoder.Mode);          
+            if (this.decoder.Mode != 0) 
+                this.datapath.SetMode(this.decoder.Mode);  
+        
+            //Check if Interrupt Polled
+            var interrupt = this.interruptChannel.Pop();
+            if(interrupt != null)
+            {
+                //do Interrupt
+            }
 
             //Move Data in Datapath
             var dataOut = (UInt32) 0;
@@ -128,7 +136,8 @@ namespace VProcessor.Hardware.Components
             }
             else if (this.decoder.LoadPc && this.decoder.LoadRegister)
                 this.datapath.SetRegister(this.decoder.ChannelD, this.flashMemory.GetRegister());
-            else dataOut = this.datapath.FunctionUnit(this.decoder.FunctionCode, this.decoder.LoadRegister);
+            else 
+                dataOut = this.datapath.FunctionUnit(this.decoder.FunctionCode, this.decoder.LoadRegister);
 
             //Set up CAR
             var muxCar = (this.decoder.CarControl & 2) == 2 ? this.decoder.Opcode : this.decoder.NextAddress;

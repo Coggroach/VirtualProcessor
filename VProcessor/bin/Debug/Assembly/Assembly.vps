@@ -1,3 +1,4 @@
-﻿LDR	r0,	=0x50012;
-LDR	r1,	=0x50100;
-ADD	r2,	r0,	r1;
+Mod    Previlaged
+Mov    r0,    #10
+Mov    r1,    #11
+Add    r2,    r1,    r0

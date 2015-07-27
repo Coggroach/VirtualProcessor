@@ -57,7 +57,7 @@ namespace VProcessor.Software.Assembly
             this.KeywordLookup.Add("lr", "r13");            
             this.KeywordLookup.Add("rt", "r15");
             this.KeywordLookup.Add("System", "#0");
-            this.KeywordLookup.Add("Interupt", "#1");
+            this.KeywordLookup.Add("Interrupt", "#1");
             this.KeywordLookup.Add("Previlaged", "#2");
             this.KeywordLookup.Add("UnPrevilaged", "#3");
         }
@@ -195,6 +195,9 @@ namespace VProcessor.Software.Assembly
             var array = new UInt32[1];
             var addressOffset = GetConstantNumberCode(parts[1]);
             var address = (UInt32)Opcode.GetCodeAddress(parts[0].ToUpper()) + addressOffset;
+
+            if (addressOffset > 3)
+                return null;
 
             array[0] |= address << 16;
             return array;

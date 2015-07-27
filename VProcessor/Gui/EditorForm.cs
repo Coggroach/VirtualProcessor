@@ -44,8 +44,7 @@ namespace VProcessor.Gui
             this.SetupUserSettings();
             this.SetupRegisterFile();
             this.SetupEditorBoxText();
-            this.SetupToolBar();
-            this.HighlightEditorBox();
+            this.SetupToolBar();            
         }
 
         public void SetupUserSettings()
@@ -113,6 +112,7 @@ namespace VProcessor.Gui
                 indentMode += indentMode;
 
             this.EditorBox.Text = parser.Replace(" ", indentMode);
+            this.HighlightEditorBox();
         }
 
        
@@ -177,6 +177,9 @@ namespace VProcessor.Gui
 
         private void HighlightEditorBox(String mode = "All")
         {
+            if (this.EditorBox.Text.Length <= 0)
+                return;
+
             var save = this.EditorBox.SelectionStart;
             var charIndex = 0;
             var line = 0;
@@ -278,7 +281,7 @@ namespace VProcessor.Gui
         #region EventHandling
         private void EditorBox_SelectionChanged(Object sender, EventArgs e)
         {            
-      
+            
         }
 
         private void EditorBox_TextChanged(Object sender, EventArgs e)
@@ -481,7 +484,7 @@ namespace VProcessor.Gui
         {
             this.highlightToolStripMenuItem.Checked = !this.highlightToolStripMenuItem.Checked;
             this.settings.Highlight = this.highlightToolStripMenuItem.Checked;
-            this.HighlightEditorBox();
+            this.HighlightEditorBox("All");
         }
 
         #endregion EventHandling
