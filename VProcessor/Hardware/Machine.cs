@@ -8,13 +8,15 @@ using VProcessor.Tools;
 using VProcessor.Hardware.Components;
 using VProcessor.Hardware.Memory;
 using VProcessor.Common;
+using VProcessor.Hardware.Interrupts;
 
 namespace VProcessor.Hardware
 {
     public class Machine : IInformable
     {
         private Processor processor;
-        private MemoryController controller;
+        private MemoryController memory;
+        private InterruptController interrupts;
         private IAssembler assembler;
 
         public Machine() : this(new Assembler())
@@ -28,13 +30,14 @@ namespace VProcessor.Hardware
             this.processor = new Processor(
                 this.assembler.Compile64(new VPFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
                 this.assembler.Compile32(new VPFile(Settings.FlashMemoryLocation), Settings.FlashMemorySize));
-            this.controller = new MemoryController(this.processor.GetMemoryDualChannel());
+            this.interrupts = new InterruptController(this.processor.GetInterruptChannel());
+            this.memory = new MemoryController(this.processor.GetMemoryDualChannel());
         }
 
         public void Tick()
         {
             this.processor.Tick();
-            this.controller.Tick();            
+            this.memory.Tick();            
         }
 
         public void Reset()

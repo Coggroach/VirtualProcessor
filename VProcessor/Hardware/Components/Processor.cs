@@ -2,6 +2,7 @@
 using VProcessor.Tools;
 using VProcessor.Hardware.Memory;
 using VProcessor.Common;
+using VProcessor.Hardware.Interrupts;
 
 namespace VProcessor.Hardware.Components
 {    
@@ -13,7 +14,8 @@ namespace VProcessor.Hardware.Components
         private Brancher branchControl;
         private Register instruction;
         private Register status;
-        private MemoryDualChannel channel;
+        private MemoryDualChannel memoryChannel;
+        private InterruptChannel interruptChannel;
         private Decoder decoder;
 
         public MemoryChannelPacket ChannelPacket { get; set; }
@@ -27,12 +29,18 @@ namespace VProcessor.Hardware.Components
             this.decoder = new Decoder();
             this.instruction = new Register(this.flashMemory.GetMemory());
             this.branchControl = new Brancher(this.instruction);            
-            this.channel = new MemoryDualChannel();
+            this.memoryChannel = new MemoryDualChannel();
+            this.interruptChannel = new InterruptChannel();
         }
 
         public MemoryDualChannel GetMemoryDualChannel()
         {
-            return this.channel;
+            return this.memoryChannel;
+        }
+
+        public InterruptChannel GetInterruptChannel()
+        {
+            return this.interruptChannel;
         }
 
         public UInt32[] GetRegisters()
@@ -113,10 +121,10 @@ namespace VProcessor.Hardware.Components
             var dataOut = (UInt32) 0;
             if (this.decoder.DataIn && this.decoder.LoadRegister) 
                 this.datapath.SetRegister(this.decoder.ChannelD, (UInt32)this.flashMemory.GetMemory());
-            else if (this.channel.MemoryPullRequest == MemoryDualChannelRequest.Complete && this.decoder.LoadRegister)
+            else if (this.memoryChannel.MemoryPullRequest == MemoryDualChannelRequest.Complete && this.decoder.LoadRegister)
             {
                 this.datapath.SetRegister(this.decoder.ChannelD, this.ChannelPacket.Value);
-                this.channel.MemoryPullRequest = MemoryDualChannelRequest.None;
+                this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.None;
             }
             else if (this.decoder.LoadPc && this.decoder.LoadRegister)
                 this.datapath.SetRegister(this.decoder.ChannelD, this.flashMemory.GetRegister());
@@ -126,7 +134,7 @@ namespace VProcessor.Hardware.Components
             var muxCar = (this.decoder.CarControl & 2) == 2 ? this.decoder.Opcode : this.decoder.NextAddress;
             if (this.decoder.MemoryInterrupt)
             {
-                if (this.channel.MemoryPullRequest == MemoryDualChannelRequest.Complete)
+                if (this.memoryChannel.MemoryPullRequest == MemoryDualChannelRequest.Complete)
                     this.controlMemory++;
             }
             else if ((this.decoder.CarControl & 1) == 0)
@@ -136,7 +144,7 @@ namespace VProcessor.Hardware.Components
 
 
             //Moving Data to RAM
-            if (this.decoder.MemoryIn ^ this.decoder.MemoryOut && this.channel.MemoryPullRequest != MemoryDualChannelRequest.Complete)
+            if (this.decoder.MemoryIn ^ this.decoder.MemoryOut && this.memoryChannel.MemoryPullRequest != MemoryDualChannelRequest.Complete)
             {
                 this.ChannelPacket = new MemoryChannelPacket()
                 {
@@ -145,10 +153,10 @@ namespace VProcessor.Hardware.Components
                     Offset = (Int32)this.datapath.GetRegister(Datapath.ChannelB)
                 };
                 if (this.decoder.MemoryOut) 
-                    this.channel.MemoryPullRequest = MemoryDualChannelRequest.Push;
+                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Push;
                 if (this.decoder.MemoryIn) 
-                    this.channel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
-                this.channel.PushOutput(this.ChannelPacket);
+                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
+                this.memoryChannel.PushOutput(this.ChannelPacket);
             }
             
             //Set up PC
@@ -167,6 +175,6 @@ namespace VProcessor.Hardware.Components
 
             //Set up IR
             if (this.decoder.StoreInstruction == 1) this.instruction.Value = this.flashMemory.GetMemory();
-        }
+        }        
     }
 }

@@ -3,22 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VProcessor.Hardware.Interfacing;
 
 namespace VProcessor.Hardware.Memory
 {
-    public class MemoryChannel
+    public class MemoryChannel : Channel
     {
-        public const Byte Idle = 0;        
-        public const Byte Process = 1;
-
-        private List<MemoryChannelPacket> channel;
-        public Byte Status { get; set; } 
-
-        public MemoryChannel()
-        {
-            this.channel = new List<MemoryChannelPacket>();
-            this.Status = Idle;
-        }
+        public MemoryChannel() : base() { }
 
         public void Push(Int32 a, UInt32 v, Int32 o)
         {
@@ -28,33 +19,6 @@ namespace VProcessor.Hardware.Memory
                 Value = v,
                 Offset = o
             });
-        }
-
-        public void Push(MemoryChannelPacket c)
-        {
-            this.channel.Add(c);
-            this.Status = Process;
-        }
-
-        public MemoryChannelPacket Pop()
-        {
-            if (this.IsEmpty())
-            {
-                this.Status = Idle;
-                return null;
-            }
-
-            var component = this.channel[0];
-            this.channel.RemoveAt(0);
-
-            if (this.IsEmpty()) this.Status = Idle;
-
-            return component;
-        }
-
-        public Boolean IsEmpty()
-        {
-            return this.channel.Count == 0;
-        }
+        }       
     }
 }

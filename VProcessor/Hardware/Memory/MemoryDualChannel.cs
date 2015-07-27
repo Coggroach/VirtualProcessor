@@ -50,14 +50,14 @@ namespace VProcessor.Hardware.Memory
         {
             var pop =  this.input.Pop();
             this.UpdateStatus();
-            return pop;
+            return (MemoryChannelPacket) pop;
         }
 
         public MemoryChannelPacket PopOutput()
         {
             var pop = this.output.Pop();
             this.UpdateStatus();
-            return pop;
+            return (MemoryChannelPacket) pop;
         }
     }
 }

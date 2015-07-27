@@ -47,11 +47,15 @@
     <Compile Include="Gui\UserSettings.cs" />
     <Compile Include="Hardware\Components\Decoder.cs" />
     <Compile Include="Hardware\Components\RegisterFile.cs" />
+    <Compile Include="Hardware\Interfacing\Channel.cs" />
     <Compile Include="Hardware\Interfacing\IBus.cs" />
     <Compile Include="Hardware\Interfacing\IConnectable.cs" />
     <Compile Include="Hardware\Interfacing\IDatapath.cs" />
     <Compile Include="Hardware\Interfacing\IPacket.cs" />
     <Compile Include="Hardware\Interfacing\ITickable.cs" />
+    <Compile Include="Hardware\Interrupts\InterruptChannel.cs" />
+    <Compile Include="Hardware\Interrupts\InterruptController.cs" />
+    <Compile Include="Hardware\Interrupts\InterruptPacket.cs" />
     <Compile Include="Hardware\Memory\MemoryChannel.cs" />
     <Compile Include="Hardware\Memory\MemoryController.cs" />
     <Compile Include="Common\IInformable.cs" />
@@ -123,9 +127,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Hardware\Wiring\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -17,18 +17,20 @@ namespace VProcessor.Hardware.Interrupts
         private UInt32[] addresses;
         private Boolean waiting;
 
-        public InterruptPacket Packet { get; set; }
-        public UInt32 RequestId { get; set; }
+        private Channel channel;
+        
+        public UInt32 RequestInput { get; set; }
 
         private const Byte Int32Size = 32;
 
-        public InterruptController()
+        public InterruptController(InterruptChannel channel)
         {
             this.irr = new Register();
             this.isr = new Register();
             this.imr = new Register();
             this.addresses = new UInt32[Int32Size];
             this.waiting = false;
+            this.channel = channel;
         }
 
         public void SetAddress(Byte index, UInt32 value)
@@ -86,9 +88,9 @@ namespace VProcessor.Hardware.Interrupts
 
         public void Tick()
         {
-            this.Request(this.RequestId);
-            if(!this.waiting)
-               this.Packet = this.CreateInterruptRequest();                       
+            this.Request(this.RequestInput);
+            if (!this.waiting)
+                this.channel.Push(this.CreateInterruptRequest());
         }
     }
 }
