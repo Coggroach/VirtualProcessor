@@ -33,3 +33,4 @@ C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.Properties.Resources.re
 C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csproj.GenerateResource.Cache
 C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.exe
 C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.pdb
+C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csprojResolveAssemblyReference.cache

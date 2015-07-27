@@ -36,7 +36,7 @@ namespace VProcessor.Software.Assembly
         private Hashtable BranchRegistry;
         private Int32 AssemblyLine;
         private Int32 MachineLine;
-        private Hashtable KeywordLookup;
+        public Hashtable KeywordLookup;
         private List<UInt32> CurrentLines;
         #endregion
 

@@ -134,14 +134,14 @@ namespace VProcessor.Hardware.Components
         #endregion
 
         #region FunctionUnit
-        public UInt32 FunctionUnit(Byte code, Byte load = 0)
+        public UInt32 FunctionUnit(Byte code, Boolean load = false)
         {
             var a = this.GetRegister(ChannelA);
             var b = this.GetRegister(ChannelB);
             var d = this.GetRegister(ChannelD);
             var f = this.FunctionUnit(code, d, a, b);
 
-            if (load == 1)
+            if (load)
                 this.SetChannelD(f);
             return f;
         }

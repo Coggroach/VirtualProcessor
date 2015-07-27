@@ -7,6 +7,7 @@ using VProcessor.Software.Assembly;
 using VProcessor.Tools;
 using VProcessor.Common;
 using VProcessor.Hardware.Memory;
+using System.Collections;
 
 namespace VProcessor.Gui
 {
@@ -43,7 +44,8 @@ namespace VProcessor.Gui
             this.SetupUserSettings();
             this.SetupRegisterFile();
             this.SetupEditorBoxText();
-            this.SetupToolBar();         
+            this.SetupToolBar();
+            this.HighlightEditorBox();
         }
 
         public void SetupUserSettings()
@@ -113,72 +115,7 @@ namespace VProcessor.Gui
             this.EditorBox.Text = parser.Replace(" ", indentMode);
         }
 
-        private Int32 HighlightDefaultEditorBox()
-        {
-            var save = this.EditorBox.SelectionStart;
-            this.EditorBox.SelectAll();
-            this.EditorBox.SelectionColor = Color.Black;
-            this.EditorBox.DeselectAll();
-            return save;
-        }
-
-        private void HighlightEditorBox()
-        {
-            
-            var save = this.HighlightDefaultEditorBox();
-
-            if (!this.settings.Highlight)
-                return;
-
-            for (var i = 0; i < this.EditorBox.Lines.Length; i++)
-            {
-                var charIndex = this.EditorBox.GetFirstCharIndexFromLine(i);
-
-                try
-                {
-                    this.HighlightOpcodes(charIndex);
-                    this.HighlightRegisters(charIndex);
-                    this.HighlightNumbers(i, charIndex);
-                }
-                catch (Exception ex)
-                {
-                    if (ex is ArgumentOutOfRangeException)
-                        break;
-
-                    if (!(ex is IndexOutOfRangeException))
-                        throw;
-                }
-            }
-            this.EditorBox.DeselectAll();
-            this.EditorBox.SelectionStart = save;
-        }
-        private void HighlightOpcodes(int index)
-        {
-            this.EditorBox.Select(index, 3);
-
-            var selection = this.EditorBox.SelectedText.Trim();
-            if (Opcode.IsValidCode(selection))
-                this.EditorBox.SelectionColor = Color.DarkCyan;
-        }
-
-        private void HighlightRegisters(int index)
-        {
-
-        }
-
-        private void HighlightNumbers(int index, int charIndex)
-        {
-            var current = this.EditorBox.Lines[index];
-            var numIndicatorArray = new String[] {"#", "="};
-
-            for(var i = 0; i < numIndicatorArray.Length; i++)
-            if (current.Contains(numIndicatorArray[i]))
-            {
-                var numIndex = current.IndexOf(numIndicatorArray[i]);
-                this.EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
-                this.EditorBox.SelectionColor = Color.PaleVioletRed;
-            }
-        }
+       
         public void UpdateRegisterFile()
         {
             var registers = this.machine.GetRegisters();
@@ -230,6 +167,114 @@ namespace VProcessor.Gui
         }
         #endregion Update
 
+        #region Highlight
+        private void HighlightDefaultEditorBox()
+        {
+            this.EditorBox.SelectAll();
+            this.EditorBox.SelectionColor = Color.Black;
+            this.EditorBox.DeselectAll();
+        }
+
+        private void HighlightEditorBox(String mode = "All")
+        {
+            var save = this.EditorBox.SelectionStart;
+            var charIndex = 0;
+            var line = 0;
+
+            if (!this.settings.Highlight)
+            {
+                this.HighlightDefaultEditorBox();
+                return;
+            }
+
+            if (mode == "Line")
+            {
+                line = this.EditorBox.GetLineFromCharIndex(save);
+                charIndex = this.EditorBox.GetFirstCharIndexFromLine(line);
+                var current = this.EditorBox.Lines[line];
+                this.EditorBox.Select(charIndex, current.Length);
+                this.EditorBox.SelectionColor = Color.Black;
+                this.HighlightEditorBoxLine(line, charIndex);                
+            }
+
+            if(mode == "All")
+            {
+                this.HighlightDefaultEditorBox();
+                for (line = 0; line < this.EditorBox.Lines.Length; line++)
+                {
+                    charIndex = this.EditorBox.GetFirstCharIndexFromLine(line);
+
+                    this.HighlightEditorBoxLine(line, charIndex);
+                }
+            }               
+            this.EditorBox.DeselectAll();
+            this.EditorBox.SelectionStart = save;
+        }
+
+        private void HighlightEditorBoxLine(Int32 line, Int32 charIndex)
+        {
+            try
+            {
+                this.HighlightOpcodes(charIndex);
+                this.HighlightRegisters(charIndex);
+                this.HighlightNumbers(line, charIndex);
+                this.HighlightKeywords(line, charIndex);
+            }
+            catch (Exception ex)
+            {
+                if (ex is ArgumentOutOfRangeException)
+                    return;
+
+                if (!(ex is IndexOutOfRangeException))
+                    throw;
+            }
+        }
+
+        private void HighlightOpcodes(int index)
+        {
+            this.EditorBox.Select(index, 3);
+
+            var selection = this.EditorBox.SelectedText.Trim().ToUpper();
+            if (Opcode.IsValidCode(selection))
+                this.EditorBox.SelectionColor = Color.DarkCyan;
+        }
+
+        private void HighlightKeywords(int index, int charIndex)
+        {
+            var current = this.EditorBox.Lines[index];
+            var entries = ((Assembler)this.compiler).KeywordLookup;
+
+            foreach (DictionaryEntry entry in entries)
+            {
+                if (current.Contains((String)entry.Key))
+                {
+                    var numIndex = current.IndexOf((String)entry.Key);
+                    this.EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
+                    this.EditorBox.SelectionColor = Color.MediumPurple;
+                }
+            }
+        }
+
+        private void HighlightRegisters(int index)
+        {
+
+        }
+
+        private void HighlightNumbers(int index, int charIndex)
+        {
+            var current = this.EditorBox.Lines[index];
+            var numIndicatorArray = new String[] { "#", "=" };
+
+            for (var i = 0; i < numIndicatorArray.Length; i++)
+                if (current.Contains(numIndicatorArray[i]))
+                {
+                    var numIndex = current.IndexOf(numIndicatorArray[i]);
+                    this.EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
+                    this.EditorBox.SelectionColor = Color.PaleVioletRed;
+                }
+        }
+        #endregion
+
         #region EventHandling
         private void EditorBox_SelectionChanged(Object sender, EventArgs e)
         {            
@@ -238,7 +283,7 @@ namespace VProcessor.Gui
 
         private void EditorBox_TextChanged(Object sender, EventArgs e)
         {
-            this.HighlightEditorBox();
+            this.HighlightEditorBox("Line");
         }
 
         private void tickToolStripMenuItem_Click(Object sender, EventArgs e)

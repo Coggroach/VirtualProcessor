@@ -15,6 +15,7 @@ namespace VProcessor.Hardware.Components
         private Register instruction;
         private Register status;
         private MemoryDualChannel channel;
+        private Decoder decoder;
 
         public MemoryChannelPacket ChannelPacket { get; set; }
 
@@ -24,6 +25,7 @@ namespace VProcessor.Hardware.Components
             this.controlMemory = new MemoryUnit<UInt64>(control);
             this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.status = new Register();
+            this.decoder = new Decoder();
             this.instruction = new Register(this.flashMemory.GetMemory());
             this.branchControl = new Brancher(this.instruction);            
             this.channel = new MemoryDualChannel();
@@ -95,74 +97,47 @@ namespace VProcessor.Hardware.Components
         }
                 
         public void Tick()
-        { 
-            //Split Ir into Opcode, Channel A and B, Destination  
-            var opcode = (UInt32)BitHelper.BitExtract(this.instruction.Value, 16, 0xFFFF);
-            var dest = (Byte)(BitHelper.BitMatch(this.controlMemory.GetMemory(), 2, 1) ? 0xF : BitHelper.BitExtract(this.instruction.Value, 8, 0xF));
-            var srcA = (Byte)(BitHelper.BitMatch(this.controlMemory.GetMemory(), 1, 1) ? 0xF : BitHelper.BitExtract(this.instruction.Value, 4, 0xF));
-            var srcB = (Byte)(BitHelper.BitMatch(this.controlMemory.GetMemory(), 0, 1) ? 0xF : BitHelper.BitExtract(this.instruction.Value, 0, 0xF));
-            var cnst = (UInt32)BitHelper.BitExtract(this.instruction.Value, 0, 0xF); 
-
-            //Split Control into Parts
-            var Lr = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 3));            // 3
-            var Pc = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 4, 3));         // 5:4
-            var Cion = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 6, 3));       // 7:6
-
-            var Cmem = BitHelper.BitMatch(this.controlMemory.GetMemory(), 8, 1);
-            var Min = BitHelper.BitMatch(this.controlMemory.GetMemory(), 9, 1);
-            var Mout = BitHelper.BitMatch(this.controlMemory.GetMemory(), 10, 1);
-           
-            var IL = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 12));
-            var Cin = BitHelper.BitMatch(this.controlMemory.GetMemory(), 13, 1);
-            var Din = BitHelper.BitMatch(this.controlMemory.GetMemory(), 14, 1);
-            var Bu = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 15));
-
-            var fs = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 16, 0x3F));
-            var stpc = BitHelper.BitMatch(this.controlMemory.GetMemory(), 22, 1);
-            var ldpc = BitHelper.BitMatch(this.controlMemory.GetMemory(), 23, 1);
-
-            var mode = (Byte)(BitHelper.BitExtract(this.controlMemory.GetMemory(), 24, 0xF));
-
-            var na = (UInt32)BitHelper.BitExtract(this.controlMemory.GetMemory(), 48, 0xFFFF); // 63:48   
+        {
+            this.decoder.Memory = this.controlMemory.GetMemory();
+            this.decoder.Decode(this.instruction);
             
             //Set up Datapath
-            this.datapath.SetChannel(Datapath.ChannelA, srcA);
-            this.datapath.SetChannel(Datapath.ChannelB, srcB);
-            this.datapath.SetChannel(Datapath.ChannelD, dest);
-            this.datapath.SetConstIn(Cin, cnst);
+            this.datapath.SetChannel(Datapath.ChannelA, this.decoder.ChannelA);
+            this.datapath.SetChannel(Datapath.ChannelB, this.decoder.ChannelB);
+            this.datapath.SetChannel(Datapath.ChannelD, this.decoder.ChannelD);
+            this.datapath.SetConstIn(this.decoder.ConstantIn, this.decoder.Constant);
 
             //Change Mode
-            if(mode != 0) this.datapath.SetMode(mode);
-            
-
+            if (this.decoder.Mode != 0) this.datapath.SetMode(this.decoder.Mode);          
 
             //Move Data in Datapath
             var dataOut = (UInt32) 0;
-            if (Din && Lr == 1) this.datapath.SetRegister(dest, (UInt32)this.flashMemory.GetMemory());
-            else if (this.channel.MemoryPullRequest == MemoryDualChannelRequest.Complete && Lr == 1)
+            if (this.decoder.DataIn && this.decoder.LoadRegister) 
+                this.datapath.SetRegister(this.decoder.ChannelD, (UInt32)this.flashMemory.GetMemory());
+            else if (this.channel.MemoryPullRequest == MemoryDualChannelRequest.Complete && this.decoder.LoadRegister)
             {
-                this.datapath.SetRegister(dest, this.ChannelPacket.Value);
+                this.datapath.SetRegister(this.decoder.ChannelD, this.ChannelPacket.Value);
                 this.channel.MemoryPullRequest = MemoryDualChannelRequest.None;
             }
-            else if (ldpc && Lr == 1)
-                this.datapath.SetRegister(dest, this.flashMemory.GetRegister());
-            else dataOut = this.datapath.FunctionUnit(fs, Lr);
+            else if (this.decoder.LoadPc && this.decoder.LoadRegister)
+                this.datapath.SetRegister(this.decoder.ChannelD, this.flashMemory.GetRegister());
+            else dataOut = this.datapath.FunctionUnit(this.decoder.FunctionCode, this.decoder.LoadRegister);
 
             //Set up CAR
-            var muxCar = (Cion & 2) == 2 ? opcode : na;
-            if (Cmem)
+            var muxCar = (this.decoder.CarControl & 2) == 2 ? this.decoder.Opcode : this.decoder.NextAddress;
+            if (this.decoder.MemoryInterrupt)
             {
                 if (this.channel.MemoryPullRequest == MemoryDualChannelRequest.Complete)
                     this.controlMemory++;
             }
-            else if ((Cion & 1) == 0)
+            else if ((this.decoder.CarControl & 1) == 0)
                 this.controlMemory.SetRegister(muxCar);
             else
                 this.controlMemory++;
 
 
             //Moving Data to RAM
-            if (Min ^ Mout && this.channel.MemoryPullRequest != MemoryDualChannelRequest.Complete)
+            if (this.decoder.MemoryIn ^ this.decoder.MemoryOut && this.channel.MemoryPullRequest != MemoryDualChannelRequest.Complete)
             {
                 this.ChannelPacket = new MemoryChannelPacket()
                 {
@@ -170,28 +145,29 @@ namespace VProcessor.Hardware.Components
                     Address = (Int32)this.datapath.GetRegister(Datapath.ChannelA),
                     Offset = (Int32)this.datapath.GetRegister(Datapath.ChannelB)
                 };
-                if (Mout) this.channel.MemoryPullRequest = MemoryDualChannelRequest.Push;
-                if (Min) this.channel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
+                if (this.decoder.MemoryOut) 
+                    this.channel.MemoryPullRequest = MemoryDualChannelRequest.Push;
+                if (this.decoder.MemoryIn) 
+                    this.channel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
                 this.channel.PushOutput(this.ChannelPacket);
             }
             
             //Set up PC
-            if(stpc && !ldpc)            
+            if (this.decoder.StorePc && !this.decoder.LoadPc)            
                 this.flashMemory.SetRegister(dataOut);            
-            else if ((Pc & 2) == 2 && this.branchControl.Branch(fs))
+            else if ((this.decoder.ProgramControl & 2) == 2 && this.branchControl.Branch(this.decoder.FunctionCode))
             {
                 var extract = (UInt32)BitHelper.BitExtract(this.instruction.Value, 0, 0xFFFF);
-
                 this.flashMemory += BitHelper.Negate4Bits(extract);
             }
-            else if ((Pc & 1) == 1)
+            else if ((this.decoder.ProgramControl & 1) == 1)
                 this.flashMemory++;
 
             //Update Branch
-            if (Bu == 1) this.status = new Register(this.datapath.GetStatusRegister(), 0xF);
+            if (this.decoder.BranchUpdate == 1) this.status = new Register(this.datapath.GetStatusRegister(), 0xF);
 
             //Set up IR
-            if (IL == 1) this.instruction.Value = this.flashMemory.GetMemory();
+            if (this.decoder.StoreInstruction == 1) this.instruction.Value = this.flashMemory.GetMemory();
         }
     }
 }
