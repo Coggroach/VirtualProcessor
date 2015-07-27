@@ -37,7 +37,8 @@ namespace VProcessor.Hardware
         public void Tick()
         {
             this.processor.Tick();
-            this.memory.Tick();            
+            this.memory.Tick();
+            this.interrupts.Tick();
         }
 
         public void Reset()
