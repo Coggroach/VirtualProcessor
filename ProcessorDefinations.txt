@@ -2,7 +2,12 @@ ControlMemoryCode
 -----------------
 
 Na		Next Address in Car
-X	
+x
+
+x
+Um2		Sets UserMode 
+Um1		//0 is Default and Wont Change Mode
+Um0		//System = 001, Interrupt = 010, Unprevilaged = 100
 
 LDPC	Expose PC
 STPC	Set PC
@@ -42,6 +47,15 @@ Extra Register Slot	 (4 Bit)
 Destination Register (4 Bit)
 Source A Register	 (4 Bit)
 Source B Register    (4 Bit)
+
+UserModes
+---------
+
+CurrentMode -> DestinationMode
+1. System		1, 2, 3, 4
+2. Interupt		1, 2, 3, 4
+3. Previlaged	2, 3, 4
+4. UnPrevilaged	4
 
 
 Opcodes for Assembler

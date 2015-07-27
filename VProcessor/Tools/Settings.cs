@@ -16,5 +16,7 @@ namespace VProcessor.Tools
         public const Int32 RandomAccessMemorySize = 128;
         public const Int32 RandomAccessMemorySpeed = 4;
         public const Int32 RandomAccessMemorySpread = 2;
+        public const Int32 LEDBoardCount = 4;
+
     }
 }

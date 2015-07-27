@@ -20,6 +20,7 @@ namespace VProcessor.Software.Assembly
 
     public class Assembler : IAssembler, IDisposable
     {
+        #region Regexs
         private const String GeneralRoot = @"^[\w][\w]+[,][rR][\d]+[,][rR][\d]+[,]";
         private const String DataRoot = @"^[\w][\w]+[,][rR][\d]+[,]";
         private const String BranchRoot = @"^[\w]+[,][\d]+";
@@ -28,13 +29,16 @@ namespace VProcessor.Software.Assembly
         private const String ConstNumberStem = @"[#][-\d]+";
         private const String FullNumberStem = @"[=][-\d]+";
         private const String AddressStem = @"[\[][\w,#]+[\]]";
+        #endregion
 
+        #region Attributes
         private Hashtable BranchLookup;
         private Hashtable BranchRegistry;
         private Int32 AssemblyLine;
         private Int32 MachineLine;
         private Hashtable KeywordLookup;
         private List<UInt32> CurrentLines;
+        #endregion
 
         public Assembler()
         {
@@ -50,11 +54,15 @@ namespace VProcessor.Software.Assembly
         public void InitKeywordLookup()
         {
             this.KeywordLookup.Add("sp", "r14");
-            this.KeywordLookup.Add("lr", "r13");
-            this.KeywordLookup.Add("tr", "r15");
+            this.KeywordLookup.Add("lr", "r13");            
             this.KeywordLookup.Add("rt", "r15");
+            this.KeywordLookup.Add("System", "#0");
+            this.KeywordLookup.Add("Interupt", "#1");
+            this.KeywordLookup.Add("Previlaged", "#2");
+            this.KeywordLookup.Add("UnPrevilaged", "#3");
         }
 
+        #region Exposed Compile Methods
         public Memory64 Compile64(VPFile file, Int32 size)
         {
             var lines = file.GetString().Split(VPFile.Delimiter);
@@ -120,7 +128,9 @@ namespace VProcessor.Software.Assembly
 
             return memory;
         }
+        #endregion 
 
+        #region CompoundLines
         private UInt32[] PCCompoundLine(String[] parts, String mode)
         {            
             var upperCode = parts[0].ToUpper();
@@ -180,6 +190,16 @@ namespace VProcessor.Software.Assembly
             return lines.ToArray();
         }
 
+        private UInt32[] SetModeLine(String[] parts)
+        {
+            var array = new UInt32[1];
+            var addressOffset = GetConstantNumberCode(parts[1]);
+            var address = (UInt32)Opcode.GetCodeAddress(parts[0].ToUpper()) + addressOffset;
+
+            array[0] |= address << 16;
+            return array;
+        }
+
         private UInt32[] SubroutineCompoundLine(String[] parts, String type)
         {
             if (parts.Length <= 0)
@@ -203,7 +223,9 @@ namespace VProcessor.Software.Assembly
             }
             return list.ToArray();
         }
+        #endregion
 
+        #region ConvertLine32
         public UInt32[] ConvertLine32(String s, Int32 machineBranchOffset = 0)
         {
             var line = CleanUp(s);
@@ -238,6 +260,8 @@ namespace VProcessor.Software.Assembly
                         return this.SubroutineCompoundLine(parts, "BX");
                     case "^":
                         return this.SubroutineCompoundLine(parts, "^");
+                    case "MOD":
+                        return this.SetModeLine(parts);
                 }
             }
 
@@ -298,7 +322,9 @@ namespace VProcessor.Software.Assembly
 
             return array;
         }
+        #endregion
 
+        #region Branch Registry
         private void RegisterBranch(String branchName, Int32 offset = 0)
         {
             if(!this.BranchRegistry.ContainsKey(branchName))
@@ -350,13 +376,12 @@ namespace VProcessor.Software.Assembly
                     currentValue |= difference;
 
                     memory.SetMemory(linkLine, currentValue);
-                } 
-                
+                }                
             }
         }
+        #endregion
 
-        
-
+        #region PropertyTable
         private static Hashtable CreatePropertyTable(String line)
         {
             var table = new Hashtable();
@@ -414,12 +439,9 @@ namespace VProcessor.Software.Assembly
                     return ReferenceRoot;
             }
         }
+        #endregion 
 
-        private static Exception CompilerException(String p)
-        {
-            throw new Exception(p);
-        }
-
+        #region Parsing 
         private static Byte GetRegisterCode(String s)
         {
             return Byte.Parse(s.ToLower().Replace("r", ""));
@@ -452,7 +474,7 @@ namespace VProcessor.Software.Assembly
             var keyword = s;
             foreach(DictionaryEntry entry in this.KeywordLookup)
             {
-                keyword = Regex.Replace(keyword, (String) entry.Key, (String) entry.Value);
+                keyword = Regex.Replace(keyword, (String) entry.Key, (String) entry.Value, RegexOptions.IgnoreCase);
             }
             return Regex.Replace(keyword.Replace("\t", " "), @"[ ]{2,}", @" ").Trim().Replace(" ", ",").Replace("[", "").Replace("]", "").Replace(",,,", ",").Replace(",,", ",");
         }
@@ -484,6 +506,13 @@ namespace VProcessor.Software.Assembly
                     return new UInt32[] { 0 };
             }
         }
+        #endregion
+
+        #region Dispose
+        private static Exception CompilerException(String p)
+        {
+            throw new Exception(p);
+        }
 
         public void Dispose()
         {
@@ -492,5 +521,6 @@ namespace VProcessor.Software.Assembly
             this.MachineLine = 0;
             this.AssemblyLine = 0;
         }
+        #endregion
     }
 }

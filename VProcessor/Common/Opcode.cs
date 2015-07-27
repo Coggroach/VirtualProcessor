@@ -235,6 +235,8 @@ namespace VProcessor.Common
 
             Add("BX", 0, 0x80);
             Add("^", 0, 0x80);
+
+            Add("MOD", 0, 0x86);
         }
     }
 }

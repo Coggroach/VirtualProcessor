@@ -6,9 +6,13 @@ namespace VProcessor.Hardware.Components
     public class Brancher
     {
         private Register Nzcv;      
+
         public Brancher()
+            : this(new Register()) {}
+
+        public Brancher(Register status)
         {
-            this.Nzcv = new Register();
+            this.Nzcv = status;
         }
 
         public Register GetNzcv()

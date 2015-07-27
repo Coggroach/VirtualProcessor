@@ -10,6 +10,7 @@ namespace VProcessor.Hardware.Components
 {
     public class Datapath : IDatapath
     {
+        #region Constants
         public static readonly Byte RegisterFileSize = (Byte) Math.Ceiling(Math.Log(UInt16.MaxValue, 2));
         private static readonly Byte RegisterContentsSize = (Byte) (RegisterFileSize*2);
         private const Byte ChannelOutSize = 3;
@@ -18,24 +19,28 @@ namespace VProcessor.Hardware.Components
         public const Byte ChannelB = 1;
         public const Byte ChannelD = 2;
 
-        public const Byte System = 0;
-        public const Byte Interupt = 1;
-        public const Byte Previlaged = 2;
-        public const Byte UnPrevilaged = 3;
-        public const Byte Modes = 2;
+        public const Byte System = 1;
+        public const Byte Interupt = 2;
+        public const Byte Previlaged = 4;
+        public const Byte UnPrevilaged = 8;
+        public const Byte Modes = 4;
+        #endregion
 
+        #region Attributes
         private RegisterFile[] registers;
         private Byte mode;
         private Byte[] channels;
         private UInt32 constIn;
         private Boolean constEnable;
         private Register nzcv;
+        #endregion
+
         public Datapath()
         {
             this.registers = new RegisterFile[Modes];
             this.channels = new Byte[ChannelOutSize];
             this.constIn = 0;
-            this.mode = System;
+            this.mode = this.ParseMode(System);
             this.Reset();
         }
 
@@ -51,35 +56,10 @@ namespace VProcessor.Hardware.Components
             this.nzcv = new Register();
         }
 
-        public void SetMode(Byte mode)
-        {
-            this.mode = mode;
-        }
-
+        #region Channel Functions
         public void SetChannel(Byte channel, Byte value)
         {
             this.channels[channel] = value;
-        }
-
-        public void SetRegister(Byte register, UInt32 value)
-        {
-            this.registers[this.mode].SetRegister(register, value);
-        }
-
-        public void SetConstIn(Boolean b, UInt32 i)
-        {
-            this.constIn = i;
-            this.constEnable = b;
-        }
-
-        public UInt32[] GetRegisters()
-        {
-            return this.registers[this.mode].GetRegisters();
-        }
-
-        public UInt32 GetRegister(Byte channel = 0)
-        {
-            return (channel == ChannelB && this.constEnable) ? this.constIn : this.registers[this.mode].GetRegister(this.channels[channel]);
         }
 
         private void SetChannelD(UInt32 value)
@@ -91,7 +71,32 @@ namespace VProcessor.Hardware.Components
         {
             return this.channels[channel];
         }
+        #endregion
 
+        #region Register Functions
+        public void SetConstIn(Boolean b, UInt32 i)
+        {
+            this.constIn = i;
+            this.constEnable = b;
+        }
+
+        public void SetRegister(Byte register, UInt32 value)
+        {
+            this.registers[this.mode].SetRegister(register, value);
+        }
+
+        public UInt32[] GetRegisters()
+        {
+            return this.registers[this.mode].GetRegisters();
+        }
+
+        public UInt32 GetRegister(Byte channel = 0)
+        {
+            return (channel == ChannelB && this.constEnable) ? this.constIn : this.registers[this.mode].GetRegister(this.channels[channel]);
+        }
+        #endregion
+
+        #region StatusRegister
         public void SetStatusRegister(Register reg)
         {
             this.nzcv = reg;
@@ -101,7 +106,34 @@ namespace VProcessor.Hardware.Components
         {
             return this.nzcv;
         }
-                
+        #endregion
+
+        #region Mode
+        public void SetMode(Byte mode)
+        {
+            var destMode = this.ParseMode(mode);
+            if(ValidMode(destMode))
+                this.mode = destMode;
+        }
+
+        private Boolean ValidMode(Byte destMode)
+        {
+            if (this.mode == System || this.mode == Interupt)
+                return true;
+            else if (this.mode == Previlaged && destMode != System)
+                return true;
+            else if (this.mode == destMode)
+                return true;
+            return false;
+        }
+
+        private Byte ParseMode(Byte mode)
+        {
+            return (Byte)Math.Log(mode, 2);
+        }
+        #endregion
+
+        #region FunctionUnit
         public UInt32 FunctionUnit(Byte code, Byte load = 0)
         {
             var a = this.GetRegister(ChannelA);
@@ -286,5 +318,6 @@ namespace VProcessor.Hardware.Components
 
             return longA + longB + longC > UInt32.MaxValue;
         }
+        #endregion
     }
 }

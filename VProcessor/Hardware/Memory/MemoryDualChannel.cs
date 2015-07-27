@@ -6,12 +6,21 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Hardware.Memory
 {
+    public enum MemoryDualChannelRequest
+    {
+        None = 0,
+        Pull = 1,
+        Complete = 2,
+        Push = 3
+    }
+
     public class MemoryDualChannel
     {
         private MemoryChannel input;
         private MemoryChannel output;
 
         public Byte Status;
+        public MemoryDualChannelRequest MemoryPullRequest { get; set; }
 
         public MemoryDualChannel()
         {

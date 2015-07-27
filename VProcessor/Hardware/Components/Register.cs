@@ -25,6 +25,13 @@ namespace VProcessor.Hardware.Components
             this.Value = reg.Value;
         }
 
+        public Register(Register reg, UInt32 mask)
+        {
+            this.Value &= ~mask;
+            var value = reg.Value & mask;
+            this.Value |= value;
+        }
+
         public Boolean BitMatch(Byte bitPos, Byte matchBit)
         {
             return ((this.Value >> bitPos) & 1) == matchBit;

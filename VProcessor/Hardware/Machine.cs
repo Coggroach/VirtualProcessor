@@ -14,7 +14,6 @@ namespace VProcessor.Hardware
     public class Machine : IInformable
     {
         private Processor processor;
-        private MemoryBus bus;
         private MemoryController controller;
         private IAssembler assembler;
 
@@ -29,14 +28,13 @@ namespace VProcessor.Hardware
             this.processor = new Processor(
                 this.assembler.Compile64(new VPFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
                 this.assembler.Compile32(new VPFile(Settings.FlashMemoryLocation), Settings.FlashMemorySize));
-            this.controller = new MemoryController();
-            this.bus = new MemoryBus(this.processor, this.controller);
+            this.controller = new MemoryController(this.processor.GetMemoryDualChannel());
         }
 
         public void Tick()
         {
             this.processor.Tick();
-            this.bus.Tick();            
+            this.controller.Tick();            
         }
 
         public void Reset()
@@ -69,7 +67,7 @@ namespace VProcessor.Hardware
             return this.processor.GetControlAddressRegister();
         }
 
-        public UInt32 GetInstructionRegister()
+        public Register GetInstructionRegister()
         {
             return this.processor.GetInstructionRegister();
         }
