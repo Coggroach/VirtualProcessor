@@ -71,6 +71,10 @@ namespace VProcessor.Common
         public const Int32 LDPC = 0x80;
         public const Int32 STPC = 0x40;
 
+        public const Int32 MOD = 0x100;
+        public const Int32 EOI = 0x1000;
+        public const Int32 IRQ = 0;
+
         private static readonly Hashtable CodeTable;
         private static Int32 CurrentAddress;
         private static Int32 LastType;
@@ -236,8 +240,9 @@ namespace VProcessor.Common
             Add("BX", 0, 0x80);
             Add("^", 0, 0x80);
 
-            Add("MOD", 0, 0x86);
-            Add("EOI", 0, 0x81);
+            Add("MOD", MOD, 0x86);
+            Add("EOI", EOI, 0x81);
+            Add("IRQ", IRQ, 0x82);            
         }
     }
 }

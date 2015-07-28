@@ -18,8 +18,7 @@ namespace VProcessor.Gui
         private volatile Machine machine;
         private UserSettings settings;
         private VPFile flashFile;
-        private const String RegisterPrefix = "r";
-        private Object UIThreadContext;
+        private const String RegisterPrefix = "r";        
 
         public EditorForm()
         {
@@ -31,8 +30,7 @@ namespace VProcessor.Gui
             this.SetupThread();
             this.InitializeComponent();
             this.Setup();
-            this.Update();
-            this.UIThreadContext = this.EditorBox;
+            this.Update();            
         }
 
         public void Tick()
@@ -159,7 +157,7 @@ namespace VProcessor.Gui
                 indentMode += indentMode;
 
             this.EditorBox.Text = parser.Replace(" ", indentMode);
-            this.HighlightEditorBox();
+            //this.HighlightEditorBox();
         }
 
        
@@ -453,7 +451,7 @@ namespace VProcessor.Gui
             this.flashFile.SetString(this.EditorBox.Text);
             this.flashFile.Save();
             this.flashFile.Load();
-            this.machine.Reset(this.compiler.Compile32(this.flashFile, Settings.FlashMemorySize));
+            this.machine.Reset(this.compiler.Compile32(this.flashFile, VPConsts.FlashMemorySize));
             this.Update();
         }
 
@@ -544,7 +542,11 @@ namespace VProcessor.Gui
             }
         }
 
-        #endregion EventHandling    
+        private void RunningStatus_Click(object sender, EventArgs e)
+        {
+            this.machine.Interrupt(0x2);
+        }
 
+        #endregion EventHandling
     }
 }

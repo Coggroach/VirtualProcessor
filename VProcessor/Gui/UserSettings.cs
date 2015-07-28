@@ -19,7 +19,7 @@ namespace VProcessor.Gui
         {
             defaultSettings = new UserSettings()
             {
-                FlashFileLocation = Settings.FlashMemoryLocation,
+                FlashFileLocation = VPConsts.FlashMemoryLocation,
                 FileMode = VPFile.Hexadecimal,
                 IndentMode = IndentSpace,
                 IndentSize = IndentSize1,
@@ -48,7 +48,7 @@ namespace VProcessor.Gui
 
         public UserSettings Load()
         {
-            using(StreamReader reader = File.OpenText(Settings.UserSettingsLocation))
+            using(StreamReader reader = File.OpenText(VPConsts.UserSettingsLocation))
             {
                 this.lines = reader.ReadToEnd().Replace("\r\n", "").Split(';');
 
@@ -107,7 +107,7 @@ namespace VProcessor.Gui
 
         public void Save()
         {
-            using (StreamWriter writer = File.CreateText(Settings.UserSettingsLocation))
+            using (StreamWriter writer = File.CreateText(VPConsts.UserSettingsLocation))
             {
                 writer.WriteLine("s:FlashFileLocation=" + this.FlashFileLocation + ";");
                 writer.WriteLine("i:FileMode=" + this.FileMode + ";");

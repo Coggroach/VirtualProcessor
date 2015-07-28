@@ -66,6 +66,9 @@
     <Compile Include="Hardware\Memory\Memory64.cs" />
     <Compile Include="Hardware\Components\Register.cs" />
     <Compile Include="Hardware\Memory\MemoryDualChannel.cs" />
+    <Compile Include="Hardware\Peripherals\IPeripheral.cs" />
+    <Compile Include="Hardware\Peripherals\LEDBoard.cs" />
+    <Compile Include="Hardware\Peripherals\Timer.cs" />
     <Compile Include="Software\Assembler.cs" />
     <Compile Include="Common\VPFile.cs" />
     <Compile Include="Gui\EditorForm.cs">
@@ -96,6 +99,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="Assembly\Interrupt.vps" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -13,3 +13,5 @@ External: 24
 [Logger][16:03:49]:Code: LDPC Address: 75 Internal: 0External: 128
 [Logger][16:04:25]:Code: LDM Address: 75 Internal: 0External: 128
 [Logger][16:08:46]:Code: LDM Address: 75 Internal: 0External: 128
+[Logger][15:34:58]:Code: MOD Address: 77 Internal: 0External: 256
+[Logger][15:39:33]:Code: MOD Address: 77 Internal: 0External: 256

@@ -329,7 +329,7 @@ namespace VProcessor.Software.Assembly
                     address += 1;
             }
             else if (Regex.Match(parts[lastElement], FullNumberStem).Success && (stem & 2) == 2)
-                array[index ^ 1] |= (UInt32)GetFullNumberCode(parts[lastElement]);
+                array[index ^ 1] |= (UInt32)GetFullNumberCode(parts[lastElement]); 
 
             array[index] |= (UInt32)(address << 16);
 
@@ -454,7 +454,7 @@ namespace VProcessor.Software.Assembly
         }
         #endregion 
 
-        #region Parsing 
+        #region Parsing
         private static Byte GetRegisterCode(String s)
         {
             return Byte.Parse(s.ToLower().Replace("r", ""));

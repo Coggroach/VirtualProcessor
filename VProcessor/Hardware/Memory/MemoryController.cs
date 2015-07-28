@@ -18,7 +18,7 @@ namespace VProcessor.Hardware.Memory
 
         public MemoryController(MemoryDualChannel channel)
         {
-            this.memory = new Memory32(Settings.RandomAccessMemorySize);
+            this.memory = new Memory32(VPConsts.RandomAccessMemorySize);
             this.channel = channel;   
         }
 

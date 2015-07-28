@@ -1,14 +1,13 @@
-Mov    r0,    #14
-Mov    r1,    #12
-Add    r2,    r1,    r0
-BX    Subroutine
-Add    r2,    r2,    #1
-B    end
+Ldr    r0,    =Subroutine
+Ldr    r1,    =96
+Mov    rt,    #1
+Str    r0,    [r1,    rt]
+stop
+B    stop
 Subroutine
 Stm    sp!,    {r0,    r1}
 Ldr    r0,    =50
 Add    r2,    r2,    r0
 Add    r2,    r2,    r0
 Ldm    sp!,    {r1,    r0}
-^
-end
+Eoi

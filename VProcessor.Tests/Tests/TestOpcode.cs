@@ -151,9 +151,9 @@ namespace VProcessor.Tests.Hardware
         [TestMethod]
         public void TestOpcodeAddressMapping()
         {
-            var control = new VPFile(Settings.ControlMemoryLocation);
+            var control = new VPFile(VPConsts.ControlMemoryLocation);
             var assembler = new Assembler();
-            var memoryChunk = assembler.Compile64(control, Settings.ControlMemorySize);
+            var memoryChunk = assembler.Compile64(control, VPConsts.ControlMemorySize);
 
             var opcodes = Opcode.GetCodeTable();
 

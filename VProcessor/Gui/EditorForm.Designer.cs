@@ -389,6 +389,7 @@
             this.RunningStatus.Size = new System.Drawing.Size(16, 13);
             this.RunningStatus.TabIndex = 7;
             this.RunningStatus.Text = "   ";
+            this.RunningStatus.Click += new System.EventHandler(this.RunningStatus_Click);
             // 
             // EditorForm
             // 

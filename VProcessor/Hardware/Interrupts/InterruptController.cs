@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using VProcessor.Hardware.Components;
 using VProcessor.Hardware.Interfacing;
+using VProcessor.Hardware.Memory;
+using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Interrupts
 {
@@ -14,34 +16,28 @@ namespace VProcessor.Hardware.Interrupts
         private Register isr;
         private Register imr;
 
-        private UInt32[] addresses;
         private Boolean waiting;
 
-        private Channel channel;
+        private Channel interruptChannel;
         
         //0000 0000
-        public UInt32 RequestInput { get; set; }
+        public UInt32 RequestInput { get; set; }        
 
-        private const Byte Int32Size = 32;
-
-        public InterruptController(InterruptChannel channel)
+        public InterruptController(InterruptChannel interrupt)
         {
             this.irr = new Register();
             this.isr = new Register();
             this.imr = new Register();
-            this.addresses = new UInt32[Int32Size];
-            this.waiting = false;
-            this.channel = channel;
-        }
-
-        public void SetAddress(Byte index, UInt32 value)
-        {
-            this.addresses[index] = value;
+            this.waiting = true;
+            this.interruptChannel = interrupt;
+            this.RequestInput = 0;
         }
 
         public void Request(UInt32 irq)
         {
             this.irr.Value |= irq;
+            if (irq != 0)
+                this.waiting = false;
         }
 
         private void Service(Byte bitPos)
@@ -54,7 +50,7 @@ namespace VProcessor.Hardware.Interrupts
             Byte i = 0;
             var value = this.irr.Value;
 
-            if (value == 0) return Int32Size + 1;
+            if (value == 0) return VPConsts.VectoredInterruptControllerAddress + 1;
 
             while(value > 1)
             {
@@ -73,16 +69,17 @@ namespace VProcessor.Hardware.Interrupts
         {
             var bitPos = RetrieveNextRequest();
 
-            if (bitPos > Int32Size)
+            if (bitPos > VPConsts.VectoredInterruptControllerAddress)
                 return null;
 
             this.irr.ClrBit(bitPos);
             this.isr.SetBit(bitPos);
-            this.Mask();          
+            this.Mask();
+            this.waiting = true;
 
             return new InterruptPacket()
             {
-                Address = this.addresses[bitPos],
+                Address = bitPos,
                 Request = InterruptPacketRequest.IRQ
             };
         }
@@ -91,7 +88,7 @@ namespace VProcessor.Hardware.Interrupts
         {
             this.Request(this.RequestInput);
             if (!this.waiting)
-                this.channel.Push(this.CreateInterruptRequest());
+                this.interruptChannel.Push(this.CreateInterruptRequest());
         }
     }
 }

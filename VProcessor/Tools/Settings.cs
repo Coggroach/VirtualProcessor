@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VProcessor.Tools
 {
-    public class Settings
+    public class VPConsts
     {
         public const Int32 ControlMemorySize = 100;
         public const Int32 FlashMemorySize = 32;
@@ -19,5 +19,6 @@ namespace VProcessor.Tools
         public const Int32 LEDBoardCount = 4;
         public const Int32 ClockSpeed = 1000000;
         public const Int64 ClockTime = 1 / ClockSpeed;
+        public const Int32 VectoredInterruptControllerAddress = RandomAccessMemorySize - 32;
     }
 }

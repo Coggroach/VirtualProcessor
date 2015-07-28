@@ -127,15 +127,23 @@ namespace VProcessor.Hardware.Components
                 if(interrupt.Request == InterruptPacketRequest.IRQ)
                 {
                     this.interrupt.Value = this.flashMemory.GetRegister();
-                    this.flashMemory.SetRegister(interrupt.Address);
+                    this.datapath.SetMode(Datapath.Interupt);
+                    this.ChannelPacket = new MemoryChannelPacket()
+                    {
+                        Value = 0,
+                        Address = VPConsts.VectoredInterruptControllerAddress,
+                        Offset = (Int32) interrupt.Address
+                    };
+                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
+                    this.memoryChannel.PushOutput(this.ChannelPacket);
+                    this.controlMemory.SetRegister((UInt32) Opcode.GetCodeAddress("IRQ"));
+                    return;
                 }
             }
 
             //Check if Interrupt Complete
-            if(this.decoder.EndOfInterrupt)
-            {
-                this.flashMemory.SetRegister(this.interrupt.Value);
-            }
+            if(this.decoder.EndOfInterrupt)            
+                this.flashMemory.SetRegister(this.interrupt.Value);            
 
             //Move Data in Datapath
             var dataOut = (UInt32) 0;

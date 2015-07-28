@@ -14,7 +14,7 @@ namespace VProcessor.Hardware.Peripherals
 
         public LEDBoard()
         {
-            this.leds = new Boolean[Settings.LEDBoardCount];
+            this.leds = new Boolean[VPConsts.LEDBoardCount];
         }
 
         public Color GetColor(Int32 index)

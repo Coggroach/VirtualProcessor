@@ -28,8 +28,8 @@ namespace VProcessor.Hardware
         {
             this.assembler = assembler;
             this.processor = new Processor(
-                this.assembler.Compile64(new VPFile(Settings.ControlMemoryLocation), Settings.ControlMemorySize), 
-                this.assembler.Compile32(new VPFile(Settings.FlashMemoryLocation), Settings.FlashMemorySize));
+                this.assembler.Compile64(new VPFile(VPConsts.ControlMemoryLocation), VPConsts.ControlMemorySize), 
+                this.assembler.Compile32(new VPFile(VPConsts.FlashMemoryLocation), VPConsts.FlashMemorySize));
             this.interrupts = new InterruptController(this.processor.GetInterruptChannel());
             this.memory = new MemoryController(this.processor.GetMemoryDualChannel());
         }
@@ -39,6 +39,11 @@ namespace VProcessor.Hardware
             this.processor.Tick();
             this.memory.Tick();
             this.interrupts.Tick();
+        }
+
+        public void Interrupt(UInt32 Request)
+        {
+            this.interrupts.RequestInput = Request;
         }
        
         public Boolean HasTerminated()
