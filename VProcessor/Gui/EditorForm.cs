@@ -30,7 +30,8 @@ namespace VProcessor.Gui
             this.SetupThread();
             this.InitializeComponent();
             this.Setup();
-            this.Update();            
+            this.Update();
+            this.UpdateEditorBox();
         }
 
         public void Tick()
@@ -141,8 +142,7 @@ namespace VProcessor.Gui
         {
             this.UpdateRegisterFile();
             this.UpdateMemoryDisplays();
-            this.UpdateToolBar();
-            this.UpdateEditorBox();
+            this.UpdateToolBar();                
         }
 
         private void UpdateEditorBox()
@@ -157,7 +157,7 @@ namespace VProcessor.Gui
                 indentMode += indentMode;
 
             this.EditorBox.Text = parser.Replace(" ", indentMode);
-            //this.HighlightEditorBox();
+            this.HighlightEditorBox();
         }
 
        
@@ -402,7 +402,7 @@ namespace VProcessor.Gui
 
         private void ToolFontSize_Click(object sender, EventArgs e)
         {
-            this.Update();
+            this.UpdateEditorBox();
         }
 
         private void TickButton_Click(object sender, EventArgs e)
@@ -453,6 +453,7 @@ namespace VProcessor.Gui
             this.flashFile.Load();
             this.machine.Reset(this.compiler.Compile32(this.flashFile, VPConsts.FlashMemorySize));
             this.Update();
+            this.UpdateEditorBox();
         }
 
 
@@ -493,7 +494,7 @@ namespace VProcessor.Gui
             this.tabsToolStripMenuItem.Checked = UserSettings.IndentTab == index;
             this.spacesToolStripMenuItem.Checked = UserSettings.IndentSpace == index;
             this.settings.IndentMode = index;
-            this.Update();
+            this.UpdateEditorBox();
         }
 
         private void size1toolStripMenuItem_Click(object sender, EventArgs e)
@@ -517,7 +518,7 @@ namespace VProcessor.Gui
             this.size2toolStripMenuItem.Checked = UserSettings.IndentSize2 == number;
             this.size4toolStripMenuItem.Checked = UserSettings.IndentSize4 == number;
             this.settings.IndentSize = number;
-            this.Update();
+            this.UpdateEditorBox();
         }
 
         private void EditorForm_Load(object sender, EventArgs e)
