@@ -4,7 +4,9 @@ ControlMemoryCode
 Na		Next Address in Car
 x
 
-x
+EOI 	End of Interrupt
+
+Um3
 Um2		Sets UserMode 
 Um1		//0 is Default and Wont Change Mode
 Um0		//System = 001, Interrupt = 010, Unprevilaged = 100
@@ -47,6 +49,13 @@ Extra Register Slot	 (4 Bit)
 Destination Register (4 Bit)
 Source A Register	 (4 Bit)
 Source B Register    (4 Bit)
+
+Interrupts
+----------
+
+RequestInput (32Bits)
+
+0-7 Reserved
 
 UserModes
 ---------

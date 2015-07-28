@@ -40,6 +40,11 @@ namespace VProcessor.Hardware
             this.memory.Tick();
             this.interrupts.Tick();
         }
+       
+        public Boolean HasTerminated()
+        {
+            return this.processor.HasTerminated();
+        }
 
         public void Reset()
         {

@@ -19,6 +19,7 @@ namespace VProcessor.Hardware.Interrupts
 
         private Channel channel;
         
+        //0000 0000
         public UInt32 RequestInput { get; set; }
 
         private const Byte Int32Size = 32;

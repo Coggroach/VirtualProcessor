@@ -226,6 +226,14 @@ namespace VProcessor.Software.Assembly
             }
             return list.ToArray();
         }
+
+        public UInt32[] DefaultCompoundLine(String[] parts)
+        {
+            var array = new UInt32[1];
+            array[0] |= (UInt32)Opcode.GetCodeAddress(parts[0].ToUpper()) << 16;
+            return array;
+        }
+
         #endregion
 
         #region ConvertLine32
@@ -265,6 +273,8 @@ namespace VProcessor.Software.Assembly
                         return this.SubroutineCompoundLine(parts, "^");
                     case "MOD":
                         return this.SetModeLine(parts);
+                    default:
+                        return this.DefaultCompoundLine(parts);
                 }
             }
 

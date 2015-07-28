@@ -16,6 +16,7 @@ namespace VProcessor.Hardware.Components
         private Register status;
         private MemoryDualChannel memoryChannel;
         private InterruptChannel interruptChannel;
+        private Register interrupt;
         private Decoder decoder;
 
         public MemoryChannelPacket ChannelPacket { get; set; }
@@ -26,6 +27,7 @@ namespace VProcessor.Hardware.Components
             this.controlMemory = new MemoryUnit<UInt64>(control);
             this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.status = new Register();
+            this.interrupt = new Register();
             this.decoder = new Decoder();
             this.instruction = new Register(this.flashMemory.GetMemory());
             this.branchControl = new Brancher(this.instruction);            
@@ -119,10 +121,20 @@ namespace VProcessor.Hardware.Components
                 this.datapath.SetMode(this.decoder.Mode);  
         
             //Check if Interrupt Polled
-            var interrupt = this.interruptChannel.Pop();
+            var interrupt = ((InterruptPacket)this.interruptChannel.Pop());
             if(interrupt != null)
             {
-                //do Interrupt
+                if(interrupt.Request == InterruptPacketRequest.IRQ)
+                {
+                    this.interrupt.Value = this.flashMemory.GetRegister();
+                    this.flashMemory.SetRegister(interrupt.Address);
+                }
+            }
+
+            //Check if Interrupt Complete
+            if(this.decoder.EndOfInterrupt)
+            {
+                this.flashMemory.SetRegister(this.interrupt.Value);
             }
 
             //Move Data in Datapath
@@ -168,7 +180,7 @@ namespace VProcessor.Hardware.Components
                 this.memoryChannel.PushOutput(this.ChannelPacket);
             }
             
-            //Set up PC
+            //Set up PC            
             if (this.decoder.StorePc && !this.decoder.LoadPc)            
                 this.flashMemory.SetRegister(dataOut);            
             else if ((this.decoder.ProgramControl & 2) == 2 && this.branchControl.Branch(this.decoder.FunctionCode))

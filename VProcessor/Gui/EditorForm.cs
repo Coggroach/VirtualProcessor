@@ -8,28 +8,31 @@ using VProcessor.Tools;
 using VProcessor.Common;
 using VProcessor.Hardware.Memory;
 using System.Collections;
+using System.Threading;
 
 namespace VProcessor.Gui
 {
     public partial class EditorForm : Form
     {
         private IAssembler compiler;
-        private Machine machine;
+        private volatile Machine machine;
         private UserSettings settings;
         private VPFile flashFile;
         private const String RegisterPrefix = "r";
+        private Object UIThreadContext;
 
         public EditorForm()
         {
             this.compiler = new Assembler();
             this.settings = new UserSettings().Load();
             this.flashFile = new VPFile(this.settings.FlashFileLocation);
-
-            this.machine = new Machine(this.compiler);
             
+            this.machine = new Machine(this.compiler);
+            this.SetupThread();
             this.InitializeComponent();
             this.Setup();
             this.Update();
+            this.UIThreadContext = this.EditorBox;
         }
 
         public void Tick()
@@ -37,6 +40,40 @@ namespace VProcessor.Gui
             this.machine.Tick();
             this.Update();
         }
+
+        #region Threading
+
+        private volatile Boolean IsRunning;
+        private Thread RunThread;
+
+        public void SetupThread()
+        {
+            this.RunThread = new Thread(this.Run);
+            this.IsRunning = false;
+        }
+
+        public void Run(Object context)
+        {
+            this.IsRunning = true;
+            //var timeSpan = new TimeSpan(Settings.ClockTime);
+            this.RunningStatus.BackColor = Color.Green;
+
+            while (!this.machine.HasTerminated() && this.IsRunning)
+            {
+                this.machine.Tick();
+                //Thread.Sleep(timeSpan);
+            }
+            this.Stop();
+        }
+
+        public void Stop()
+        {
+            this.IsRunning = false;
+            Thread.Sleep(100);
+            this.RunningStatus.BackColor = Color.Red;
+            this.Update();
+        }
+        #endregion
 
         #region Setup
         public void Setup()
@@ -93,6 +130,16 @@ namespace VProcessor.Gui
 
         #region Update
         public new void Update()
+        {
+            if(this.InvokeRequired)
+            {
+                this.Invoke(new Action(UpdateHelper));
+                return;
+            }
+            this.UpdateHelper();
+        }
+
+        public void UpdateHelper()
         {
             this.UpdateRegisterFile();
             this.UpdateMemoryDisplays();
@@ -487,7 +534,17 @@ namespace VProcessor.Gui
             this.HighlightEditorBox("All");
         }
 
-        #endregion EventHandling
+        private void runToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.IsRunning)
+                this.Stop();
+            else
+            {
+                ThreadPool.QueueUserWorkItem(this.Run);                
+            }
+        }
+
+        #endregion EventHandling    
 
     }
 }

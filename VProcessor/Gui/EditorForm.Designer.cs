@@ -53,6 +53,7 @@
             this.size1toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.size2toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.size4toolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.highlightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CurrentCommandTextBox = new System.Windows.Forms.TextBox();
@@ -61,7 +62,8 @@
             this.TickButton = new System.Windows.Forms.ToolStripButton();
             this.ToolFontSize = new System.Windows.Forms.ToolStripComboBox();
             this.TickCounter = new System.Windows.Forms.ToolStripTextBox();
-            this.highlightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.runToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.RunningStatus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.RegisterFile)).BeginInit();
             this.MenuStrip.SuspendLayout();
             this.ToolBar.SuspendLayout();
@@ -124,28 +126,28 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem1
             // 
             this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
-            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(110, 22);
+            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem1.Text = "Save";
             this.saveToolStripMenuItem1.Click += new System.EventHandler(this.saveToolStripMenuItem1_Click);
             // 
             // restartToolStripMenuItem
             // 
             this.restartToolStripMenuItem.Name = "restartToolStripMenuItem";
-            this.restartToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.restartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.restartToolStripMenuItem.Text = "Restart";
             this.restartToolStripMenuItem.Click += new System.EventHandler(this.restartToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -155,7 +157,8 @@
             this.assembleToolStripMenuItem,
             this.modeToolStripMenuItem,
             this.tickToolStripMenuItem,
-            this.tickx25ToolStripMenuItem});
+            this.tickx25ToolStripMenuItem,
+            this.runToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
             this.editToolStripMenuItem.Text = "Edit";
@@ -163,7 +166,7 @@
             // assembleToolStripMenuItem
             // 
             this.assembleToolStripMenuItem.Name = "assembleToolStripMenuItem";
-            this.assembleToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.assembleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.assembleToolStripMenuItem.Text = "Assemble";
             this.assembleToolStripMenuItem.Click += new System.EventHandler(this.assembleToolStripMenuItem_Click);
             // 
@@ -174,7 +177,7 @@
             this.decimalToolStripMenuItem,
             this.assemblyToolStripMenuItem});
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-            this.modeToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.modeToolStripMenuItem.Text = "Mode";
             this.modeToolStripMenuItem.Click += new System.EventHandler(this.modeToolStripMenuItem_Click);
             // 
@@ -207,14 +210,14 @@
             // tickToolStripMenuItem
             // 
             this.tickToolStripMenuItem.Name = "tickToolStripMenuItem";
-            this.tickToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.tickToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tickToolStripMenuItem.Text = "Tick";
             this.tickToolStripMenuItem.Click += new System.EventHandler(this.tickToolStripMenuItem_Click);
             // 
             // tickx25ToolStripMenuItem
             // 
             this.tickx25ToolStripMenuItem.Name = "tickx25ToolStripMenuItem";
-            this.tickx25ToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.tickx25ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.tickx25ToolStripMenuItem.Text = "Tick x25";
             this.tickx25ToolStripMenuItem.Click += new System.EventHandler(this.tickx25ToolStripMenuItem_Click);
             // 
@@ -234,7 +237,7 @@
             this.spacesToolStripMenuItem,
             this.tabsToolStripMenuItem});
             this.indentModeToolStripMenuItem.Name = "indentModeToolStripMenuItem";
-            this.indentModeToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.indentModeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.indentModeToolStripMenuItem.Text = "Indent Mode";
             // 
             // spacesToolStripMenuItem
@@ -262,7 +265,7 @@
             this.size2toolStripMenuItem,
             this.size4toolStripMenuItem});
             this.indentSizeToolStripMenuItem.Name = "indentSizeToolStripMenuItem";
-            this.indentSizeToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.indentSizeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.indentSizeToolStripMenuItem.Text = "Indent Size";
             // 
             // size1toolStripMenuItem
@@ -290,6 +293,16 @@
             this.size4toolStripMenuItem.Size = new System.Drawing.Size(80, 22);
             this.size4toolStripMenuItem.Text = "4";
             this.size4toolStripMenuItem.Click += new System.EventHandler(this.size4toolStripMenuItem_Click);
+            // 
+            // highlightToolStripMenuItem
+            // 
+            this.highlightToolStripMenuItem.Checked = true;
+            this.highlightToolStripMenuItem.CheckOnClick = true;
+            this.highlightToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.highlightToolStripMenuItem.Name = "highlightToolStripMenuItem";
+            this.highlightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.highlightToolStripMenuItem.Text = "Highlight";
+            this.highlightToolStripMenuItem.Click += new System.EventHandler(this.highlightToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -360,21 +373,29 @@
             this.TickCounter.Size = new System.Drawing.Size(50, 25);
             this.TickCounter.Text = "1";
             // 
-            // highlightToolStripMenuItem
+            // runToolStripMenuItem
             // 
-            this.highlightToolStripMenuItem.Checked = true;
-            this.highlightToolStripMenuItem.CheckOnClick = true;
-            this.highlightToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.highlightToolStripMenuItem.Name = "highlightToolStripMenuItem";
-            this.highlightToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.highlightToolStripMenuItem.Text = "Highlight";
-            this.highlightToolStripMenuItem.Click += new System.EventHandler(this.highlightToolStripMenuItem_Click);
+            this.runToolStripMenuItem.Name = "runToolStripMenuItem";
+            this.runToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.runToolStripMenuItem.Text = "Run";
+            this.runToolStripMenuItem.Click += new System.EventHandler(this.runToolStripMenuItem_Click);
+            // 
+            // RunningStatus
+            // 
+            this.RunningStatus.AutoSize = true;
+            this.RunningStatus.BackColor = System.Drawing.Color.Red;
+            this.RunningStatus.Location = new System.Drawing.Point(688, 35);
+            this.RunningStatus.Name = "RunningStatus";
+            this.RunningStatus.Size = new System.Drawing.Size(16, 13);
+            this.RunningStatus.TabIndex = 7;
+            this.RunningStatus.Text = "   ";
             // 
             // EditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.RunningStatus);
             this.Controls.Add(this.ToolBar);
             this.Controls.Add(this.FlashMemoryBox);
             this.Controls.Add(this.CurrentCommandTextBox);
@@ -430,5 +451,7 @@
         private System.Windows.Forms.ToolStripMenuItem size2toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem size4toolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem highlightToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
+        private System.Windows.Forms.Label RunningStatus;
     }
 }

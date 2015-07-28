@@ -237,6 +237,7 @@ namespace VProcessor.Common
             Add("^", 0, 0x80);
 
             Add("MOD", 0, 0x86);
+            Add("EOI", 0, 0x81);
         }
     }
 }

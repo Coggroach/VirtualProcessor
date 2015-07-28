@@ -17,5 +17,6 @@ namespace VProcessor.Common
         Register GetInstructionRegister();
         MemoryUnit<UInt32> GetFlashMemory();
         MemoryUnit<UInt64> GetControlMemory();
+        Boolean HasTerminated();
     }
 }

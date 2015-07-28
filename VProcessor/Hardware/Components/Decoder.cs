@@ -35,6 +35,9 @@ namespace VProcessor.Hardware.Components
         public Boolean LoadPc { get; set; }
 
         public Byte Mode { get; set; }
+
+        public Boolean EndOfInterrupt { get; set; }
+        
         public UInt16 NextAddress { get; set; }
 
 
@@ -64,6 +67,8 @@ namespace VProcessor.Hardware.Components
             this.LoadPc     = BitHelper.BitMatch(Memory, 23, 1);
 
             this.Mode = (Byte)(BitHelper.BitExtract(Memory, 24, 0xF));
+
+            this.EndOfInterrupt = BitHelper.BitMatch(Memory, 28, 1);
 
             this.NextAddress = (UInt16)BitHelper.BitExtract(Memory, 48, 0xFFFF);
         }
