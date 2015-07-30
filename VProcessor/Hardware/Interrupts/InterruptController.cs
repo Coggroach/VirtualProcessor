@@ -35,7 +35,12 @@ namespace VProcessor.Hardware.Interrupts
 
         public void Request(UInt32 irq)
         {
+            if ((irq & this.imr.Value) != irq)
+                return;
+
             this.irr.Value |= irq;
+
+
             if (irq != 0)
                 this.waiting = false;
         }
@@ -88,7 +93,7 @@ namespace VProcessor.Hardware.Interrupts
         {
             this.Request(this.RequestInput);
             if (!this.waiting)
-                this.interruptChannel.Push(this.CreateInterruptRequest());
+                this.interruptChannel.Push(this.CreateInterruptRequest());            
         }
     }
 }

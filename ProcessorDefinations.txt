@@ -4,6 +4,7 @@ ControlMemoryCode
 Na		Next Address in Car
 x
 
+UmA		If Set, Specifies Um to follow (has Priority over Umx)
 EOI 	End of Interrupt
 
 Um3

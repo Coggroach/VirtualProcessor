@@ -134,7 +134,7 @@ namespace VProcessor.Hardware.Components
                         Address = VPConsts.VectoredInterruptControllerAddress,
                         Offset = (Int32) interrupt.Address
                     };
-                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
+                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Push;
                     this.memoryChannel.PushOutput(this.ChannelPacket);
                     this.controlMemory.SetRegister((UInt32) Opcode.GetCodeAddress("IRQ"));
                     return;
