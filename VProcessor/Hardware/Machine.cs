@@ -31,6 +31,7 @@ namespace VProcessor.Hardware
                 this.assembler.Compile32(new VPFile(VPConsts.FlashMemoryLocation), VPConsts.FlashMemorySize));
             this.interrupts = new InterruptController(this.processor.GetInterruptChannel());
             this.memory = new MemoryController(this.processor.GetMemoryDualChannel());
+            this.memory.RegisterMappedMemory(interrupts);
         }
         
         public void Tick()
@@ -45,7 +46,6 @@ namespace VProcessor.Hardware
             this.interrupts.RegisterPeripheral(peripheral);
             if (peripheral.HasMemory)
                 this.memory.RegisterMappedMemory(peripheral);
-
         }
        
         public Boolean HasTerminated()

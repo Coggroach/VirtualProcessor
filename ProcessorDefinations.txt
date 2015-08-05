@@ -5,7 +5,7 @@ Na		Next Address in Car
 x
 
 
-EOI 	End of Interrupt
+EOI 	End of Interrupt, Enables Interrupting if Not
 UmA		If Set, Specifies Um to follow (has Priority over Umx)
 
 Um3

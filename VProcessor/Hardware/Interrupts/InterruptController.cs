@@ -11,14 +11,16 @@ using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Interrupts
 {
-    public class InterruptController : ITickable
+    public class InterruptController : IPeripheral
     {
         private Register irr;
         private Register isr;
         private Register imr;
 
         private Channel interruptChannel;
-        private IList<IPeripheral> peripherals;       
+        private IList<IPeripheral> peripherals;
+
+        private UInt32[] addresses;
 
         public InterruptController(InterruptChannel interrupt)
         {
@@ -27,6 +29,7 @@ namespace VProcessor.Hardware.Interrupts
             this.imr = new Register();
             this.interruptChannel = interrupt;
             this.peripherals = new List<IPeripheral>();
+            this.addresses = new UInt32[VPConsts.VectoredInterruptControllerSize];
         }
 
         public void Request(UInt32 irq)
@@ -103,6 +106,41 @@ namespace VProcessor.Hardware.Interrupts
                 peri.Tick();
             this.Request(this.RequestInput());
             this.interruptChannel.Push(this.CreateInterruptRequest());        
+        }
+
+        public bool Trigger()
+        {
+            return false;
+        }
+
+        public void Reset()
+        {
+
+        }
+
+        public uint GetMemory(int index)
+        {
+            return this.GetMemory((UInt32)index);
+        }
+
+        public uint GetMemory(uint index)
+        {
+            return this.addresses[index];
+        }
+
+        public void SetMemory(int index, uint value)
+        {
+            this.addresses[index] = value;
+        }
+
+        public int Length
+        {
+            get { return VPConsts.VectoredInterruptControllerSize; }
+        }
+
+        public bool HasMemory
+        {
+            get { return true; }
         }
     }
 }

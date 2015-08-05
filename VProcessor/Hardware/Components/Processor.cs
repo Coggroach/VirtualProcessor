@@ -16,8 +16,7 @@ namespace VProcessor.Hardware.Components
         private Register status;
         private MemoryDualChannel memoryChannel;
         private InterruptChannel interruptChannel;
-        private Register interrupt;
-        private Boolean interruptEnable;
+        private Interrupt interrupt;
         private Decoder decoder;
 
         public MemoryChannelPacket ChannelPacket { get; set; }
@@ -28,8 +27,7 @@ namespace VProcessor.Hardware.Components
             this.controlMemory = new MemoryUnit<UInt64>(control);
             this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.status = new Register();
-            this.interrupt = new Register();
-            this.interruptEnable = false;
+            this.interrupt = new Interrupt();
             this.decoder = new Decoder();
             this.instruction = new Register(this.flashMemory.GetMemory());
             this.branchControl = new Brancher(this.instruction);            
@@ -133,22 +131,28 @@ namespace VProcessor.Hardware.Components
         
             //Check if Interrupt Polled
             var interrupt = ((InterruptPacket)this.interruptChannel.Pop());
-            if(interrupt != null && this.interruptEnable)
+            if(interrupt != null && this.interrupt.Enable && this.interrupt.Accepting)
             {
                 if(interrupt.Request == InterruptPacketRequest.IRQ)
                 {
-                    this.interrupt.Value = this.flashMemory.GetRegister();
-                    this.interruptEnable = false;
-                    this.datapath.SetMode(DatapathMode.Interupt);                    
+                    this.interrupt.Address = this.flashMemory.GetRegister();
+                    this.interrupt.Accepting = false;
+                    this.interrupt.Mode = this.datapath.GetMode();
+                    this.datapath.SetMode(DatapathMode.Interupt);
+                    this.flashMemory.SetRegister(interrupt.Address);
                 }
             }
 
             //Check if Interrupt Complete
-            if (this.decoder.EndOfInterrupt)
-            {
-                this.flashMemory.SetRegister(this.interrupt.Value);
-                this.interruptEnable = true;
+            if (this.decoder.EndOfInterrupt && this.interrupt.Enable)
+            {                
+                this.flashMemory.SetRegister(this.interrupt.Address);
+                this.interrupt.Accepting = true;
+                this.datapath.SetMode(this.interrupt.Mode);
             }
+            if (this.decoder.EndOfInterrupt && !this.interrupt.Enable)
+                this.interrupt.Enable = this.interrupt.Accepting = true;
+
             //Move Data in Datapath
             var dataOut = (UInt32) 0;
             if (this.decoder.DataIn && this.decoder.LoadRegister) 

@@ -53,6 +53,7 @@
     <Compile Include="Hardware\Interfacing\IDatapath.cs" />
     <Compile Include="Hardware\Interfacing\IPacket.cs" />
     <Compile Include="Hardware\Interfacing\ITickable.cs" />
+    <Compile Include="Hardware\Interrupts\Interrupt.cs" />
     <Compile Include="Hardware\Interrupts\InterruptChannel.cs" />
     <Compile Include="Hardware\Interrupts\InterruptController.cs" />
     <Compile Include="Hardware\Interrupts\InterruptPacket.cs" />
