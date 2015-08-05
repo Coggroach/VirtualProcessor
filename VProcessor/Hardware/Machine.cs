@@ -32,7 +32,7 @@ namespace VProcessor.Hardware
             this.interrupts = new InterruptController(this.processor.GetInterruptChannel());
             this.memory = new MemoryController(this.processor.GetMemoryDualChannel());
         }
-
+        
         public void Tick()
         {
             this.processor.Tick();
@@ -43,6 +43,9 @@ namespace VProcessor.Hardware
         public void RegisterPeripheral(IPeripheral peripheral)
         {            
             this.interrupts.RegisterPeripheral(peripheral);
+            if (peripheral.HasMemory)
+                this.memory.RegisterMappedMemory(peripheral);
+
         }
        
         public Boolean HasTerminated()

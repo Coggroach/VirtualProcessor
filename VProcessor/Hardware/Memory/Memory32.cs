@@ -52,5 +52,11 @@ namespace VProcessor.Hardware.Memory
                 mem32.SetMemory(i + a.Length, b.GetMemory(i));
             return mem32;
         }
+
+
+        public bool HasMemory
+        {
+            get { return true; }
+        }
     }
 }

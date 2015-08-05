@@ -68,6 +68,10 @@ CurrentMode -> DestinationMode
 3. Previlaged	2, 3, 4
 4. UnPrevilaged	4
 
+If ExecutionMode (UmA) is set
+Command will only be executed if in the same
+mode as or destination mode is valid
+
 
 Opcodes for Assembler
 ---------------------
@@ -87,6 +91,13 @@ Type 8: Compound Command.
 101 - 5 : RK  - 2
 110 - 6 : RF  - 4
 111 - 7 : RFK - 5
+
+Backup
+------
+
+0000 0000 0000 0300
+0000 0000 0000 004C
+0000 0000 0040 1002
 
 Compound Commands
 -----------------

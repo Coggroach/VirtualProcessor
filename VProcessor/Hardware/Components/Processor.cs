@@ -115,7 +115,10 @@ namespace VProcessor.Hardware.Components
             //Check if Allowed to Execute
             if(this.decoder.ExecutionMode)// == this.datapath.GetMode())
             {
-
+                var logic = this.decoder.Mode == (Byte)this.datapath.GetMode()
+                    || this.datapath.ValidMode((DatapathMode)this.decoder.Mode);
+                if (!logic)
+                    throw new MachineException("Invalid Mode to Execute Command");
             }
             
             //Set up Datapath

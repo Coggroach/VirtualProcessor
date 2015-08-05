@@ -41,6 +41,11 @@ namespace VProcessor.Hardware.Memory
         public Int32 Length
         {
             get { return this.memory.Length; }
-        }       
+        }
+
+        public bool HasMemory
+        {
+            get { return true; }
+        }
     }
 }

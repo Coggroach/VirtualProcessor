@@ -18,7 +18,8 @@ namespace VProcessor.Gui
         private volatile Machine machine;
         private UserSettings settings;
         private VPFile flashFile;
-        private const String RegisterPrefix = "r";        
+        private const String RegisterPrefix = "r";
+        private VProcessor.Hardware.Peripherals.Timer timer;
 
         public EditorForm()
         {
@@ -27,6 +28,7 @@ namespace VProcessor.Gui
             this.flashFile = new VPFile(this.settings.FlashFileLocation);
             
             this.machine = new Machine(this.compiler);
+            this.timer = new Hardware.Peripherals.Timer();
             this.SetupThread();
             this.InitializeComponent();
             this.Setup();

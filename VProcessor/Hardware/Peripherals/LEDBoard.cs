@@ -36,5 +36,35 @@ namespace VProcessor.Hardware.Peripherals
         {
             throw new NotImplementedException();
         }
+
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint GetMemory(int index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint GetMemory(uint index)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetMemory(int index, uint value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Length
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool HasMemory
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

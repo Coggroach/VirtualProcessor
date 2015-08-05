@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VProcessor.Hardware.Components;
+using VProcessor.Hardware.Interfacing;
+using VProcessor.Hardware.Interrupts;
+using VProcessor.Hardware.Peripherals;
 using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Memory
 {
-    public class MemoryController
+    public class MemoryController : ITickable
     {
         private MemoryDualChannel channel;
         private Memory32 memory;
+        private IList<IPeripheral> mappedMemory;
 
         private MemoryController() 
             : this(null) {}
@@ -19,9 +19,11 @@ namespace VProcessor.Hardware.Memory
         public MemoryController(MemoryDualChannel channel)
         {
             this.memory = new Memory32(VPConsts.RandomAccessMemorySize);
-            this.channel = channel;   
+            this.channel = channel;
+            this.mappedMemory = new List<IPeripheral>();
         }
 
+        #region Push/Pop
         private void PopInput()
         {
             var packet = this.channel.PopInput();
@@ -50,6 +52,12 @@ namespace VProcessor.Hardware.Memory
                 this.channel.MemoryPullRequest = MemoryDualChannelRequest.Complete;
             }
         }
+        #endregion
+
+        public void RegisterMappedMemory(IPeripheral peripheral)
+        {
+            this.mappedMemory.Add(peripheral);
+        }
 
         public void Tick()
         {
@@ -62,15 +70,31 @@ namespace VProcessor.Hardware.Memory
             this.PopOutput();
         }
 
-        #region Controller
+        #region Controller        
+        private IMemory<UInt32> MemoryChunk(Int32 Address)
+        {
+            if (Address < VPConsts.RandomAccessMemorySize)
+                return this.memory;
+            var total = VPConsts.RandomAccessMemorySize;
+            foreach(var mapped in this.mappedMemory)
+            {
+                if (total <= Address && Address < total + mapped.Length)
+                    return mapped;
+                total += mapped.Length;
+            }
+            throw new MachineException("MemoryController: Address out of Bounds");
+        }
+
         private UInt32 Read(Int32 address, Int32 offset = 0)
         {
-            return this.memory.GetMemory(address + offset);
+            var netAddress = address + offset;
+            return this.MemoryChunk(netAddress).GetMemory(netAddress);
         }
 
         private void Write(Int32 address, UInt32 value, Int32 offset = 0)
         {
-            this.memory.SetMemory(address + offset, value);
+            var netAddress = address + offset;
+            this.MemoryChunk(netAddress).SetMemory(address + offset, value);
         }
         #endregion
     }

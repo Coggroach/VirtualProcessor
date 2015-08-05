@@ -56,6 +56,7 @@
     <Compile Include="Hardware\Interrupts\InterruptChannel.cs" />
     <Compile Include="Hardware\Interrupts\InterruptController.cs" />
     <Compile Include="Hardware\Interrupts\InterruptPacket.cs" />
+    <Compile Include="Hardware\Interrupts\MachineException.cs" />
     <Compile Include="Hardware\Memory\MemoryChannel.cs" />
     <Compile Include="Hardware\Memory\MemoryController.cs" />
     <Compile Include="Common\IInformable.cs" />
