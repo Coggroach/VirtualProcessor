@@ -93,6 +93,7 @@ namespace VProcessor.Hardware.Components
             this.datapath.Reset();
             this.instruction.Value = this.flashMemory.GetMemory();
             this.status = new Register();
+            this.interrupt = new Interrupt();
         }
 
         public Boolean HasTerminated()
@@ -140,6 +141,9 @@ namespace VProcessor.Hardware.Components
                     this.interrupt.Mode = this.datapath.GetMode();
                     this.datapath.SetMode(DatapathMode.Interupt);
                     this.flashMemory.SetRegister(interrupt.Address);
+                    this.controlMemory.SetRegister(0);
+                    this.instruction.Value = this.flashMemory.GetMemory();
+                    return;
                 }
             }
 

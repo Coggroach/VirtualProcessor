@@ -79,7 +79,7 @@ namespace VProcessor.Hardware.Interrupts
 
             return new InterruptPacket()
             {
-                Address = bitPos,
+                Address = this.addresses[bitPos],
                 Request = InterruptPacketRequest.IRQ
             };
         }
@@ -95,17 +95,18 @@ namespace VProcessor.Hardware.Interrupts
             for(var i = 0; i < this.peripherals.Count; i++)
             {
                 if (this.peripherals[i].Trigger())
-                    request |= (UInt32) (1 << i);
-                //Needs to Have IDs in Future
+                {
+                    request |= (UInt32)(1 << i);
+                    this.imr.SetBit((byte)i);
+                }                
             }
             return request;
         }
-
         public void Tick()
         {
-            foreach (var peri in this.peripherals)
-                peri.Tick();
             this.Request(this.RequestInput());
+            foreach (var peri in this.peripherals)
+                peri.Tick();                            
             this.interruptChannel.Push(this.CreateInterruptRequest());        
         }
 

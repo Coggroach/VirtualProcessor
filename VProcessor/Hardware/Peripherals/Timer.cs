@@ -22,15 +22,15 @@ namespace VProcessor.Hardware.Peripherals
 
         public void Tick()
         {
+            if (this.Trigger())
+                this.timer = 0;
             if(this.enable)
-                this.timer++;
+                this.timer++;      
         }
 
         public bool Trigger()
-        {
-            var trigger = this.timer >= this.limit && this.enable;
-            this.timer = 0;
-            return trigger;
+        {   
+            return this.timer >= this.limit && this.enable;
         }
 
         public void Reset()
