@@ -71,16 +71,16 @@ namespace VProcessor.Hardware.Memory
         }
 
         #region Controller        
-        private IMemory<UInt32> MemoryChunk(Int32 Address)
+        private IMemory<UInt32> MemoryChunk(ref Int32 Address)
         {
             if (Address < VPConsts.RandomAccessMemorySize)
                 return this.memory;
-            var total = VPConsts.RandomAccessMemorySize;
+            Address -= VPConsts.RandomAccessMemorySize;
             foreach(var mapped in this.mappedMemory)
             {
-                if (total <= Address && Address < total + mapped.Length)
+                if (0 <= Address && Address < mapped.Length)
                     return mapped;
-                total += mapped.Length;
+                Address -= mapped.Length;
             }
             throw new MachineException("MemoryController: Address out of Bounds");
         }
@@ -88,13 +88,13 @@ namespace VProcessor.Hardware.Memory
         private UInt32 Read(Int32 address, Int32 offset = 0)
         {
             var netAddress = address + offset;
-            return this.MemoryChunk(netAddress).GetMemory(netAddress);
+            return this.MemoryChunk(ref netAddress).GetMemory(netAddress);
         }
 
         private void Write(Int32 address, UInt32 value, Int32 offset = 0)
         {
             var netAddress = address + offset;
-            this.MemoryChunk(netAddress).SetMemory(address + offset, value);
+            this.MemoryChunk(ref netAddress).SetMemory(netAddress, value);
         }
         #endregion
     }

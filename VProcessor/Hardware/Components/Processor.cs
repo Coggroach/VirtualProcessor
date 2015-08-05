@@ -151,7 +151,10 @@ namespace VProcessor.Hardware.Components
                 this.datapath.SetMode(this.interrupt.Mode);
             }
             if (this.decoder.EndOfInterrupt && !this.interrupt.Enable)
+            {
                 this.interrupt.Enable = this.interrupt.Accepting = true;
+                this.flashMemory++;
+            }                
 
             //Move Data in Datapath
             var dataOut = (UInt32) 0;

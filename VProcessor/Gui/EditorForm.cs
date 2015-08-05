@@ -29,6 +29,7 @@ namespace VProcessor.Gui
             
             this.machine = new Machine(this.compiler);
             this.timer = new Hardware.Peripherals.Timer();
+            this.machine.RegisterPeripheral(this.timer);
             this.SetupThread();
             this.InitializeComponent();
             this.Setup();

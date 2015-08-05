@@ -1,3 +1,19 @@
-﻿LDR	r0,	=0x50012;
-LDR	r1,	=0x50100;
-ADD	r2,	r0,	r1;
+EOI
+LDR r0, =128
+LDR r1, =handler
+STR r1, [r0]
+LDR r0, =160
+MOV r1, #1
+STR r1, [r0]
+ADD r0, r0, #1
+MOV r1, #10
+STR r1, [r0]
+
+stop
+B  stop
+
+handler
+STM sp!, {r0, r1}
+ADD r3, r3, #1
+LDR sp!, {r1, r0}
+EOI

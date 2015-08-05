@@ -30,6 +30,7 @@ namespace VProcessor.Hardware.Interrupts
             this.interruptChannel = interrupt;
             this.peripherals = new List<IPeripheral>();
             this.addresses = new UInt32[VPConsts.VectoredInterruptControllerSize];
+            this.imr.Value = ~(UInt32)0;
         }
 
         public void Request(UInt32 irq)
