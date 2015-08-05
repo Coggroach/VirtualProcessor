@@ -29,6 +29,7 @@ namespace VProcessor.Software.Assembly
         private const String ConstNumberStem = @"[#][-\d]+";
         private const String FullNumberStem = @"[=][-\d]+";
         private const String AddressStem = @"[\[][\w,#]+[\]]";
+        private const String FullBranchStem = @"[=][\w]+";
         #endregion
 
         #region Attributes
@@ -313,7 +314,7 @@ namespace VProcessor.Software.Assembly
             for (var i = 1; i <= 3 - (type & 3); i++)
                 array[index] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
 
-            
+
             if (Regex.Match(parts[lastElement], RegisterStem).Success && (stem & 4) == 4)
             {
                 array[index] |= GetRegisterCode(parts[lastElement]);
@@ -329,7 +330,9 @@ namespace VProcessor.Software.Assembly
                     address += 1;
             }
             else if (Regex.Match(parts[lastElement], FullNumberStem).Success && (stem & 2) == 2)
-                array[index ^ 1] |= (UInt32)GetFullNumberCode(parts[lastElement]); 
+                array[index ^ 1] |= (UInt32)GetFullNumberCode(parts[lastElement]);
+            else if (Regex.Match(parts[lastElement], FullBranchStem).Success && (stem & 2) == 2)
+                this.LinkBranch(parts[lastElement].Replace("=", ""), 1, true);
 
             array[index] |= (UInt32)(address << 16);
 
@@ -351,13 +354,13 @@ namespace VProcessor.Software.Assembly
             }
         }
 
-        private void LinkBranch(String branchName, Int32 offset = 0)
+        private void LinkBranch(String branchName, Int32 offset = 0, Boolean pointer = false)
         {
             var map = new Hashtable();
 
             map.Add("LinkMachineLine", this.MachineLine + offset);
             map.Add("LinkAssemblyLine", this.AssemblyLine);
-            
+            map.Add("Pointer", pointer);
             map.Add("BranchKey", branchName);
 
             this.BranchLookup.Add(branchName, map);
@@ -381,8 +384,9 @@ namespace VProcessor.Software.Assembly
                 {
                     var regLine = (Int32) ((Hashtable) this.BranchRegistry[lookup["BranchKey"]])["MachineLine"];
                     var linkLine = (Int32) lookup["LinkMachineLine"];
+                    var pointer = (Boolean)lookup["Pointer"];
 
-                    var difference = BitHelper.Subtract(regLine, linkLine);
+                    var difference = pointer ? (UInt32) regLine : BitHelper.Subtract(regLine, linkLine);
                     var currentValue = memory.GetMemory(linkLine);
 
                     currentValue &= 0xFFFF0000;

@@ -183,5 +183,22 @@ namespace VProcessor.Tests.Software.Assembly
             var memory = compiler.Compile32(file, length);
             Assert.AreNotEqual(0, memory.GetMemory(0));
         }
+
+        [TestMethod]
+        public void Test_Ldr_WithAddress()
+        {
+            const Int32 length = 12;
+
+            var compiler = new Assembler();
+
+            var file = new VPFile("Res\\TempAssembly.vps", VPFile.Assembly);
+
+            file.SetString("LDR r0, =branch; ADD r0, r0, #1; branch");
+            file.Save();
+            file.Load();
+
+            var memory = compiler.Compile32(file, length);
+            Assert.IsTrue(3 == memory.GetMemory(1));
+        }
     }
 }
