@@ -14,8 +14,8 @@ namespace VProcessor.Tests.Hardware
         [TestMethod]
         public void TestCodeTable()
         {
-            Assert.IsTrue(Opcode.GetCodeIndexer("ADD") == Opcode.ADD);
-            Assert.IsTrue(Opcode.GetCodeType("ADD") == 0x15);
+            Assert.IsTrue(OpcodeRegistry.Instance.GetCode("ADD") == (Int32)Opcode.ADD);
+            Assert.IsTrue(OpcodeRegistry.Instance.GetCodeType("ADD") == 0x15);
         }
 
         [TestMethod]
@@ -122,8 +122,8 @@ namespace VProcessor.Tests.Hardware
             const UInt32 b = 0x80000030;
 
             var datapath = TestHelper.CreateDatapath(a, b);
-            datapath.FunctionUnit(Opcode.ADD, 1);
-            datapath.FunctionUnit(Opcode.ADC, 1);
+            datapath.FunctionUnit((Byte)Opcode.ADD, 1);
+            datapath.FunctionUnit((Byte)Opcode.ADC, 1);
 
             var reg = datapath.GetRegister();
 
@@ -155,14 +155,14 @@ namespace VProcessor.Tests.Hardware
             var assembler = new Assembler();
             var memoryChunk = assembler.Compile64(control, VPConsts.ControlMemorySize);
 
-            var opcodes = Opcode.GetCodeTable();
+            var opcodes = OpcodeRegistry.Instance.GetCodeTable();
 
             foreach(String code in opcodes.Keys)
             {
-                var address = Opcode.GetCodeAddress(code);
-                var value = Opcode.GetCodeIndexer(code);
+                var address = OpcodeRegistry.Instance.GetCodeAddress(code);
+                var value = OpcodeRegistry.Instance.GetCode(code);
                 var memory = memoryChunk.GetMemory(address);
-                var type = Opcode.GetCodeType(code);
+                var type = OpcodeRegistry.Instance.GetCodeType(code);
 
                 if ((type & 0xF) == 0)
                     continue;

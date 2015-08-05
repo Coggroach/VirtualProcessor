@@ -24,41 +24,46 @@ namespace VProcessor.Hardware.Components
         {
             this.Nzcv = new Register(reg);
         }
-       
+
         public Boolean Branch(UInt32 code)
+        {
+            return this.Branch((BranchCode)code);
+        }
+
+        public Boolean Branch(BranchCode code)
         {
             //https://www.cs.tcd.ie/John.Waldron/3d1/branches.pdf
             switch(code)
             {
-                case Opcode.B:
+                case BranchCode.B:
                     return true;
-                case Opcode.BEQ:
+                case BranchCode.BEQ:
                     return Nzcv.BitMatch(2, 1);
-                case Opcode.BNE:
+                case BranchCode.BNE:
                     return Nzcv.BitMatch(2, 0);
-                case Opcode.BGT:
+                case BranchCode.BGT:
                     return Nzcv.BitMatch(2, 0) && (Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 0) );
-                case Opcode.BLT:
+                case BranchCode.BLT:
                     return Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 1);
-                case Opcode.BGE:
+                case BranchCode.BGE:
                     return Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 0);
-                case Opcode.BLE:
+                case BranchCode.BLE:
                     return Nzcv.BitMatch(2, 1) || (Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 1) );
-                case Opcode.BVS:
+                case BranchCode.BVS:
                     return Nzcv.BitMatch(0, 1);
-                case Opcode.BVC:
+                case BranchCode.BVC:
                     return Nzcv.BitMatch(0, 0);
-                case Opcode.BCS:
+                case BranchCode.BCS:
                     return Nzcv.BitMatch(1, 1);
-                case Opcode.BCC:
+                case BranchCode.BCC:
                     return Nzcv.BitMatch(1, 0);
-                case Opcode.BNS:
+                case BranchCode.BNS:
                     return Nzcv.BitMatch(3, 1);
-                case Opcode.BNC:
+                case BranchCode.BNC:
                     return Nzcv.BitMatch(3, 0);
-                case Opcode.BHI:
+                case BranchCode.BHI:
                     return Nzcv.BitMatch(1, 1) && Nzcv.BitMatch(2, 0);
-                case Opcode.BLS:
+                case BranchCode.BLS:
                     return Nzcv.BitMatch(1, 0) || Nzcv.BitMatch(2, 1);
             }
             return false;

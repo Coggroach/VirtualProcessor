@@ -69,7 +69,7 @@ namespace VProcessor.Software.Assembly
             var memory = new Memory64(size);
             var mode = file.GetMode();
 
-            for (var i = 0; i < memory.GetLength(); i++)
+            for (var i = 0; i < memory.Length; i++)
             {
                 try
                 {
@@ -95,7 +95,7 @@ namespace VProcessor.Software.Assembly
             var mode = file.GetMode();
             UInt32[] array = null;
             for (this.MachineLine = 0, this.AssemblyLine = 0; 
-                this.MachineLine < memory.GetLength(); 
+                this.MachineLine < memory.Length; 
                 this.MachineLine++, this.AssemblyLine++)
             {
                 try
@@ -143,7 +143,7 @@ namespace VProcessor.Software.Assembly
 
             List<UInt32> lines = new List<UInt32>();
 
-            var code = (UInt32) Opcode.GetCodeAddress(upperCode) << 16;
+            var code = (UInt32)OpcodeRegistry.Instance.GetCodeAddress(upperCode) << 16;
 
             if (mode == "LDPC")
                 lines.Add(code);
@@ -194,7 +194,7 @@ namespace VProcessor.Software.Assembly
         {
             var array = new UInt32[1];
             var addressOffset = GetConstantNumberCode(parts[1]);
-            var address = (UInt32)Opcode.GetCodeAddress(parts[0].ToUpper()) + addressOffset;
+            var address = (UInt32)OpcodeRegistry.Instance.GetCodeAddress(parts[0].ToUpper()) + addressOffset;
 
             if (addressOffset > 3)
                 return null;
@@ -230,7 +230,7 @@ namespace VProcessor.Software.Assembly
         public UInt32[] DefaultCompoundLine(String[] parts)
         {
             var array = new UInt32[1];
-            array[0] |= (UInt32)Opcode.GetCodeAddress(parts[0].ToUpper()) << 16;
+            array[0] |= (UInt32)OpcodeRegistry.Instance.GetCodeAddress(parts[0].ToUpper()) << 16;
             return array;
         }
 
@@ -306,9 +306,9 @@ namespace VProcessor.Software.Assembly
                 this.LinkBranch(parts[1], machineBranchOffset);
                 array[index] |= 1;
             }
-                
-            
-            var address = Opcode.GetCodeAddress(upperCode);
+
+
+            var address = OpcodeRegistry.Instance.GetCodeAddress(upperCode);
 
             for (var i = 1; i <= 3 - (type & 3); i++)
                 array[index] |= (UInt32)(GetRegisterCode(parts[i]) << ((3 - i) * 4));
@@ -401,10 +401,10 @@ namespace VProcessor.Software.Assembly
             var parts = line.Split(',');
             var upperCode = parts[0].ToUpper();
 
-            if(!Opcode.IsValidCode(parts[0].ToUpper()))
+            if (!OpcodeRegistry.Instance.IsValidCode(upperCode))
                 return null;
 
-            var type = Opcode.GetCodeType(upperCode);
+            var type = OpcodeRegistry.Instance.GetCodeType(upperCode);
 
             table.Add("Code", parts);
             table.Add("Type", (type & 0xF0) >> 4);

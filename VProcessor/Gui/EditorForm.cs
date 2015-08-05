@@ -118,7 +118,7 @@ namespace VProcessor.Gui
             var chunk = memory.GetMemoryChunk();
             var s = "";
             const String template = "00000000";
-            for(var i = 0; i < chunk.GetLength(); i++)
+            for(var i = 0; i < chunk.Length; i++)
             {
                 var convert = Convert.ToString(chunk.GetMemory(i), 16).ToUpper();
                 s += template.Substring(0, template.Length - convert.Length) + convert +"\n";
@@ -283,7 +283,7 @@ namespace VProcessor.Gui
             this.EditorBox.Select(index, 3);
 
             var selection = this.EditorBox.SelectedText.Trim().ToUpper();
-            if (Opcode.IsValidCode(selection))
+            if (OpcodeRegistry.Instance.IsValidCode(selection))
                 this.EditorBox.SelectionColor = Color.DarkCyan;
         }
 

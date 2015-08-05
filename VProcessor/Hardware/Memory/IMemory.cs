@@ -12,6 +12,6 @@ namespace VProcessor.Hardware.Memory
         T GetMemory(Int32 index);
         T GetMemory(UInt32 index);
         void SetMemory(Int32 index, T value);
-        Int32 GetLength();
+        Int32 Length {  get; }
     }
 }

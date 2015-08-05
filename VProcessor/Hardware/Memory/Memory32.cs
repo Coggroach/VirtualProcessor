@@ -36,9 +36,21 @@ namespace VProcessor.Hardware.Memory
             this.memory[index] = value;
         }
 
-        public Int32 GetLength()
+        public Int32 Length
         {
-            return this.memory.Length;
+            get { return this.memory.Length; }
         }    
+
+        public static Memory32 operator +(Memory32 a, Memory32 b)
+        {
+            var length = a.Length + b.Length;
+            var mem32 = new Memory32(length);
+
+            for(var i = 0; i < a.Length; i++)
+                mem32.SetMemory(i, a.GetMemory(i));
+            for (var i = 0; i < b.Length; i++)
+                mem32.SetMemory(i + a.Length, b.GetMemory(i));
+            return mem32;
+        }
     }
 }

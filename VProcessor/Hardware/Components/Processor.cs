@@ -136,7 +136,7 @@ namespace VProcessor.Hardware.Components
                     };
                     this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Push;
                     this.memoryChannel.PushOutput(this.ChannelPacket);
-                    this.controlMemory.SetRegister((UInt32) Opcode.GetCodeAddress("IRQ"));
+                    this.controlMemory.SetRegister((UInt32) OpcodeRegistry.Instance.GetCodeAddress("IRQ"));
                     return;
                 }
             }

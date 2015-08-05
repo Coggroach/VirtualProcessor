@@ -13,7 +13,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type1()
         {
             const String input = "ADD r0, r1, r2";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -24,7 +24,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type1_ExtraWhitespace()
         {
             const String input = "  ADD  r0, r1,  r2  ";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -35,7 +35,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type1_ExtraTabs()
         {
             const String input = "      ADD     r0,     r1,     r2  ";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -48,7 +48,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_InvalidInput()
         {
             const String input = "DD r0, r1, r2";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("ADD") << 16) | 0x0012;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -59,7 +59,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2()
         {
             const String input = "LDR r0, =14";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("LDR") << 16) | 0x0000;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0000;
             const UInt64 theOutput2 = 14;
 
             var pracOutput = new Assembler().ConvertLine32(input);
@@ -72,7 +72,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2_ExtraWhitespace()
         {
             const String input = "  LDR    r1 ,   =18 ";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("LDR") << 16) | 0x0100;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0100;
             const UInt64 theOutput2 = 18;
 
             var pracOutput = new Assembler().ConvertLine32(input);
@@ -85,7 +85,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2_ExtraTabs()
         {
             const String input = "    LDR        r1 ,            =18         ";
-            var theoOutput = (UInt32)(Opcode.GetCodeAddress("LDR") << 16) | 0x0100;
+            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0100;
             const UInt64 theOutput2 = 18;
 
             var pracOutput = new Assembler().ConvertLine32(input);
@@ -98,7 +98,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2_SingleElement()
         {
             const String input = "MOV r1, #1";
-            var theoOutput = (UInt32)((Opcode.GetCodeAddress("MOV") + 1) << 16) | 0x0101;
+            var theoOutput = (UInt32)((OpcodeRegistry.Instance.GetCodeAddress("MOV") + 1) << 16) | 0x0101;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -109,7 +109,7 @@ namespace VProcessor.Tests.Software.Assembly
         public void Test_ValidInput_Type2_ConstantTooLarge()
         {
             const String input = "MOV r1, #21";
-            var theoOutput = (UInt32)((Opcode.GetCodeAddress("MOV") + 1) << 16) | 0x0105;
+            var theoOutput = (UInt32)((OpcodeRegistry.Instance.GetCodeAddress("MOV") + 1) << 16) | 0x0105;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -129,7 +129,7 @@ namespace VProcessor.Tests.Software.Assembly
             var testMemory = compiler.Compile32(testFile, length);
             var expectedMemory = compiler.Compile32(expectedFile, length);
 
-            Assert.AreEqual(length, testMemory.GetLength());
+            Assert.AreEqual(length, testMemory.Length);
             for (var i = 0; i < length; i++)
                 Assert.AreEqual(expectedMemory.GetMemory(i), testMemory.GetMemory(i));            
         }

@@ -38,9 +38,9 @@ namespace VProcessor.Hardware.Memory
             this.memory[index % this.length] = value;
         }
 
-        public Int32 GetLength()
+        public Int32 Length
         {
-            return this.memory.Length;
+            get { return this.memory.Length; }
         }       
     }
 }

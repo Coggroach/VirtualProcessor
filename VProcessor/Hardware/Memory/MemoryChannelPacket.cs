@@ -11,6 +11,6 @@ namespace VProcessor.Hardware.Memory
     {
         public Int32 Address { get; set; }
         public Int32 Offset { get; set; }
-        public UInt32 Value { get; set; }     
+        public UInt32 Value { get; set; }             
     }
 }

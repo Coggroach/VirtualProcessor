@@ -1,4 +1,5 @@
 ﻿using System;
+using VProcessor.Common;
 using VProcessor.Hardware;
 using VProcessor.Hardware.Components;
 
@@ -23,10 +24,10 @@ namespace VProcessor.Tests.Hardware
             return datapath;
         }
 
-        public static UInt32 GetRegisterFromDatapath(UInt32 a, UInt32 b, Byte code)
+        public static UInt32 GetRegisterFromDatapath(UInt32 a, UInt32 b, Opcode code)
         {
             var datapath = CreateDatapath(a, b);
-            datapath.FunctionUnit(code, 1);
+            datapath.FunctionUnit((Byte)code, 1);
             return datapath.GetRegister();
         }
     }

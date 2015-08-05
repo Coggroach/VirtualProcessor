@@ -146,9 +146,19 @@ namespace VProcessor.Hardware.Components
             return f;
         }
 
+        public UInt32 FunctionUnit(Opcode code, Boolean load = false)
+        {
+            return this.FunctionUnit((Byte)code, load);
+        }
+
         public UInt32 FunctionUnit(Byte code, Byte load)
         {
             return this.FunctionUnit(code, load == 1);
+        }
+
+        public UInt32 FunctionUnit(Opcode code, Byte load)
+        {
+            return this.FunctionUnit((Byte)code, load);
         }
 
         private UInt32 Shifter(UInt32 b, UInt32 direction, Boolean barrel = false)
@@ -180,7 +190,7 @@ namespace VProcessor.Hardware.Components
         private UInt32 FunctionUnit(Byte code, UInt32 d, UInt32 a, UInt32 b)
         {
             UInt32 result = 0;
-            switch (code)
+            switch ((Opcode) code)
             {
                 //Data Movement
                 case Opcode.LDR:

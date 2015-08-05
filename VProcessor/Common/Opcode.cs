@@ -5,162 +5,208 @@ using VProcessor.Tools;
 
 namespace VProcessor.Common
 {
-    public class Opcode
+    public enum Opcode : int
     {
         //http://simplemachines.it/doc/arm_inst.pdf
+        NUL = 0,
+
         //Data Movement Flags
-        public const Int32 LDR = 0;
-        public const Int32 LDRC = 0xD;        
-        public const Int32 STR = 0xE;
+        LDR = 0,
+        LDRC = 0xD,        
+        STR = 0xE,
 
         //Arithmetic Flags
-        public const Int32 INC = 1;
-        public const Int32 ADD = 2;
-        public const Int32 ADDI = 3;
-        public const Int32 ADC = 4;
-        public const Int32 SUBD = 5;
-        public const Int32 SUB = 6;
-        public const Int32 SBC = 7;
-        public const Int32 DEC = 8;
-        public const Int32 RSB = 9;
-        public const Int32 RSC = 0xA;
+        INC = 1,
+        ADD = 2,
+        ADDI = 3,
+        ADC = 4,
+        SUBD = 5,
+        SUB = 6,
+        SBC = 7,
+        DEC = 8,
+        RSB = 9,
+        RSC = 0xA,
 
         //Multiplication Flags
-        public const Int32 MUL = 0xB;
-        public const Int32 MLA = 0xC;
+        MUL = 0xB,
+        MLA = 0xC,
 
         //Logical Flags
-        public const Int32 AND = 0x10;
-        public const Int32 EOR = 0x15;
-        public const Int32 ORR = 0x12;
-        public const Int32 BIC = 0x13;
+        AND = 0x10,
+        EOR = 0x15,
+        ORR = 0x12,
+        BIC = 0x13,
 
         //Data Movement
-        public const Int32 MOV = 0x14;
-        public const Int32 MNV = 0x15;
+        MOV = 0x14,
+        MNV = 0x15,
 
         //Shifting Flags
-        public const Int32 ROL = 0x18;
-        public const Int32 ROR = 0x19;
-        public const Int32 LSL = 0x1A;
-        public const Int32 LSR = 0x1B;
+        ROL = 0x18,
+        ROR = 0x19,
+        LSL = 0x1A,
+        LSR = 0x1B,
 
         //Comparison Flags
-        public const Int32 TST = 0x1C;
-        public const Int32 TEQ = 0x1D;
-        public const Int32 CMN = 0x1E;
-        public const Int32 CMP = 0x1F;
-        
+        TST = 0x1C,
+        TEQ = 0x1D,
+        CMN = 0x1E,
+        CMP = 0x1F,
+
+        LDPC = 0x80,
+        STPC = 0x40,
+
+        MOD = 0x100,
+        EOI = 0x1000,
+        IRQ = 0
+    }
+
+    public enum BranchCode : int
+    {
         //Branch Flags
-        public const Int32 B   = 0x0;
-        public const Int32 BEQ = 0x1;
-        public const Int32 BNE = 0x2;
-        public const Int32 BCS = 0x3;
-        public const Int32 BCC = 0x4;
-        public const Int32 BNS = 0x5;
-        public const Int32 BNC = 0x6;
-        public const Int32 BVS = 0x7;
-        public const Int32 BVC = 0x8;
-        public const Int32 BHI = 0x9;
-        public const Int32 BLS = 0xA;
-        public const Int32 BGE = 0xB;
-        public const Int32 BLT = 0xC;
-        public const Int32 BGT = 0xD;
-        public const Int32 BLE = 0xE;
+        B = 0x0,
+        BEQ = 0x1,
+        BNE = 0x2,
+        BCS = 0x3,
+        BCC = 0x4,
+        BNS = 0x5,
+        BNC = 0x6,
+        BVS = 0x7,
+        BVC = 0x8,
+        BHI = 0x9,
+        BLS = 0xA,
+        BGE = 0xB,
+        BLT = 0xC,
+        BGT = 0xD,
+        BLE = 0xE
+    }
 
-        public const Int32 LDPC = 0x80;
-        public const Int32 STPC = 0x40;
+    public class OpcodeRegistry
+    {
+        public static OpcodeRegistry Instance { get; private set; }
 
-        public const Int32 MOD = 0x100;
-        public const Int32 EOI = 0x1000;
-        public const Int32 IRQ = 0;
+        static OpcodeRegistry()
+        {
+            Instance = new OpcodeRegistry();
+        }
 
-        private static readonly Hashtable CodeTable;
-        private static Int32 CurrentAddress;
-        private static Int32 LastType;
-        private static Logger Logger;
+        public class OpcodeRegistryElement
+        {
+            public Int32 Code { get; private set; }
+            public Byte Type { get; private set; }
+            public Int32 Address { get; private set; }
 
-        private const Int32 K = 1;
-        private const Int32 F = 3;
-        private const Int32 R = 1;
-        private const Int32 A = 3;
+            public OpcodeRegistryElement(Int32 code, Int32 address, Byte type)
+            {
+                this.Code = code;
+                this.Address = address;
+                this.Type = type;
+            }
+        }
+
+        enum OpcodeTypeFlag : int
+        {
+            Constant = 1,
+            Number = 3,
+            Register = 1            
+        }
+
+        private readonly Dictionary<String, OpcodeRegistryElement> CodeTable;
+        private Int32 CurrentAddress;
+        private Int32 LastType;
+        private Logger Logger;    
         
         private const Int32 FirstAddress = 1;
 
-        public static Hashtable GetCode(String code)
+        private OpcodeRegistryElement GetCodeTable(String code)
         {
-            return (Hashtable) CodeTable[code];
+            return CodeTable[code];
         }
 
-        public static Boolean IsValidCode(String code)
+        public Boolean IsValidCode(String code)
         {
             return CodeTable.ContainsKey(code);
         }
 
-        public static Int32 GetCodeIndexer(String code)
+        public Int32 GetCode(String code)
         {
-            return (Int32)GetCode(code)["Value"];
+            return CodeTable[code].Code;
         }
 
-        public static Byte GetCodeType(String code)
+        public Byte GetCodeType(String code)
         {
-            return (Byte)GetCode(code)["Type"];
+            return CodeTable[code].Type;
         }
 
-        public static Int32 GetCodeAddress(String code)
+        public Int32 GetCodeAddress(String code)
         {
-            return (Int32)GetCode(code)["Address"];
+            return CodeTable[code].Address;
         }
 
-        public static Hashtable GetCodeTable()
+        public Dictionary<String, OpcodeRegistryElement> GetCodeTable()
         {
             return CodeTable;
         }
 
-        public static void Add(String name, Int32 value, Byte typeAndConstants)
+        public void Add(String name, Opcode value, Byte type)
         {
-            Add(name, value, GetNextAddress(), typeAndConstants);
+            this.Add(name, (Int32)value, type);
         }
 
-        public static void Add(String name, Int32 value, Int32 address, Byte typeAndConstants)
+        public void Add(String name, Opcode value, Int32 address, Byte type)
+        {
+            this.Add(name, (Int32)value, address, type);
+        }
+
+        public void Add(String name, BranchCode value, Byte type)
+        {
+            this.Add(name, (Int32)value, type);
+        }
+
+        public void Add(String name, BranchCode value, Int32 address, Byte type)
+        {
+            this.Add(name, (Int32)value, address, type);
+        }
+
+        public void Add(String name, Int32 value, Int32 address, Byte type)
         {
             CurrentAddress += address;
-            CodeTable.Add(name, new Hashtable()
-            {
-                {"Address", CurrentAddress},
-                {"Value", value},
-                {"Type", typeAndConstants}
-            });
-            LastType = typeAndConstants & 7;
-            Logger.Log(name + ":" + CurrentAddress + " : " + GetNextAddress());
+            CodeTable.Add(name, new OpcodeRegistryElement(value, CurrentAddress, type));
+            LastType = type & 7;
+            Logger.Log(name + ":" + CurrentAddress + " : " + GetNextAddressSize());
         }
 
-        private static Int32 GetNextAddress()
+        public void Add(String name, Int32 value, Byte type)
+        {
+            Add(name, value, GetNextAddressSize(), type);
+        }
+
+        private Int32 GetNextAddressSize()
         {
             switch(LastType)
             {                
                 case 1:                    
-                    return K;
+                    return (Int32)OpcodeTypeFlag.Constant;
                 case 2:
-                    return F;
+                    return (Int32)OpcodeTypeFlag.Number;
                 case 3:
-                    return F + K;
+                    return (Int32)OpcodeTypeFlag.Number + (Int32)OpcodeTypeFlag.Constant;
                 case 4:
-                    return R;
+                    return (Int32)OpcodeTypeFlag.Register;
                 case 5:
-                    return R + K;
+                    return (Int32)OpcodeTypeFlag.Register + (Int32)OpcodeTypeFlag.Constant;
                 case 6:
-                    return R + F;
+                    return (Int32)OpcodeTypeFlag.Register + (Int32)OpcodeTypeFlag.Number;
                 case 7:
-                    return R + F + K;
+                    return (Int32)OpcodeTypeFlag.Register + (Int32)OpcodeTypeFlag.Number + (Int32)OpcodeTypeFlag.Constant;
                 default:
                     return 0;
             }
         }
 
-        static Opcode()
+        public OpcodeRegistry()
         {
-            CodeTable = new Hashtable();
+            CodeTable = new Dictionary<String, OpcodeRegistryElement>();
             Logger = new Logger("LoggerControl.txt", false);            
             CurrentAddress = FirstAddress;
             LastType = 0;
@@ -172,77 +218,77 @@ namespace VProcessor.Common
             //Type 7: INC rx
             //Type 8: Compound Command.
             
-            //001 - 1 : K   - 1
-            //010 - 2 : F   - 3
+            //001 - 1 : Constant   - 1
+            //010 - 2 : Number   - 3
             //011 - 3 : FK  - 4
-            //100 - 4 : R   - 1
+            //100 - 4 : Register   - 1
             //101 - 5 : RK  - 2
             //110 - 6 : RF  - 4
             //111 - 7 : RFK - 5    
                         
-            Add("LDR", LDR, 0x27);
-            Add("ADD", ADD, 0x15);
-            Add("INC", INC, 0x24);
-            Add("ADDI", ADDI, 0x15);            
-            Add("MOV", MOV, 0x25);
-            Add("MNV", MNV, 0x25);
-            Add("CMP", CMP, 0x25);
-            Add("CMN", CMN, 0x25);
-            Add("TST", TST, 0x25);
-            Add("TEQ", TEQ, 0x25);
+            Add("LDR", Opcode.LDR, 0x27);
+            Add("ADD", Opcode.ADD, 0x15);
+            Add("INC", Opcode.INC, 0x24);
+            Add("ADDI", Opcode.ADDI, 0x15);            
+            Add("MOV", Opcode.MOV, 0x25);
+            Add("MNV", Opcode.MNV, 0x25);
+            Add("CMP", Opcode.CMP, 0x25);
+            Add("CMN", Opcode.CMN, 0x25);
+            Add("TST", Opcode.TST, 0x25);
+            Add("TEQ", Opcode.TEQ, 0x25);
 
-            Add("AND", AND, 0x15);
-            Add("EOR", EOR, 0x15);
-            Add("ORR", ORR, 0x15);
-            Add("BIC", BIC, 0x15);
+            Add("AND", Opcode.AND, 0x15);
+            Add("EOR", Opcode.EOR, 0x15);
+            Add("ORR", Opcode.ORR, 0x15);
+            Add("BIC", Opcode.BIC, 0x15);
 
-            Add("ROL", ROL, 0x15);
-            Add("ROR", ROR, 0x15);
-            Add("LSL", LSL, 0x15);
-            Add("LSR", LSR, 0x15); 
+            Add("ROL", Opcode.ROL, 0x15);
+            Add("ROR", Opcode.ROR, 0x15);
+            Add("LSL", Opcode.LSL, 0x15);
+            Add("LSR", Opcode.LSR, 0x15); 
 
-            Add("B", B, 0x31);
-            Add("BEQ", BEQ, 0x31);
-            Add("BNE", BNE, 0x31);
-            Add("BCS", BCS, 0x31);
-            Add("BCC", BCC, 0x31);
-            Add("BNS", BNS, 0x31);
-            Add("BNC", BNC, 0x31);
-            Add("BVS", BVS, 0x31);
-            Add("BVC", BVC, 0x31);
-            Add("BHI", BHI, 0x31);
-            Add("BLS", BLS, 0x31);
-            Add("BGE", BGE, 0x31);
-            Add("BLT", BLT, 0x31);
-            Add("BGT", BGT, 0x31);
-            Add("BLE", BLE, 0x31);
+            Add("B", BranchCode.B, 0x31);
+            Add("BEQ", BranchCode.BEQ, 0x31);
+            Add("BNE", BranchCode.BNE, 0x31);
+            Add("BCS", BranchCode.BCS, 0x31);
+            Add("BCC", BranchCode.BCC, 0x31);
+            Add("BNS", BranchCode.BNS, 0x31);
+            Add("BNC", BranchCode.BNC, 0x31);
+            Add("BVS", BranchCode.BVS, 0x31);
+            Add("BVC", BranchCode.BVC, 0x31);
+            Add("BHI", BranchCode.BHI, 0x31);
+            Add("BLS", BranchCode.BLS, 0x31);
+            Add("BGE", BranchCode.BGE, 0x31);
+            Add("BLT", BranchCode.BLT, 0x31);
+            Add("BGT", BranchCode.BGT, 0x31);
+            Add("BLE", BranchCode.BLE, 0x31);
 
-            Add("MUL", MUL, 0x15);
-            Add("MLA", MLA, 0x15);
+            Add("MUL", Opcode.MUL, 0x15);
+            Add("MLA", Opcode.MLA, 0x15);
 
-            Add("ADC", ADC, 0x15);
-            Add("SUBD", SUBD, 0x15);
-            Add("SUB", SUB, 0x15);
-            Add("SBC", SBC, 0x15);
-            Add("DEC", DEC, 0x24);
-            Add("RSB", RSB, 0x15);          
-            Add("RSC", RSC, 0x15);
+            Add("ADC", Opcode.ADC, 0x15);
+            Add("SUBD", Opcode.SUBD, 0x15);
+            Add("SUB", Opcode.SUB, 0x15);
+            Add("SBC", Opcode.SBC, 0x15);
+            Add("DEC", Opcode.DEC, 0x24);
+            Add("RSB", Opcode.RSB, 0x15);          
+            Add("RSC", Opcode.RSC, 0x15);
 
-            Add("STR", STR, 0x54);
-            Add("LDRST", LDR, 0x54); //3 Lines
+            Add("STR", Opcode.STR, 0x54);
+            Add("LDRST", Opcode.LDR, 0x54); //3 Lines
 
-            Add("LDM", 0, 3, 0x80);
-            Add("STM", 0, 0x80);
+            Add("LDM", Opcode.NUL, 3, 0x80);
+            Add("STM", Opcode.NUL, 0x80);
 
-            Add("LDPC", LDPC, 0x84);
-            Add("STPC", STPC, 0x84);
+            Add("LDPC", Opcode.LDPC, 0x84);
+            Add("STPC", Opcode.STPC, 0x84);
 
-            Add("BX", 0, 0x80);
-            Add("^", 0, 0x80);
+            Add("BX", Opcode.NUL, 0x80);
+            Add("^", Opcode.NUL, 0x80);
 
-            Add("MOD", MOD, 0x86);
-            Add("EOI", EOI, 0x81);
-            Add("IRQ", IRQ, 0x82);            
+            Add("MOD", Opcode.MOD, 0x86);
+            Add("EOI", Opcode.EOI, 0x81);
+            Add("IRQ", Opcode.IRQ, 0x82);            
         }
     }
 }
