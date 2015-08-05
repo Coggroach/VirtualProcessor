@@ -26,5 +26,15 @@ namespace VProcessor.Hardware.Peripherals
         {
             return state ? Color.Green : Color.Red;
         }
+
+        public bool Trigger()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Tick()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

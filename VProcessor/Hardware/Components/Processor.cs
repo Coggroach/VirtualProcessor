@@ -17,6 +17,7 @@ namespace VProcessor.Hardware.Components
         private MemoryDualChannel memoryChannel;
         private InterruptChannel interruptChannel;
         private Register interrupt;
+        private Boolean interruptEnable;
         private Decoder decoder;
 
         public MemoryChannelPacket ChannelPacket { get; set; }
@@ -28,6 +29,7 @@ namespace VProcessor.Hardware.Components
             this.flashMemory = new MemoryUnit<UInt32>(flash);
             this.status = new Register();
             this.interrupt = new Register();
+            this.interruptEnable = false;
             this.decoder = new Decoder();
             this.instruction = new Register(this.flashMemory.GetMemory());
             this.branchControl = new Brancher(this.instruction);            
@@ -109,6 +111,12 @@ namespace VProcessor.Hardware.Components
         {
             this.decoder.Memory = this.controlMemory.GetMemory();
             this.decoder.Decode(this.instruction);
+
+            //Check if Allowed to Execute
+            if(this.decoder.ExecutionMode)// == this.datapath.GetMode())
+            {
+
+            }
             
             //Set up Datapath
             this.datapath.SetChannel(Datapath.ChannelA, this.decoder.ChannelA);
@@ -118,33 +126,26 @@ namespace VProcessor.Hardware.Components
 
             //Change Mode
             if (this.decoder.Mode != 0) 
-                this.datapath.SetMode(this.decoder.Mode);  
+                this.datapath.SetMode((DatapathMode)this.decoder.Mode);  
         
             //Check if Interrupt Polled
             var interrupt = ((InterruptPacket)this.interruptChannel.Pop());
-            if(interrupt != null)
+            if(interrupt != null && this.interruptEnable)
             {
                 if(interrupt.Request == InterruptPacketRequest.IRQ)
                 {
                     this.interrupt.Value = this.flashMemory.GetRegister();
-                    this.datapath.SetMode(Datapath.Interupt);
-                    this.ChannelPacket = new MemoryChannelPacket()
-                    {
-                        Value = 0,
-                        Address = VPConsts.VectoredInterruptControllerAddress,
-                        Offset = (Int32) interrupt.Address
-                    };
-                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Push;
-                    this.memoryChannel.PushOutput(this.ChannelPacket);
-                    this.controlMemory.SetRegister((UInt32) OpcodeRegistry.Instance.GetCodeAddress("IRQ"));
-                    return;
+                    this.interruptEnable = false;
+                    this.datapath.SetMode(DatapathMode.Interupt);                    
                 }
             }
 
             //Check if Interrupt Complete
-            if(this.decoder.EndOfInterrupt)            
-                this.flashMemory.SetRegister(this.interrupt.Value);            
-
+            if (this.decoder.EndOfInterrupt)
+            {
+                this.flashMemory.SetRegister(this.interrupt.Value);
+                this.interruptEnable = true;
+            }
             //Move Data in Datapath
             var dataOut = (UInt32) 0;
             if (this.decoder.DataIn && this.decoder.LoadRegister) 

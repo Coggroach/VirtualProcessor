@@ -542,12 +542,6 @@ namespace VProcessor.Gui
                 ThreadPool.QueueUserWorkItem(this.Run);                
             }
         }
-
-        private void RunningStatus_Click(object sender, EventArgs e)
-        {
-            this.machine.Interrupt(0x2);
-        }
-
         #endregion EventHandling
     }
 }

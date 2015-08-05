@@ -113,5 +113,19 @@ namespace VProcessor.Tests.Hardware
             datapath.SetChannel(0, 1);
             Assert.AreEqual(1, datapath.GetChannel(0));
         }
+
+        [TestMethod]
+        public void TestMode()
+        {
+            var datapath = new Datapath();
+            datapath.SetMode(DatapathMode.Interupt);
+            Assert.IsTrue(datapath.GetMode() == DatapathMode.Interupt);
+            datapath.SetMode(DatapathMode.Previlaged);
+            Assert.IsTrue(datapath.GetMode() == DatapathMode.Previlaged);
+            datapath.SetMode(DatapathMode.UnPrevilaged);
+            Assert.IsTrue(datapath.GetMode() == DatapathMode.UnPrevilaged);
+            datapath.SetMode(DatapathMode.System);
+            Assert.IsFalse(datapath.GetMode() == DatapathMode.System);
+        }
     }
 }

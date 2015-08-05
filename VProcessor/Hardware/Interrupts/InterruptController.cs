@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using VProcessor.Hardware.Components;
 using VProcessor.Hardware.Interfacing;
 using VProcessor.Hardware.Memory;
+using VProcessor.Hardware.Peripherals;
 using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Interrupts
@@ -16,21 +17,16 @@ namespace VProcessor.Hardware.Interrupts
         private Register isr;
         private Register imr;
 
-        private Boolean waiting;
-
         private Channel interruptChannel;
-        
-        //0000 0000
-        public UInt32 RequestInput { get; set; }        
+        private IList<IPeripheral> peripherals;       
 
         public InterruptController(InterruptChannel interrupt)
         {
             this.irr = new Register();
             this.isr = new Register();
             this.imr = new Register();
-            this.waiting = true;
             this.interruptChannel = interrupt;
-            this.RequestInput = 0;
+            this.peripherals = new List<IPeripheral>();
         }
 
         public void Request(UInt32 irq)
@@ -39,10 +35,6 @@ namespace VProcessor.Hardware.Interrupts
                 return;
 
             this.irr.Value |= irq;
-
-
-            if (irq != 0)
-                this.waiting = false;
         }
 
         private void Service(Byte bitPos)
@@ -80,7 +72,6 @@ namespace VProcessor.Hardware.Interrupts
             this.irr.ClrBit(bitPos);
             this.isr.SetBit(bitPos);
             this.Mask();
-            this.waiting = true;
 
             return new InterruptPacket()
             {
@@ -89,11 +80,29 @@ namespace VProcessor.Hardware.Interrupts
             };
         }
 
+        public void RegisterPeripheral(IPeripheral peripheral)
+        {
+            this.peripherals.Add(peripheral);
+        }
+
+        private UInt32 RequestInput()
+        {
+            var request = (UInt32) 0;
+            for(var i = 0; i < this.peripherals.Count; i++)
+            {
+                if (this.peripherals[i].Trigger())
+                    request |= (UInt32) (1 << i);
+                //Needs to Have IDs in Future
+            }
+            return request;
+        }
+
         public void Tick()
         {
-            this.Request(this.RequestInput);
-            if (!this.waiting)
-                this.interruptChannel.Push(this.CreateInterruptRequest());            
+            foreach (var peri in this.peripherals)
+                peri.Tick();
+            this.Request(this.RequestInput());
+            this.interruptChannel.Push(this.CreateInterruptRequest());        
         }
     }
 }

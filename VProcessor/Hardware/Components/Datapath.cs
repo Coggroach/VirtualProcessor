@@ -8,6 +8,15 @@ using VProcessor.Hardware.Interfacing;
 
 namespace VProcessor.Hardware.Components
 {
+    [Flags]
+    public enum DatapathMode : byte
+    {
+        System = 1,
+        Interupt = 2,
+        Previlaged = 4,
+        UnPrevilaged = 8
+    }
+
     public class Datapath : IDatapath
     {
         #region Constants
@@ -18,21 +27,19 @@ namespace VProcessor.Hardware.Components
         public const Byte ChannelA = 0;
         public const Byte ChannelB = 1;
         public const Byte ChannelD = 2;
-
-        public const Byte System = 1;
-        public const Byte Interupt = 2;
-        public const Byte Previlaged = 4;
-        public const Byte UnPrevilaged = 8;
         public const Byte Modes = 4;
         #endregion
 
         #region Attributes
         private RegisterFile[] registers;
-        private Byte mode;
+        private DatapathMode mode;
         private Byte[] channels;
         private UInt32 constIn;
         private Boolean constEnable;
         private Register nzcv;
+
+        private Byte ModeIndex { get { return this.ParseMode(this.mode); } }
+
         #endregion
 
         public Datapath()
@@ -40,7 +47,7 @@ namespace VProcessor.Hardware.Components
             this.registers = new RegisterFile[Modes];
             this.channels = new Byte[ChannelOutSize];
             this.constIn = 0;
-            this.mode = this.ParseMode(System);
+            this.mode = DatapathMode.System;
             this.Reset();
         }
 
@@ -64,7 +71,7 @@ namespace VProcessor.Hardware.Components
 
         private void SetChannelD(UInt32 value)
         {
-            this.registers[this.mode].SetRegister(this.channels[ChannelD], value);
+            this.registers[this.ModeIndex].SetRegister(this.channels[ChannelD], value);
         }
 
         public Byte GetChannel(Byte channel)
@@ -82,17 +89,17 @@ namespace VProcessor.Hardware.Components
 
         public void SetRegister(Byte register, UInt32 value)
         {
-            this.registers[this.mode].SetRegister(register, value);
+            this.registers[this.ModeIndex].SetRegister(register, value);
         }
 
         public UInt32[] GetRegisters()
         {
-            return this.registers[this.mode].GetRegisters();
+            return this.registers[this.ModeIndex].GetRegisters();
         }
 
         public UInt32 GetRegister(Byte channel = 0)
         {
-            return (channel == ChannelB && this.constEnable) ? this.constIn : this.registers[this.mode].GetRegister(this.channels[channel]);
+            return (channel == ChannelB && this.constEnable) ? this.constIn : this.registers[this.ModeIndex].GetRegister(this.channels[channel]);
         }
         #endregion
 
@@ -109,27 +116,31 @@ namespace VProcessor.Hardware.Components
         #endregion
 
         #region Mode
-        public void SetMode(Byte mode)
+        public void SetMode(DatapathMode mode)
         {
-            var destMode = this.ParseMode(mode);
-            if(ValidMode(destMode))
-                this.mode = destMode;
+            if (ValidMode(mode))
+                this.mode = mode;
         }
 
-        private Boolean ValidMode(Byte destMode)
+        public DatapathMode GetMode()
         {
-            if (this.mode == System || this.mode == Interupt)
+            return this.mode;
+        }
+
+        public Boolean ValidMode(DatapathMode destMode)
+        {
+            if (this.mode == DatapathMode.System || this.mode == DatapathMode.Interupt)
                 return true;
-            else if (this.mode == Previlaged && destMode != System)
+            else if (this.mode == DatapathMode.Previlaged && destMode != DatapathMode.System)
                 return true;
             else if (this.mode == destMode)
                 return true;
             return false;
         }
 
-        private Byte ParseMode(Byte mode)
+        private Byte ParseMode(DatapathMode mode)
         {
-            return (Byte)Math.Log(mode, 2);
+            return (Byte)Math.Log((Byte)mode, 2);
         }
         #endregion
 

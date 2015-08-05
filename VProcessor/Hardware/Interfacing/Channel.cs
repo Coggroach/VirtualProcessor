@@ -22,6 +22,7 @@ namespace VProcessor.Hardware.Interfacing
 
         public void Push(IPacket c)
         {
+            if (c == null) return;
             this.channel.Add(c);
             this.Status = Process;
         }

@@ -57,7 +57,7 @@ namespace VProcessor.Common
         STPC = 0x40,
 
         MOD = 0x100,
-        EOI = 0x1000,
+        EOI = 0x2000,
         IRQ = 0
     }
 

@@ -9,6 +9,7 @@ using VProcessor.Hardware.Components;
 using VProcessor.Hardware.Memory;
 using VProcessor.Common;
 using VProcessor.Hardware.Interrupts;
+using VProcessor.Hardware.Peripherals;
 
 namespace VProcessor.Hardware
 {
@@ -19,10 +20,8 @@ namespace VProcessor.Hardware
         private InterruptController interrupts;
         private IAssembler assembler;
 
-        public Machine() : this(new Assembler())
-        {
-
-        }
+        public Machine() 
+            : this(new Assembler()) { }
 
         public Machine(IAssembler assembler)
         {
@@ -41,9 +40,9 @@ namespace VProcessor.Hardware
             this.interrupts.Tick();
         }
 
-        public void Interrupt(UInt32 Request)
-        {
-            this.interrupts.RequestInput = Request;
+        public void RegisterPeripheral(IPeripheral peripheral)
+        {            
+            this.interrupts.RegisterPeripheral(peripheral);
         }
        
         public Boolean HasTerminated()
