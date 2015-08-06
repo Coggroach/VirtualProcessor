@@ -17,54 +17,50 @@ namespace VProcessor.Hardware.Peripherals
             this.leds = new Boolean[VPConsts.LEDBoardCount];
         }
 
-        public Color GetColor(Int32 index)
+        public Boolean GetColor(Int32 index)
         {
-            return this.GetColor(leds[index]);
-        }
-
-        private Color GetColor(Boolean state)
-        {
-            return state ? Color.Green : Color.Red;
+            return leds[index];
         }
 
         public bool Trigger()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         public void Tick()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            for (var i = 0; i < leds.Length; i++)
+                this.leds[i] = false;
         }
 
-        public uint GetMemory(int index)
+        public UInt32 GetMemory(int index)
         {
-            throw new NotImplementedException();
+            return this.GetMemory((UInt32)index);
         }
 
-        public uint GetMemory(uint index)
+        public UInt32 GetMemory(uint index)
         {
-            throw new NotImplementedException();
+            return (UInt32)(this.leds[index] ? 1 : 0);
         }
 
         public void SetMemory(int index, uint value)
         {
-            throw new NotImplementedException();
+            this.leds[index] = value != 0;
         }
 
         public int Length
         {
-            get { throw new NotImplementedException(); }
+            get { return VPConsts.LEDBoardCount; }
         }
 
         public bool HasMemory
         {
-            get { throw new NotImplementedException(); }
+            get { return true; }
         }
     }
 }

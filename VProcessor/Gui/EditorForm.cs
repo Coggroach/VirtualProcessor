@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
+using VProcessor.Common;
 using VProcessor.Hardware;
+using VProcessor.Hardware.Memory;
+using VProcessor.Hardware.Peripherals;
 using VProcessor.Software.Assembly;
 using VProcessor.Tools;
-using VProcessor.Common;
-using VProcessor.Hardware.Memory;
-using System.Collections;
-using System.Threading;
 
 namespace VProcessor.Gui
 {
@@ -20,6 +21,7 @@ namespace VProcessor.Gui
         private VPFile flashFile;
         private const String RegisterPrefix = "r";
         private VProcessor.Hardware.Peripherals.Timer timer;
+        private LEDBoard leds;
 
         public EditorForm()
         {
@@ -30,6 +32,9 @@ namespace VProcessor.Gui
             this.machine = new Machine(this.compiler);
             this.timer = new Hardware.Peripherals.Timer();
             this.machine.RegisterPeripheral(this.timer);
+            this.leds = new LEDBoard();
+            this.machine.RegisterPeripheral(this.leds);
+
             this.SetupThread();
             this.InitializeComponent();
             this.Setup();

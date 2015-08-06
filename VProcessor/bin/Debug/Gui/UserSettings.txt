@@ -1,5 +1,4 @@
-﻿s:FlashFileLocation=Assembly/Assembly.vps;
+s:FlashFileLocation=Assembly/Assembly.vps;
 i:FileMode=2;
 i:IndentMode=0;
 i:IndentSize=2;
-b:Highlight=true;
