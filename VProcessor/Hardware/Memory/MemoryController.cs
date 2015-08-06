@@ -23,6 +23,17 @@ namespace VProcessor.Hardware.Memory
             this.mappedMemory = new List<IPeripheral>();
         }
 
+        public Int32 Length
+        {
+            get
+            {
+                var length = memory.Length;
+                foreach(var m in this.mappedMemory)
+                    length += m.Length;
+                return length;
+            }
+        }
+
         #region Push/Pop
         private void PopInput()
         {
@@ -73,6 +84,8 @@ namespace VProcessor.Hardware.Memory
         #region Controller        
         private IMemory<UInt32> MemoryChunk(ref Int32 Address)
         {
+            Address = Address % this.Length;
+
             if (Address < VPConsts.RandomAccessMemorySize)
                 return this.memory;
             Address -= VPConsts.RandomAccessMemorySize;

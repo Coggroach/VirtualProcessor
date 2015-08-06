@@ -61,6 +61,9 @@ namespace VProcessor.Hardware.Components
             for (var i = 0; i < this.channels.Length; i++)
                 this.channels[i] = 0;
             this.nzcv = new Register();
+            this.mode = DatapathMode.System;
+            this.constEnable = false;
+            this.constIn = 0;
         }
 
         #region Channel Functions

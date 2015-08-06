@@ -1,4 +1,3 @@
-EOI
 LDR    r0,    =128
 LDR    r1,    =handler
 STR    r1,    [r0]
@@ -6,9 +5,11 @@ LDR    r0,    =160
 MOV    r1,    #1
 STR    r1,    [r0]
 ADD    r0,    r0,    #1
-MOV    r1,    #10
+LDR r1, =30
 STR    r1,    [r0]
+EOI
 stop
+ADD    r3,    r3,    #1
 B    stop
 handler
 ADD    r3,    r3,    #1

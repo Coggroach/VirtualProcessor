@@ -30,3 +30,4 @@ E:\Development\C#\Projects\VirtualProcessor\VProcessor\obj\Debug\VProcessor.Prop
 E:\Development\C#\Projects\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csproj.GenerateResource.Cache
 E:\Development\C#\Projects\VirtualProcessor\VProcessor\obj\Debug\VProcessor.exe
 E:\Development\C#\Projects\VirtualProcessor\VProcessor\obj\Debug\VProcessor.pdb
+C:\code\VirtualProcessor\VProcessor\obj\Debug\VProcessor.csprojResolveAssemblyReference.cache
