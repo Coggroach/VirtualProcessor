@@ -1,11 +1,14 @@
-﻿namespace VProcessor.Gui
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace VProcessor.Gui
 {
     partial class EditorForm
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components = null;
+        private IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -418,40 +421,40 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView RegisterFile;
-        private System.Windows.Forms.RichTextBox EditorBox;
-        private System.Windows.Forms.MenuStrip MenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tickToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tickx25ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem restartToolStripMenuItem;
-        private System.Windows.Forms.TextBox CurrentCommandTextBox;
-        private System.Windows.Forms.ToolStripMenuItem modeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem hexadecimalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem decimalToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem assemblyToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox FlashMemoryBox;
-        private System.Windows.Forms.ToolStrip ToolBar;
-        private System.Windows.Forms.ToolStripComboBox ToolFontSize;
-        private System.Windows.Forms.ToolStripButton TickButton;
-        private System.Windows.Forms.ToolStripTextBox TickCounter;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem assembleToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem indentModeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem spacesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem tabsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem indentSizeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem size1toolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem size2toolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem size4toolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem highlightToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem runToolStripMenuItem;
-        private System.Windows.Forms.Label RunningStatus;
+        private DataGridView RegisterFile;
+        private RichTextBox EditorBox;
+        private MenuStrip MenuStrip;
+        private ToolStripMenuItem fileToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem editToolStripMenuItem;
+        private ToolStripMenuItem viewToolStripMenuItem;
+        private ToolStripMenuItem helpToolStripMenuItem;
+        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripMenuItem tickToolStripMenuItem;
+        private ToolStripMenuItem tickx25ToolStripMenuItem;
+        private ToolStripMenuItem restartToolStripMenuItem;
+        private TextBox CurrentCommandTextBox;
+        private ToolStripMenuItem modeToolStripMenuItem;
+        private ToolStripMenuItem hexadecimalToolStripMenuItem;
+        private ToolStripMenuItem decimalToolStripMenuItem;
+        private ToolStripMenuItem assemblyToolStripMenuItem;
+        private RichTextBox FlashMemoryBox;
+        private ToolStrip ToolBar;
+        private ToolStripComboBox ToolFontSize;
+        private ToolStripButton TickButton;
+        private ToolStripTextBox TickCounter;
+        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem saveToolStripMenuItem1;
+        private ToolStripMenuItem assembleToolStripMenuItem;
+        private ToolStripMenuItem indentModeToolStripMenuItem;
+        private ToolStripMenuItem spacesToolStripMenuItem;
+        private ToolStripMenuItem tabsToolStripMenuItem;
+        private ToolStripMenuItem indentSizeToolStripMenuItem;
+        private ToolStripMenuItem size1toolStripMenuItem;
+        private ToolStripMenuItem size2toolStripMenuItem;
+        private ToolStripMenuItem size4toolStripMenuItem;
+        private ToolStripMenuItem highlightToolStripMenuItem;
+        private ToolStripMenuItem runToolStripMenuItem;
+        private Label RunningStatus;
     }
 }

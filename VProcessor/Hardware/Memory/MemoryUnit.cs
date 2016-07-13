@@ -1,66 +1,33 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using VProcessor.Tools;
-using VProcessor.Software.Assembly;
-
-namespace VProcessor.Hardware.Memory
+﻿namespace VProcessor.Hardware.Memory
 {
 
     public class MemoryUnit<T>
     {
-        private UInt32 register;
-        private IMemory<T> memory;
+        private uint _register;
+        private IMemory<T> _memory;
         public MemoryUnit(IMemory<T> m)
         {
-            this.Init();
-            this.memory = m;
+            Init();
+            _memory = m;
         } 
 
-        private void Init()
-        {
-            this.register = 0;
-        }
+        private void Init() => _register = 0;
 
-        public void Reset()
-        {
-            this.Init();            
-        }
-      
-        public void SetMemory(IMemory<T> m)
-        {
-            this.memory = m;
-        }
+        public void Reset() => Init();
 
-        public T GetMemory()
-        {
-            return this.memory.GetMemory(this.register);
-        }
+        public void SetMemory(IMemory<T> m) => _memory = m;
 
-        public IMemory<T> GetMemoryChunk()
-        {
-            return this.memory;
-        }
+        public T GetMemory() => _memory.GetMemory(_register);
 
-        public UInt32 GetRegister()
-        {
-            return this.register;
-        }
-        
-        public void SetRegister(UInt32 value)
-        {
-            this.register = value;
-        }
+        public IMemory<T> GetMemoryChunk() => _memory;
 
-        public void Increment()
-        {
-            this.register++;
-        }
+        public uint GetRegister() => _register;
 
-        public void Add(UInt32 i)
-        {
-            this.register += i;
-        }
+        public void SetRegister(uint value) => _register = value;
+
+        public void Increment() => _register++;
+
+        public void Add(uint i) => _register += i;
 
         public static MemoryUnit<T> operator ++(MemoryUnit<T> memory)
         {
@@ -68,7 +35,7 @@ namespace VProcessor.Hardware.Memory
             return memory;
         }
 
-        public static MemoryUnit<T> operator +(MemoryUnit<T> memory, UInt32 i)
+        public static MemoryUnit<T> operator +(MemoryUnit<T> memory, uint i)
         {
             memory.Add(i);
             return memory;

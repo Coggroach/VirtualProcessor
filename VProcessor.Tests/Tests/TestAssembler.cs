@@ -1,10 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VProcessor.Hardware;
-using VProcessor.Software.Assembly;
 using VProcessor.Common;
+using VProcessor.Software;
 
-namespace VProcessor.Tests.Software.Assembly
+namespace VProcessor.Tests.Tests
 {
     [TestClass]
     public class TestAssembler
@@ -12,8 +11,8 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type1()
         {
-            const String input = "ADD r0, r1, r2";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
+            const string input = "ADD r0, r1, r2";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -23,8 +22,8 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type1_ExtraWhitespace()
         {
-            const String input = "  ADD  r0, r1,  r2  ";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
+            const string input = "  ADD  r0, r1,  r2  ";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -34,8 +33,8 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type1_ExtraTabs()
         {
-            const String input = "      ADD     r0,     r1,     r2  ";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
+            const string input = "      ADD     r0,     r1,     r2  ";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -47,8 +46,8 @@ namespace VProcessor.Tests.Software.Assembly
         [ExpectedException(typeof(NullReferenceException))]
         public void Test_InvalidInput()
         {
-            const String input = "DD r0, r1, r2";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
+            const string input = "DD r0, r1, r2";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("ADD") << 16) | 0x0012;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -58,9 +57,9 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type2()
         {
-            const String input = "LDR r0, =14";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0000;
-            const UInt64 theOutput2 = 14;
+            const string input = "LDR r0, =14";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0000;
+            const ulong theOutput2 = 14;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -71,9 +70,9 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type2_ExtraWhitespace()
         {
-            const String input = "  LDR    r1 ,   =18 ";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0100;
-            const UInt64 theOutput2 = 18;
+            const string input = "  LDR    r1 ,   =18 ";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0100;
+            const ulong theOutput2 = 18;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -84,9 +83,9 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type2_ExtraTabs()
         {
-            const String input = "    LDR        r1 ,            =18         ";
-            var theoOutput = (UInt32)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0100;
-            const UInt64 theOutput2 = 18;
+            const string input = "    LDR        r1 ,            =18         ";
+            var theoOutput = (uint)(OpcodeRegistry.Instance.GetCodeAddress("LDR") << 16) | 0x0100;
+            const ulong theOutput2 = 18;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -97,8 +96,8 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type2_SingleElement()
         {
-            const String input = "MOV r1, #1";
-            var theoOutput = (UInt32)((OpcodeRegistry.Instance.GetCodeAddress("MOV") + 1) << 16) | 0x0101;
+            const string input = "MOV r1, #1";
+            var theoOutput = (uint)((OpcodeRegistry.Instance.GetCodeAddress("MOV") + 1) << 16) | 0x0101;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -108,8 +107,8 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_ValidInput_Type2_ConstantTooLarge()
         {
-            const String input = "MOV r1, #21";
-            var theoOutput = (UInt32)((OpcodeRegistry.Instance.GetCodeAddress("MOV") + 1) << 16) | 0x0105;
+            const string input = "MOV r1, #21";
+            var theoOutput = (uint)((OpcodeRegistry.Instance.GetCodeAddress("MOV") + 1) << 16) | 0x0105;
 
             var pracOutput = new Assembler().ConvertLine32(input);
 
@@ -119,12 +118,12 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_Compiler()
         {
-            const Int32 length = 8;
+            const int length = 8;
 
             var compiler = new Assembler();
 
-            var testFile = new VPFile("Res\\TestAssembly.vps", VPFile.Assembly);
-            var expectedFile = new VPFile("Res\\TestAssemblyCode.vpo", VPFile.Hexadecimal);
+            var testFile = new VpFile("Res\\TestAssembly.vps", VpFile.Assembly);
+            var expectedFile = new VpFile("Res\\TestAssemblyCode.vpo");
             
             var testMemory = compiler.Compile32(testFile, length);
             var expectedMemory = compiler.Compile32(expectedFile, length);
@@ -137,44 +136,44 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_Mov_Registers()
         {
-            const Int32 length = 3;
+            const int length = 3;
 
             var compiler = new Assembler();
 
-            var file = new VPFile("Res\\TempAssembly.vps", VPFile.Assembly);
+            var file = new VpFile("Res\\TempAssembly.vps", VpFile.Assembly);
 
             file.SetString("MOV r0, r2");
             file.Save();
             file.Load();
 
             var memory = compiler.Compile32(file, length);
-            Assert.AreEqual((UInt32) 0x000B0002, memory.GetMemory(0));
+            Assert.AreEqual((uint) 0x000B0002, memory.GetMemory(0));
         }
 
         [TestMethod]
         public void Test_BranchRegistering()
         {
-            const Int32 length = 12;
+            const int length = 12;
 
             var compiler = new Assembler();
 
-            var file = new VPFile("Res\\TempAssembly.vps", VPFile.Assembly);
+            var file = new VpFile("Res\\TempAssembly.vps", VpFile.Assembly);
 
             file.SetString("CMP r0, #1; BEQ branch; LDR r0, =14; branch; ADD r0, r0, #1");
             file.Save();
             file.Load();
 
-            var memory = compiler.Compile32(file, length);            
+            compiler.Compile32(file, length);            
         }
 
         [TestMethod]
         public void Test_Str_WithConstant()
         {
-            const Int32 length = 12;
+            const int length = 12;
 
             var compiler = new Assembler();
 
-            var file = new VPFile("Res\\TempAssembly.vps", VPFile.Assembly);
+            var file = new VpFile("Res\\TempAssembly.vps", VpFile.Assembly);
 
             file.SetString("STR r0, [r1, #1]");
             file.Save();
@@ -187,11 +186,11 @@ namespace VProcessor.Tests.Software.Assembly
         [TestMethod]
         public void Test_Ldr_WithAddress()
         {
-            const Int32 length = 12;
+            const int length = 12;
 
             var compiler = new Assembler();
 
-            var file = new VPFile("Res\\TempAssembly.vps", VPFile.Assembly);
+            var file = new VpFile("Res\\TempAssembly.vps", VpFile.Assembly);
 
             file.SetString("LDR r0, =branch; ADD r0, r0, #1; branch");
             file.Save();

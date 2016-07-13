@@ -1,10 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VProcessor.Hardware;
-using VProcessor.Software.Assembly;
-using VProcessor.Tools;
-using System.Collections;
 using VProcessor.Common;
+using VProcessor.Software;
+using VProcessor.Tools;
 
 namespace VProcessor.Tests.Hardware
 {
@@ -14,116 +12,116 @@ namespace VProcessor.Tests.Hardware
         [TestMethod]
         public void TestCodeTable()
         {
-            Assert.IsTrue(OpcodeRegistry.Instance.GetCode("ADD") == (Int32)Opcode.ADD);
+            Assert.IsTrue(OpcodeRegistry.Instance.GetCode("ADD") == (int)Opcode.Add);
             Assert.IsTrue(OpcodeRegistry.Instance.GetCodeType("ADD") == 0x15);
         }
 
         [TestMethod]
         public void TestAdd()
         {
-            var reg = TestHelper.GetRegisterFromDatapath(12, 14, Opcode.ADD);
+            var reg = TestHelper.GetRegisterFromDatapath(12, 14, Opcode.Add);
             Assert.IsTrue(12 + 14 == reg);
         }
 
         [TestMethod]
         public void TestSub()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 14;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.SUB);
+            const uint a = 12;
+            const uint b = 14;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Sub);
             Assert.IsTrue(a + ~b + 1 == reg);
         }
 
         [TestMethod]
         public void TestMul()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 14;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.MUL);
+            const uint a = 12;
+            const uint b = 14;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Mul);
             Assert.IsTrue(a * b == reg);
         }
 
         [TestMethod]
         public void TestLsr()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 14;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.LSR);
+            const uint a = 12;
+            const uint b = 14;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Lsr);
             Assert.IsTrue(b >> 1 == reg);
         }
 
         [TestMethod]
         public void TestLsl()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 14;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.LSL);
+            const uint a = 12;
+            const uint b = 14;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Lsl);
             Assert.IsTrue(b << 1 == reg);
         }
 
         [TestMethod]
         public void TestRor()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 0xF;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.ROR);
+            const uint a = 12;
+            const uint b = 0xF;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Ror);
             Assert.IsTrue(0x80000007 == reg);
         }
 
         [TestMethod]
         public void TestRol()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 0x80000001;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.ROL);
+            const uint a = 12;
+            const uint b = 0x80000001;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Rol);
             Assert.IsTrue(3 == reg);
         }
 
         [TestMethod]
         public void TestAnd()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 15;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.AND);
+            const uint a = 12;
+            const uint b = 15;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.And);
             Assert.IsTrue(12 == reg);
         }
 
         [TestMethod]
         public void TestOrr()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 15;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.ORR);
+            const uint a = 12;
+            const uint b = 15;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Orr);
             Assert.IsTrue(15 == reg);
         }
 
         [TestMethod]
         public void TestEor()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 15;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.EOR);
+            const uint a = 12;
+            const uint b = 15;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Eor);
             Assert.IsTrue(3 == reg);
         }
 
         [TestMethod]
         public void TestBic()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 15;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.BIC);
+            const uint a = 12;
+            const uint b = 15;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Bic);
             Assert.IsTrue(0 == reg);
         }
 
         [TestMethod]
         public void TestAdc()
         {
-            const UInt32 a = 0x80000000;
-            const UInt32 b = 0x80000030;
+            const uint a = 0x80000000;
+            const uint b = 0x80000030;
 
             var datapath = TestHelper.CreateDatapath(a, b);
-            datapath.FunctionUnit((Byte)Opcode.ADD, 1);
-            datapath.FunctionUnit((Byte)Opcode.ADC, 1);
+            datapath.FunctionUnit((byte)Opcode.Add, 1);
+            datapath.FunctionUnit((byte)Opcode.Adc, 1);
 
             var reg = datapath.GetRegister();
 
@@ -133,31 +131,31 @@ namespace VProcessor.Tests.Hardware
         [TestMethod]
         public void TestRsb()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 15;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.RSB);
+            const uint a = 12;
+            const uint b = 15;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Rsb);
             Assert.IsTrue(3 == reg);
         }
 
         [TestMethod]
         public void TestRsc()
         {
-            const UInt32 a = 12;
-            const UInt32 b = 15;
-            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.RSC);
+            const uint a = 12;
+            const uint b = 15;
+            var reg = TestHelper.GetRegisterFromDatapath(a, b, Opcode.Rsc);
             Assert.IsTrue(2 == reg);
         }
 
         [TestMethod]
         public void TestOpcodeAddressMapping()
         {
-            var control = new VPFile(VPConsts.ControlMemoryLocation);
+            var control = new VpFile(VpConsts.ControlMemoryLocation);
             var assembler = new Assembler();
-            var memoryChunk = assembler.Compile64(control, VPConsts.ControlMemorySize);
+            var memoryChunk = assembler.Compile64(control, VpConsts.ControlMemorySize);
 
             var opcodes = OpcodeRegistry.Instance.GetCodeTable();
 
-            foreach(String code in opcodes.Keys)
+            foreach(string code in opcodes.Keys)
             {
                 var address = OpcodeRegistry.Instance.GetCodeAddress(code);
                 var value = OpcodeRegistry.Instance.GetCode(code);
@@ -170,7 +168,7 @@ namespace VProcessor.Tests.Hardware
                 memory >>= 16;
                 memory &= 0xFFFFF;
 
-                var compare = (Int32) memory == value;
+                var compare = (int) memory == value;
                 if (!compare) Logger.Instance().Log("Code: " + code + " Address: " + address + " Internal: " + value + "External: " + memory);
                 Assert.IsTrue(compare);
             }

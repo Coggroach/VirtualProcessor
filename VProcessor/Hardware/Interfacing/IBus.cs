@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VProcessor.Hardware.Interfacing
+﻿namespace VProcessor.Hardware.Interfacing
 {
-    abstract class Bus
+    internal abstract class Bus
     {
-        protected IConnectable connect1;
-        protected IConnectable connect2;
+        protected IConnectable Connect1;
+        protected IConnectable Connect2;
 
         public void Connect(IConnectable con1, IConnectable con2)
         {
-            this.connect1 = con1;
-            this.connect2 = con2;
+            Connect1 = con1;
+            Connect2 = con2;
 
-            this.connect1.Connect(this);
-            this.connect2.Connect(this);
+            Connect1.Connect(this);
+            Connect2.Connect(this);
         }        
     }
 }

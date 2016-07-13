@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using VProcessor.Hardware.Interfacing;
 
 namespace VProcessor.Hardware.Memory
 {
@@ -16,47 +12,44 @@ namespace VProcessor.Hardware.Memory
 
     public class MemoryDualChannel
     {
-        private MemoryChannel input;
-        private MemoryChannel output;
+        private readonly MemoryChannel _input;
+        private readonly MemoryChannel _output;
 
-        public Byte Status;
+        public byte Status;
         public MemoryDualChannelRequest MemoryPullRequest { get; set; }
 
         public MemoryDualChannel()
         {
-            this.input = new MemoryChannel();
-            this.output = new MemoryChannel();
-            this.Status = MemoryChannel.Idle;
+            _input = new MemoryChannel();
+            _output = new MemoryChannel();
+            Status = Channel.Idle;
         }
 
-        private void UpdateStatus()
-        {
-            this.Status = (Byte)(this.input.Status | this.output.Status);
-        }
+        private void UpdateStatus() => Status = (byte)(_input.Status | _output.Status);
 
         public void PushInput(MemoryChannelPacket packet)
         {
-            this.input.Push(packet);
-            this.UpdateStatus();
+            _input.Push(packet);
+            UpdateStatus();
         }
 
         public void PushOutput(MemoryChannelPacket packet)
         {
-            this.output.Push(packet);
-            this.UpdateStatus();
+            _output.Push(packet);
+            UpdateStatus();
         }
 
         public MemoryChannelPacket PopInput()
         {
-            var pop =  this.input.Pop();
-            this.UpdateStatus();
+            var pop =  _input.Pop();
+            UpdateStatus();
             return (MemoryChannelPacket) pop;
         }
 
         public MemoryChannelPacket PopOutput()
         {
-            var pop = this.output.Pop();
-            this.UpdateStatus();
+            var pop = _output.Pop();
+            UpdateStatus();
             return (MemoryChannelPacket) pop;
         }
     }

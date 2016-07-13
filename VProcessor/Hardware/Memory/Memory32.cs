@@ -1,45 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VProcessor.Hardware.Memory
+﻿namespace VProcessor.Hardware.Memory
 {
-    public class Memory32 : IMemory<UInt32>
+    public class Memory32 : IMemory<uint>
     {
-        private readonly UInt32[] memory;       
+        private readonly uint[] _memory;       
 
-        public Memory32(Int32 i)
+        public Memory32(int i)
         {
-            this.memory = new UInt32[i];
+            _memory = new uint[i];
         }
 
         public void Reset()
         {
-            for (var i = 0; i < this.memory.Length; i++)
-                this.memory[i] = 0;
+            for (var i = 0; i < _memory.Length; i++)
+                _memory[i] = 0;
         }
 
-        public UInt32 GetMemory(Int32 index)
-        {
-            return this.memory[index];
-        }
+        public uint GetMemory(int index) => _memory[index];
 
-        public UInt32 GetMemory(UInt32 index)
-        {
-            return this.memory[index];
-        }
+        public uint GetMemory(uint index) => _memory[index];
 
-        public void SetMemory(Int32 index, UInt32 value)
-        {
-            this.memory[index] = value;
-        }
+        public void SetMemory(int index, uint value) => _memory[index] = value;
 
-        public Int32 Length
-        {
-            get { return this.memory.Length; }
-        }    
+        public int Length => _memory.Length;
 
         public static Memory32 operator +(Memory32 a, Memory32 b)
         {
@@ -53,10 +35,6 @@ namespace VProcessor.Hardware.Memory
             return mem32;
         }
 
-
-        public bool HasMemory
-        {
-            get { return true; }
-        }
+        public bool HasMemory => true;
     }
 }

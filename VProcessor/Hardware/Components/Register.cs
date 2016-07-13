@@ -1,67 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VProcessor.Hardware.Components
+﻿namespace VProcessor.Hardware.Components
 {
     public class Register
     {
-        public UInt32 Value { get; set; }
+        public uint Value { get; set; }
 
         public Register()
         {
-            this.Value = 0;
+            Value = 0;
         }
 
-        public Register(UInt32 b)
+        public Register(uint b)
         {
-            this.Value = b;
+            Value = b;
         }
 
         public Register(Register reg)
         {
-            this.Value = reg.Value;
+            Value = reg.Value;
         }
 
-        public Register(Register reg, UInt32 mask)
+        public Register(Register reg, uint mask)
         {
-            this.Value &= ~mask;
+            Value &= ~mask;
             var value = reg.Value & mask;
-            this.Value |= value;
+            Value |= value;
         }
 
-        public Boolean BitMatch(Byte bitPos, Byte matchBit)
+        public bool BitMatch(byte bitPos, byte matchBit)
         {
-            return ((this.Value >> bitPos) & 1) == matchBit;
+            return ((Value >> bitPos) & 1) == matchBit;
         }
 
-        public void SetBit(Byte bitPos)
+        public void SetBit(byte bitPos)
         {
-            this.Value |= (Byte) (1 << bitPos);
+            Value |= (byte) (1 << bitPos);
         }
 
-        public void ClrBit(Byte bitPos)
+        public void ClrBit(byte bitPos)
         {
-            this.Value &= (UInt32)~(1 << bitPos);
+            Value &= (uint)~(1 << bitPos);
         }
 
-        public void BitSet(Byte bitPos, Boolean value)
+        public void BitSet(byte bitPos, bool value)
         {
             if(value)
                 SetBit(bitPos);
             else ClrBit(bitPos);
         }
 
-        public UInt32 GetBit(Byte bitPos)
+        public uint GetBit(byte bitPos)
         {
-            return (UInt32)((this.Value >> bitPos) & 1);
+            return (Value >> bitPos) & 1;
         }
 
-        public void Mask(Byte mask = 0xF)
+        public void Mask(byte mask = 0xF)
         {
-            this.Value &= mask;
+            Value &= mask;
         }        
     }
 }

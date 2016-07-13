@@ -1,51 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace VProcessor.Hardware.Interfacing
 {
     public class Channel
     {
-        public const Byte Idle = 0;
-        public const Byte Process = 1;
+        public const byte Idle = 0;
+        public const byte Process = 1;
 
-        private List<IPacket> channel;
-        public Byte Status { get; set; }
+        private readonly List<IPacket> _channel;
+        public byte Status { get; set; }
 
         public Channel()
         {
-            this.channel = new List<IPacket>();
-            this.Status = Idle;
+            _channel = new List<IPacket>();
+            Status = Idle;
         }
 
         public void Push(IPacket c)
         {
             if (c == null) return;
-            this.channel.Add(c);
-            this.Status = Process;
+            _channel.Add(c);
+            Status = Process;
         }
 
         public IPacket Pop()
         {
-            if (this.IsEmpty())
+            if (IsEmpty())
             {
-                this.Status = Idle;
+                Status = Idle;
                 return null;
             }
 
-            var component = this.channel[0];
-            this.channel.RemoveAt(0);
+            var component = _channel[0];
+            _channel.RemoveAt(0);
 
-            if (this.IsEmpty()) this.Status = Idle;
+            if (IsEmpty()) Status = Idle;
 
             return component;
         }
 
-        public Boolean IsEmpty()
+        public bool IsEmpty()
         {
-            return this.channel.Count == 0;
+            return _channel.Count == 0;
         }
     }
 }

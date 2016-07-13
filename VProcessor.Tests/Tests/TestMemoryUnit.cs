@@ -1,39 +1,37 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VProcessor.Common;
+using VProcessor.Hardware.Memory;
+using VProcessor.Software;
 
 namespace VProcessor.Tests.Hardware
 {
-    using VProcessor.Hardware;
-    using VProcessor.Software.Assembly;
-    using VProcessor.Common;
-    using VProcessor.Hardware.Memory;
-
     [TestClass]
     public class TestMemoryUnit
     {
         [TestMethod]
         public void TestStartUp_ControlMemory()
         {
-            this.TestStartUp("Res\\TestControlMemory.vpo");
+            TestStartUp("Res\\TestControlMemory.vpo");
         }
 
         [TestMethod]
         public void TestStartUp_UserMemory()
         {
-            this.TestStartUp("Res\\TestUserMemory.vpo");
+            TestStartUp("Res\\TestUserMemory.vpo");
         }
 
-        internal void TestStartUp(String path)
+        internal void TestStartUp(string path)
         {            
-            var file = new VPFile(path);
+            var file = new VpFile(path);
             var compiler = new Assembler();
 
             var memChunk = compiler.Compile32(file, 4);
-            var memory = new MemoryUnit<UInt32>(memChunk);
+            var memory = new MemoryUnit<uint>(memChunk);
 
-            Assert.AreNotEqual((UInt32)0, memory.GetMemory());
+            Assert.AreNotEqual((uint)0, memory.GetMemory());
             memory++;
-            Assert.AreEqual((UInt32)0, memory.GetMemory());
+            Assert.AreEqual((uint)0, memory.GetMemory());
         }
     }
 }

@@ -1,224 +1,223 @@
-﻿using System;
-using VProcessor.Tools;
-using VProcessor.Hardware.Memory;
-using VProcessor.Common;
+﻿using VProcessor.Common;
 using VProcessor.Hardware.Interrupts;
+using VProcessor.Hardware.Memory;
+using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Components
 {    
     public class Processor : IInformable
     {
-        private Datapath datapath;
-        private MemoryUnit<UInt64> controlMemory;
-        private MemoryUnit<UInt32> flashMemory;
-        private Brancher branchControl;
-        private Register instruction;
-        private Register status;
-        private MemoryDualChannel memoryChannel;
-        private InterruptChannel interruptChannel;
-        private Interrupt interrupt;
-        private Decoder decoder;
+        private readonly Datapath _datapath;
+        private MemoryUnit<ulong> _controlMemory;
+        private MemoryUnit<uint> _flashMemory;
+        private readonly Brancher _branchControl;
+        private readonly Register _instruction;
+        private Register _status;
+        private readonly MemoryDualChannel _memoryChannel;
+        private readonly InterruptChannel _interruptChannel;
+        private Interrupt _interrupt;
+        private readonly Decoder _decoder;
 
         public MemoryChannelPacket ChannelPacket { get; set; }
 
         public Processor(Memory64 control, Memory32 flash)
         {
-            this.datapath = new Datapath();
-            this.controlMemory = new MemoryUnit<UInt64>(control);
-            this.flashMemory = new MemoryUnit<UInt32>(flash);
-            this.status = new Register();
-            this.interrupt = new Interrupt();
-            this.decoder = new Decoder();
-            this.instruction = new Register(this.flashMemory.GetMemory());
-            this.branchControl = new Brancher(this.instruction);            
-            this.memoryChannel = new MemoryDualChannel();
-            this.interruptChannel = new InterruptChannel();
+            _datapath = new Datapath();
+            _controlMemory = new MemoryUnit<ulong>(control);
+            _flashMemory = new MemoryUnit<uint>(flash);
+            _status = new Register();
+            _interrupt = new Interrupt();
+            _decoder = new Decoder();
+            _instruction = new Register(_flashMemory.GetMemory());
+            _branchControl = new Brancher(_instruction);            
+            _memoryChannel = new MemoryDualChannel();
+            _interruptChannel = new InterruptChannel();
         }
 
         public MemoryDualChannel GetMemoryDualChannel()
         {
-            return this.memoryChannel;
+            return _memoryChannel;
         }
 
         public InterruptChannel GetInterruptChannel()
         {
-            return this.interruptChannel;
+            return _interruptChannel;
         }
 
-        public UInt32[] GetRegisters()
+        public uint[] GetRegisters()
         {
-            return this.datapath.GetRegisters();
+            return _datapath.GetRegisters();
         }
 
-        public Byte GetStatusRegister()
+        public byte GetStatusRegister()
         {
-            return (Byte) this.branchControl.GetNzcv().Value;
+            return (byte) _branchControl.GetNzcv().Value;
         }
 
-        public UInt32 GetProgramCounter()
+        public uint GetProgramCounter()
         {
-            return this.flashMemory.GetRegister();
+            return _flashMemory.GetRegister();
         }
 
-        public UInt32 GetControlAddressRegister()
+        public uint GetControlAddressRegister()
         {
-            return this.controlMemory.GetRegister();
+            return _controlMemory.GetRegister();
         }
 
-        public MemoryUnit<UInt64> GetControlMemory()
+        public MemoryUnit<ulong> GetControlMemory()
         {
-            return this.controlMemory;
+            return _controlMemory;
         }
 
         public Register GetInstructionRegister()
         {
-            return this.instruction;
+            return _instruction;
         }
 
-        public MemoryUnit<UInt32> GetFlashMemory()
+        public MemoryUnit<uint> GetFlashMemory()
         {
-            return this.flashMemory;
+            return _flashMemory;
         }
 
         public void Reset(Memory32 flash)
         {
-            this.flashMemory.SetMemory(flash);
-            this.Reset();
+            _flashMemory.SetMemory(flash);
+            Reset();
         }
 
         public void Reset()
         {
-            this.flashMemory.Reset();
-            this.controlMemory.Reset();
-            this.datapath.Reset();
-            this.instruction.Value = this.flashMemory.GetMemory();
-            this.status = new Register();
-            this.interrupt = new Interrupt();
+            _flashMemory.Reset();
+            _controlMemory.Reset();
+            _datapath.Reset();
+            _instruction.Value = _flashMemory.GetMemory();
+            _status = new Register();
+            _interrupt = new Interrupt();
         }
 
-        public Boolean HasTerminated()
+        public bool HasTerminated()
         {
-            return this.instruction.Value == 0;
+            return _instruction.Value == 0;
         }
     
-        public void SetInstructionRegister(UInt32 i)
+        public void SetInstructionRegister(uint i)
         {
-            this.instruction.Value = i;
+            _instruction.Value = i;
         }
                 
         public void Tick()
         {
-            this.decoder.Memory = this.controlMemory.GetMemory();
-            this.decoder.Decode(this.instruction);
+            _decoder.Memory = _controlMemory.GetMemory();
+            _decoder.Decode(_instruction);
 
             //Check if Allowed to Execute
-            if(this.decoder.ExecutionMode)// == this.datapath.GetMode())
+            if(_decoder.ExecutionMode)// == this.datapath.GetMode())
             {
-                var logic = this.decoder.Mode == (Byte)this.datapath.GetMode()
-                    || this.datapath.ValidMode((DatapathMode)this.decoder.Mode);
+                var logic = _decoder.Mode == (byte)_datapath.GetMode()
+                    || _datapath.ValidMode((DatapathMode)_decoder.Mode);
                 if (!logic)
                     throw new MachineException("Invalid Mode to Execute Command");
             }
             
             //Set up Datapath
-            this.datapath.SetChannel(Datapath.ChannelA, this.decoder.ChannelA);
-            this.datapath.SetChannel(Datapath.ChannelB, this.decoder.ChannelB);
-            this.datapath.SetChannel(Datapath.ChannelD, this.decoder.ChannelD);
-            this.datapath.SetConstIn(this.decoder.ConstantIn, this.decoder.Constant);
+            _datapath.SetChannel(Datapath.ChannelA, _decoder.ChannelA);
+            _datapath.SetChannel(Datapath.ChannelB, _decoder.ChannelB);
+            _datapath.SetChannel(Datapath.ChannelD, _decoder.ChannelD);
+            _datapath.SetConstIn(_decoder.ConstantIn, _decoder.Constant);
 
             //Change Mode
-            if (this.decoder.Mode != 0) 
-                this.datapath.SetMode((DatapathMode)this.decoder.Mode);  
+            if (_decoder.Mode != 0) 
+                _datapath.SetMode((DatapathMode)_decoder.Mode);  
         
             //Check if Interrupt Polled
-            var interrupt = ((InterruptPacket)this.interruptChannel.Pop());
-            if(interrupt != null && this.interrupt.Enable && this.interrupt.Accepting)
+            var interrupt = ((InterruptPacket)_interruptChannel.Pop());
+            if(interrupt != null && _interrupt.Enable && _interrupt.Accepting)
             {
-                if(interrupt.Request == InterruptPacketRequest.IRQ)
+                if(interrupt.Request == InterruptPacketRequest.Irq)
                 {
-                    this.interrupt.Address = this.flashMemory.GetRegister();
-                    this.interrupt.Accepting = false;
-                    this.interrupt.Mode = this.datapath.GetMode();
-                    this.datapath.SetMode(DatapathMode.Interupt);
-                    this.flashMemory.SetRegister(interrupt.Address);
-                    this.controlMemory.SetRegister(0);
-                    this.instruction.Value = this.flashMemory.GetMemory();
+                    _interrupt.Address = _flashMemory.GetRegister();
+                    _interrupt.Accepting = false;
+                    _interrupt.Mode = _datapath.GetMode();
+                    _datapath.SetMode(DatapathMode.Interupt);
+                    _flashMemory.SetRegister(interrupt.Address);
+                    _controlMemory.SetRegister(0);
+                    _instruction.Value = _flashMemory.GetMemory();
                     return;
                 }
             }
 
             //Check if Interrupt Complete
-            if (this.decoder.EndOfInterrupt && this.interrupt.Enable)
+            if (_decoder.EndOfInterrupt && _interrupt.Enable)
             {                
-                this.flashMemory.SetRegister(this.interrupt.Address);
-                this.interrupt.Accepting = true;
-                this.datapath.SetMode(this.interrupt.Mode);
+                _flashMemory.SetRegister(_interrupt.Address);
+                _interrupt.Accepting = true;
+                _datapath.SetMode(_interrupt.Mode);
             }
-            if (this.decoder.EndOfInterrupt && !this.interrupt.Enable)
+            if (_decoder.EndOfInterrupt && !_interrupt.Enable)
             {
-                this.interrupt.Enable = this.interrupt.Accepting = true;
-                this.flashMemory++;
+                _interrupt.Enable = _interrupt.Accepting = true;
+                _flashMemory++;
             }                
 
             //Move Data in Datapath
-            var dataOut = (UInt32) 0;
-            if (this.decoder.DataIn && this.decoder.LoadRegister) 
-                this.datapath.SetRegister(this.decoder.ChannelD, (UInt32)this.flashMemory.GetMemory());
-            else if (this.memoryChannel.MemoryPullRequest == MemoryDualChannelRequest.Complete && this.decoder.LoadRegister)
+            var dataOut = (uint) 0;
+            if (_decoder.DataIn && _decoder.LoadRegister) 
+                _datapath.SetRegister(_decoder.ChannelD, _flashMemory.GetMemory());
+            else if (_memoryChannel.MemoryPullRequest == MemoryDualChannelRequest.Complete && _decoder.LoadRegister)
             {
-                this.datapath.SetRegister(this.decoder.ChannelD, this.ChannelPacket.Value);
-                this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.None;
+                _datapath.SetRegister(_decoder.ChannelD, ChannelPacket.Value);
+                _memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.None;
             }
-            else if (this.decoder.LoadPc && this.decoder.LoadRegister)
-                this.datapath.SetRegister(this.decoder.ChannelD, this.flashMemory.GetRegister());
+            else if (_decoder.LoadPc && _decoder.LoadRegister)
+                _datapath.SetRegister(_decoder.ChannelD, _flashMemory.GetRegister());
             else 
-                dataOut = this.datapath.FunctionUnit(this.decoder.FunctionCode, this.decoder.LoadRegister);
+                dataOut = _datapath.FunctionUnit(_decoder.FunctionCode, _decoder.LoadRegister);
 
             //Set up CAR
-            var muxCar = (this.decoder.CarControl & 2) == 2 ? this.decoder.Opcode : this.decoder.NextAddress;
-            if (this.decoder.MemoryInterrupt)
+            var muxCar = (_decoder.CarControl & 2) == 2 ? _decoder.Opcode : _decoder.NextAddress;
+            if (_decoder.MemoryInterrupt)
             {
-                if (this.memoryChannel.MemoryPullRequest == MemoryDualChannelRequest.Complete)
-                    this.controlMemory++;
+                if (_memoryChannel.MemoryPullRequest == MemoryDualChannelRequest.Complete)
+                    _controlMemory++;
             }
-            else if ((this.decoder.CarControl & 1) == 0)
-                this.controlMemory.SetRegister(muxCar);
+            else if ((_decoder.CarControl & 1) == 0)
+                _controlMemory.SetRegister(muxCar);
             else
-                this.controlMemory++;
+                _controlMemory++;
 
 
             //Moving Data to RAM
-            if (this.decoder.MemoryIn ^ this.decoder.MemoryOut && this.memoryChannel.MemoryPullRequest != MemoryDualChannelRequest.Complete)
+            if (_decoder.MemoryIn ^ _decoder.MemoryOut && _memoryChannel.MemoryPullRequest != MemoryDualChannelRequest.Complete)
             {
-                this.ChannelPacket = new MemoryChannelPacket()
+                ChannelPacket = new MemoryChannelPacket
                 {
                     Value = dataOut,
-                    Address = (Int32)this.datapath.GetRegister(Datapath.ChannelA),
-                    Offset = (Int32)this.datapath.GetRegister(Datapath.ChannelB)
+                    Address = (int)_datapath.GetRegister(),
+                    Offset = (int)_datapath.GetRegister(Datapath.ChannelB)
                 };
-                if (this.decoder.MemoryOut) 
-                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Push;
-                if (this.decoder.MemoryIn) 
-                    this.memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
-                this.memoryChannel.PushOutput(this.ChannelPacket);
+                if (_decoder.MemoryOut) 
+                    _memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Push;
+                if (_decoder.MemoryIn) 
+                    _memoryChannel.MemoryPullRequest = MemoryDualChannelRequest.Pull;
+                _memoryChannel.PushOutput(ChannelPacket);
             }
             
             //Set up PC            
-            if (this.decoder.StorePc && !this.decoder.LoadPc)            
-                this.flashMemory.SetRegister(dataOut);            
-            else if ((this.decoder.ProgramControl & 2) == 2 && this.branchControl.Branch(this.decoder.FunctionCode))
+            if (_decoder.StorePc && !_decoder.LoadPc)            
+                _flashMemory.SetRegister(dataOut);            
+            else if ((_decoder.ProgramControl & 2) == 2 && _branchControl.Branch(_decoder.FunctionCode))
             {
-                var extract = (UInt32)BitHelper.BitExtract(this.instruction.Value, 0, 0xFFFF);
-                this.flashMemory += BitHelper.Negate4Bits(extract);
+                var extract = BitHelper.BitExtract(_instruction.Value, 0, 0xFFFF);
+                _flashMemory += BitHelper.Negate4Bits(extract);
             }
-            else if ((this.decoder.ProgramControl & 1) == 1)
-                this.flashMemory++;
+            else if ((_decoder.ProgramControl & 1) == 1)
+                _flashMemory++;
 
             //Update Branch
-            if (this.decoder.BranchUpdate == 1) this.status = new Register(this.datapath.GetStatusRegister(), 0xF);
+            if (_decoder.BranchUpdate == 1) _status = new Register(_datapath.GetStatusRegister(), 0xF);
 
             //Set up IR
-            if (this.decoder.StoreInstruction == 1) this.instruction.Value = this.flashMemory.GetMemory();
+            if (_decoder.StoreInstruction == 1) _instruction.Value = _flashMemory.GetMemory();
         }        
     }
 }

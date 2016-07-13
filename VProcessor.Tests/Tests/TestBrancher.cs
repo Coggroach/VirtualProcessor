@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VProcessor.Hardware;
-using VProcessor.Hardware.Components;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VProcessor.Common;
+using VProcessor.Hardware.Components;
 
 namespace VProcessor.Tests.Hardware
 {
@@ -14,7 +12,7 @@ namespace VProcessor.Tests.Hardware
         {
             var brancher = new Brancher();
             brancher.SetNzcv(new Register(4));
-            Assert.IsTrue(brancher.Branch(BranchCode.BEQ));
+            Assert.IsTrue(brancher.Branch(BranchCode.Beq));
         }
 
         [TestMethod]
@@ -22,7 +20,7 @@ namespace VProcessor.Tests.Hardware
         {
             var brancher = new Brancher();
             brancher.SetNzcv(new Register(2));
-            Assert.IsTrue(brancher.Branch(BranchCode.BCS));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bcs));
         }
 
         [TestMethod]
@@ -30,7 +28,7 @@ namespace VProcessor.Tests.Hardware
         {
             var brancher = new Brancher();
             brancher.SetNzcv(new Register(8));
-            Assert.IsTrue(brancher.Branch(BranchCode.BNS));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bns));
         }
 
         [TestMethod]
@@ -38,7 +36,7 @@ namespace VProcessor.Tests.Hardware
         {
             var brancher = new Brancher();
             brancher.SetNzcv(new Register(1));
-            Assert.IsTrue(brancher.Branch(BranchCode.BVS));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bvs));
         }
 
         [TestMethod]
@@ -47,10 +45,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(14, 12);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsTrue(brancher.Branch(BranchCode.BHI));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bhi));
         }
 
         [TestMethod]
@@ -59,10 +57,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(14, 17);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsFalse(brancher.Branch(BranchCode.BGE));
+            Assert.IsFalse(brancher.Branch(BranchCode.Bge));
         }
 
         [TestMethod]
@@ -71,10 +69,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(18, 17);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsTrue(brancher.Branch(BranchCode.BGE));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bge));
         }
 
         [TestMethod]
@@ -83,10 +81,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(17, 17);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsTrue(brancher.Branch(BranchCode.BGE));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bge));
         }
 
         [TestMethod]
@@ -95,10 +93,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(17, 17);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsFalse(brancher.Branch(BranchCode.BGT));
+            Assert.IsFalse(brancher.Branch(BranchCode.Bgt));
         }
 
         [TestMethod]
@@ -107,10 +105,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(18, 17);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsTrue(brancher.Branch(BranchCode.BGT));
+            Assert.IsTrue(brancher.Branch(BranchCode.Bgt));
         }
 
         [TestMethod]
@@ -119,10 +117,10 @@ namespace VProcessor.Tests.Hardware
             var brancher = new Brancher();
             var datapath = TestHelper.CreateDatapath(14, 17);
 
-            datapath.FunctionUnit(Opcode.CMP);
+            datapath.FunctionUnit(Opcode.Cmp);
 
             brancher.SetNzcv(datapath.GetStatusRegister());
-            Assert.IsFalse(brancher.Branch(BranchCode.BGT));
+            Assert.IsFalse(brancher.Branch(BranchCode.Bgt));
         }
     }
 }

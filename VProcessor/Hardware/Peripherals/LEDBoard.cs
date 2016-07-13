@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VProcessor.Tools;
+﻿using VProcessor.Tools;
 
 namespace VProcessor.Hardware.Peripherals
 {
-    public class LEDBoard : IPeripheral
+    public class LedBoard : IPeripheral
     {
-        private Boolean[] leds;
+        private readonly bool[] _leds;
 
-        public LEDBoard()
+        public LedBoard()
         {
-            this.leds = new Boolean[VPConsts.LEDBoardCount];
+            _leds = new bool[VpConsts.LedBoardCount];
         }
 
-        public Boolean GetColor(Int32 index)
+        public bool GetColor(int index)
         {
-            return leds[index];
+            return _leds[index];
         }
 
         public bool Trigger()
@@ -34,33 +28,27 @@ namespace VProcessor.Hardware.Peripherals
 
         public void Reset()
         {
-            for (var i = 0; i < leds.Length; i++)
-                this.leds[i] = false;
+            for (var i = 0; i < _leds.Length; i++)
+                _leds[i] = false;
         }
 
-        public UInt32 GetMemory(int index)
+        public uint GetMemory(int index)
         {
-            return this.GetMemory((UInt32)index);
+            return GetMemory((uint)index);
         }
 
-        public UInt32 GetMemory(uint index)
+        public uint GetMemory(uint index)
         {
-            return (UInt32)(this.leds[index] ? 1 : 0);
+            return (uint)(_leds[index] ? 1 : 0);
         }
 
         public void SetMemory(int index, uint value)
         {
-            this.leds[index] = value != 0;
+            _leds[index] = value != 0;
         }
 
-        public int Length
-        {
-            get { return VPConsts.LEDBoardCount; }
-        }
+        public int Length => VpConsts.LedBoardCount;
 
-        public bool HasMemory
-        {
-            get { return true; }
-        }
+        public bool HasMemory => true;
     }
 }

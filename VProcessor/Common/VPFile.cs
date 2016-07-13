@@ -1,102 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace VProcessor.Common
 {
-    public class VPFile
+    public class VpFile
     {
-        public const Int32 Hexadecimal = 0;
-        public const Int32 Decimal = 1;
-        public const Int32 Assembly = 2;
+        public const int Hexadecimal = 0;
+        public const int Decimal = 1;
+        public const int Assembly = 2;
 
-        public const Char Delimiter = ';';
+        public const char Delimiter = ';';
 
-        private String path;        
-        private String builder;
-        private Int32 mode;
+        private string _path;        
+        private string _builder;
+        private int _mode;
         
-        public VPFile(String path, Int32 mode = 0)
+        public VpFile(string path, int mode = 0)
         {
-            this.mode = mode;
-            this.path = path;            
-            this.Init();
+            _mode = mode;
+            _path = path;            
+            Init();
         }
 
-        public Int32 GetMode()
+        public int GetMode()
         {
-            return this.mode;
+            return _mode;
         }
 
-        public void SetMode(Int32 mode)
+        public void SetMode(int mode)
         {
-            this.mode = mode;
+            _mode = mode;
         }
 
         private void Init()
         {
-            this.Load();
+            Load();
         }
 
-        public String GetString()
+        public string GetString()
         {
-            return this.builder;
+            return _builder;
         }
 
         public void CleanUp()
         {
-            String s = Delimiter.ToString();
-            this.builder = this.builder.Replace("???", "").Replace("\r\n", s).Replace("\n", s).Replace("\r", s).Replace(s + s, s).Replace("\0", "");
+            string s = Delimiter.ToString();
+            _builder = _builder.Replace("???", "").Replace("\r\n", s).Replace("\n", s).Replace("\r", s).Replace(s + s, s).Replace("\0", "");
         }
 
-        public void SetString(String s)
+        public void SetString(string s)
         {
-            this.builder = s;
+            _builder = s;
         }
 
         public void Load()
         {
-            this.Load(this.path);
+            Load(_path);
         }
 
         public void Save()
         {
-            this.Save(this.path);
+            Save(_path);
         }
 
-        public void Save(String path)
+        public void Save(string path)
         {
-            this.path = path;
-            this.SetMode();
+            _path = path;
+            SetMode();
             using (StreamWriter writer = File.CreateText(path))
             {
-                writer.Write(this.builder);
+                writer.Write(_builder);
             }
         }
 
-        public void Load(String path)
+        public void Load(string path)
         {
-            this.path = path;
-            this.SetMode();
+            _path = path;
+            SetMode();
             using (StreamReader reader = File.OpenText(path))
             {
-                this.builder = reader.ReadToEnd();
+                _builder = reader.ReadToEnd();
             }
-            this.CleanUp();
+            CleanUp();
         }
 
         private void SetMode()
         {
-            var extenstion = Path.GetExtension(this.path);
+            var extenstion = Path.GetExtension(_path);
 
             if(extenstion == ".vps")
-                this.mode = Assembly;
+                _mode = Assembly;
             if (extenstion == ".vpo")
-                this.mode = Hexadecimal;
+                _mode = Hexadecimal;
         }
 
     }

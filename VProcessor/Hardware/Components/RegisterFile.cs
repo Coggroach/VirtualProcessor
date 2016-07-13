@@ -1,40 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VProcessor.Hardware.Interfacing;
+﻿using VProcessor.Hardware.Interfacing;
 
 namespace VProcessor.Hardware.Components
 {
     class RegisterFile : IDatapath
     {
-        private UInt32[] registers;
+        private readonly uint[] _registers;
 
         public RegisterFile()
         {
-            this.registers = new UInt32[Datapath.RegisterFileSize];
+            _registers = new uint[Datapath.RegisterFileSize];
         }
 
         public void Reset()
         {
-            for (var i = 0; i < registers.Length; i++)
-                this.registers[i] = 0;
+            for (var i = 0; i < _registers.Length; i++)
+                _registers[i] = 0;
         }
 
-        public void SetRegister(Byte register, UInt32 value)
+        public void SetRegister(byte register, uint value)
         {
-            this.registers[register] = value;
+            _registers[register] = value;
         }
 
-        public UInt32[] GetRegisters()
+        public uint[] GetRegisters()
         {
-            return this.registers;
+            return _registers;
         }
 
-        public UInt32 GetRegister(Byte register)
+        public uint GetRegister(byte register)
         {
-            return this.registers[register];
+            return _registers[register];
         }
     }
 }

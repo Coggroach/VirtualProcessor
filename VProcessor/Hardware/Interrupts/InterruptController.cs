@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using VProcessor.Hardware.Components;
 using VProcessor.Hardware.Interfacing;
-using VProcessor.Hardware.Memory;
 using VProcessor.Hardware.Peripherals;
 using VProcessor.Tools;
 
@@ -13,45 +8,42 @@ namespace VProcessor.Hardware.Interrupts
 {
     public class InterruptController : IPeripheral
     {
-        private Register irr;
-        private Register isr;
-        private Register imr;
+        private readonly Register _irr;
+        private readonly Register _isr;
+        private readonly Register _imr;
 
-        private Channel interruptChannel;
-        private IList<IPeripheral> peripherals;
+        private readonly Channel _interruptChannel;
+        private readonly IList<IPeripheral> _peripherals;
 
-        private UInt32[] addresses;
+        private readonly uint[] _addresses;
 
-        public InterruptController(InterruptChannel interrupt)
+        public InterruptController(Channel interrupt)
         {
-            this.irr = new Register();
-            this.isr = new Register();
-            this.imr = new Register();
-            this.interruptChannel = interrupt;
-            this.peripherals = new List<IPeripheral>();
-            this.addresses = new UInt32[VPConsts.VectoredInterruptControllerSize];
-            this.imr.Value = ~(UInt32)0;
+            _irr = new Register();
+            _isr = new Register();
+            _imr = new Register();
+            _interruptChannel = interrupt;
+            _peripherals = new List<IPeripheral>();
+            _addresses = new uint[VpConsts.VectoredInterruptControllerSize];
+            _imr.Value = ~(uint)0;
         }
 
-        public void Request(UInt32 irq)
+        public void Request(uint irq)
         {
-            if ((irq & this.imr.Value) != irq)
+            if ((irq & _imr.Value) != irq)
                 return;
 
-            this.irr.Value |= irq;
+            _irr.Value |= irq;
         }
 
-        private void Service(Byte bitPos)
-        {
-            this.isr.ClrBit(bitPos);
-        }
+        private void Service(byte bitPos) => _isr.ClrBit(bitPos);
 
-        private Byte RetrieveNextRequest()
+        private byte RetrieveNextRequest()
         {
-            Byte i = 0;
-            var value = this.irr.Value;
+            byte i = 0;
+            var value = _irr.Value;
 
-            if (value == 0) return VPConsts.VectoredInterruptControllerAddress + 1;
+            if (value == 0) return VpConsts.VectoredInterruptControllerAddress + 1;
 
             while(value > 1)
             {
@@ -61,53 +53,45 @@ namespace VProcessor.Hardware.Interrupts
             return i;
         }
 
-        private void Mask()
-        {
-            this.imr.Value = ~(this.irr.Value | this.isr.Value);
-        }
+        private void Mask() => _imr.Value = ~(_irr.Value | _isr.Value);
 
         public InterruptPacket CreateInterruptRequest()
         {
             var bitPos = RetrieveNextRequest();
 
-            if (bitPos > VPConsts.VectoredInterruptControllerAddress)
+            if (bitPos > VpConsts.VectoredInterruptControllerAddress)
                 return null;
 
-            this.irr.ClrBit(bitPos);
-            this.isr.SetBit(bitPos);
-            this.Mask();
+            _irr.ClrBit(bitPos);
+            _isr.SetBit(bitPos);
+            Mask();
 
-            return new InterruptPacket()
+            return new InterruptPacket
             {
-                Address = this.addresses[bitPos],
-                Request = InterruptPacketRequest.IRQ
+                Address = _addresses[bitPos],
+                Request = InterruptPacketRequest.Irq
             };
         }
 
-        public void RegisterPeripheral(IPeripheral peripheral)
-        {
-            this.peripherals.Add(peripheral);
-        }
+        public void RegisterPeripheral(IPeripheral peripheral) => _peripherals.Add(peripheral);
 
-        private UInt32 RequestInput()
+        private uint RequestInput()
         {
-            var request = (UInt32) 0;
-            for(var i = 0; i < this.peripherals.Count; i++)
+            var request = (uint) 0;
+            for(var i = 0; i < _peripherals.Count; i++)
             {
-                if (this.peripherals[i].Trigger())
-                {
-                    request |= (UInt32)(1 << i);
-                    this.imr.SetBit((byte)i);
-                }                
+                if (!_peripherals[i].Trigger()) continue;
+                request |= (uint)(1 << i);
+                _imr.SetBit((byte)i);
             }
             return request;
         }
         public void Tick()
         {
-            this.Request(this.RequestInput());
-            foreach (var peri in this.peripherals)
+            Request(RequestInput());
+            foreach (var peri in _peripherals)
                 peri.Tick();                            
-            this.interruptChannel.Push(this.CreateInterruptRequest());        
+            _interruptChannel.Push(CreateInterruptRequest());        
         }
 
         public bool Trigger()
@@ -122,22 +106,22 @@ namespace VProcessor.Hardware.Interrupts
 
         public uint GetMemory(int index)
         {
-            return this.GetMemory((UInt32)index);
+            return GetMemory((uint)index);
         }
 
         public uint GetMemory(uint index)
         {
-            return this.addresses[index];
+            return _addresses[index];
         }
 
         public void SetMemory(int index, uint value)
         {
-            this.addresses[index] = value;
+            _addresses[index] = value;
         }
 
         public int Length
         {
-            get { return VPConsts.VectoredInterruptControllerSize; }
+            get { return VpConsts.VectoredInterruptControllerSize; }
         }
 
         public bool HasMemory

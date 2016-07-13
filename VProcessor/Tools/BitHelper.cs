@@ -1,39 +1,35 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VProcessor.Tools
 {
     public class BitHelper
     {
-        public static Boolean BitMatch(UInt64 value, Byte bitPos, Byte matchBit, UInt32 mask = 1)
+        public static bool BitMatch(ulong value, byte bitPos, byte matchBit, uint mask = 1)
         {
-            return ((value >> bitPos) & mask) == matchBit;
+            return (value >> bitPos & mask) == matchBit;
         }
 
-        public static UInt64 BitExtract(UInt64 value, Byte bitPos, UInt32 mask = 1)
-        {
-            return (value >> bitPos) & mask;
-        }
-
-        public static Boolean BitMatch(UInt32 value, Byte bitPos, Byte matchBit, UInt32 mask = 1)
-        {
-            return ((value >> bitPos) & mask) == matchBit;
-        }
-
-        public static UInt32 BitExtract(UInt32 value, Byte bitPos, UInt32 mask = 1)
+        public static ulong BitExtract(ulong value, byte bitPos, uint mask = 1)
         {
             return (value >> bitPos) & mask;
         }
 
-        public static Boolean MatchMask(Byte value, Byte mask)
+        public static bool BitMatch(uint value, byte bitPos, byte matchBit, uint mask = 1)
+        {
+            return ((value >> bitPos) & mask) == matchBit;
+        }
+
+        public static uint BitExtract(uint value, byte bitPos, uint mask = 1)
+        {
+            return (value >> bitPos) & mask;
+        }
+
+        public static bool MatchMask(byte value, byte mask)
         {
             return (value & mask) == mask;
         }
 
-        public static UInt32 Negate4Bits(UInt32 extract)
+        public static uint Negate4Bits(uint extract)
         {
              if(extract >= 0x8000)
                     extract = ~(~extract ^ 0xFFFF0000);
@@ -41,19 +37,19 @@ namespace VProcessor.Tools
             return extract;
         }
 
-        public static UInt32 Negate(Int32 value)
+        public static uint Negate(int value)
         {
-            return ~(UInt32)Math.Abs(value) + 1;
+            return ~(uint)Math.Abs(value) + 1;
         }
 
-        public static UInt32 Subtract(Int32 i, Int32 j)
+        public static uint Subtract(int i, int j)
         {
             var result = i - j;
-            UInt32 extract = 0;
+            uint extract = 0;
             if (result < 0)
-                extract = (~(UInt32)Math.Abs(result) + 1);
+                extract = (~(uint)Math.Abs(result) + 1);
             else
-                extract = (UInt32)result;
+                extract = (uint)result;
 
             return extract & 0xFFFF;
         }

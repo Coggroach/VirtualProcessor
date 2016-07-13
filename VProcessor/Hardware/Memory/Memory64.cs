@@ -1,51 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VProcessor.Hardware.Memory
+﻿namespace VProcessor.Hardware.Memory
 {
-    public class Memory64 : IMemory<UInt64>
+    public class Memory64 : IMemory<ulong>
     {
-        private readonly UInt64[] memory;
-        private readonly Int32 length;
+        private readonly ulong[] _memory;
+        private readonly int _length;
 
-        public Memory64(Int32 i)
+        public Memory64(int i)
         {
-            this.memory = new UInt64[i];
-            this.length = i;
+            _memory = new ulong[i];
+            _length = i;
         }
 
         public void Reset()
         {
-            for (var i = 0; i < this.memory.Length; i++)
-                this.memory[i] = 0;
+            for (var i = 0; i < _memory.Length; i++)
+                _memory[i] = 0;
         }
 
-        public UInt64 GetMemory(Int32 index)
-        {
-            return this.memory[index % this.length];
-        }
+        public ulong GetMemory(int index) => _memory[index % _length];
 
-        public UInt64 GetMemory(UInt32 index)
-        {
-            return this.memory[index % this.length];
-        }
+        public ulong GetMemory(uint index) => _memory[index % _length];
 
-        public void SetMemory(Int32 index, UInt64 value)
-        {
-            this.memory[index % this.length] = value;
-        }
+        public void SetMemory(int index, ulong value) => _memory[index % _length] = value;
 
-        public Int32 Length
-        {
-            get { return this.memory.Length; }
-        }
+        public int Length => _memory.Length;
 
-        public bool HasMemory
-        {
-            get { return true; }
-        }
+        public bool HasMemory => true;
     }
 }

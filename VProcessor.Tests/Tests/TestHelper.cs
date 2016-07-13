@@ -1,19 +1,18 @@
 ﻿using System;
 using VProcessor.Common;
-using VProcessor.Hardware;
 using VProcessor.Hardware.Components;
 
 namespace VProcessor.Tests.Hardware
 {
     public class TestHelper
     {
-        public static Datapath CreateDatapath(UInt32 a, UInt32 b)
+        public static Datapath CreateDatapath(uint a, uint b)
         {
             var datapath = new Datapath();
 
-            var reg0 = (Byte)0;
-            var reg1 = (Byte)1;
-            var reg2 = (Byte)0;
+            var reg0 = (byte)0;
+            var reg1 = (byte)1;
+            var reg2 = (byte)0;
 
             datapath.SetRegister(reg0, a);
             datapath.SetRegister(reg1, b);
@@ -24,10 +23,10 @@ namespace VProcessor.Tests.Hardware
             return datapath;
         }
 
-        public static UInt32 GetRegisterFromDatapath(UInt32 a, UInt32 b, Opcode code)
+        public static uint GetRegisterFromDatapath(uint a, uint b, Opcode code)
         {
             var datapath = CreateDatapath(a, b);
-            datapath.FunctionUnit((Byte)code, 1);
+            datapath.FunctionUnit((byte)code, 1);
             return datapath.GetRegister();
         }
     }

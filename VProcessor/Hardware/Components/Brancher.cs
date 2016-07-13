@@ -5,68 +5,69 @@ namespace VProcessor.Hardware.Components
 {
     public class Brancher
     {
-        private Register Nzcv;      
+        private Register _nzcv;      
 
         public Brancher()
             : this(new Register()) {}
 
         public Brancher(Register status)
         {
-            this.Nzcv = status;
+            _nzcv = status;
         }
 
         public Register GetNzcv()
         {
-            return this.Nzcv;
+            return _nzcv;
         }
 
         public void SetNzcv(Register reg)
         {
-            this.Nzcv = new Register(reg);
+            _nzcv = new Register(reg);
         }
 
-        public Boolean Branch(UInt32 code)
+        public bool Branch(uint code)
         {
-            return this.Branch((BranchCode)code);
+            return Branch((BranchCode)code);
         }
 
-        public Boolean Branch(BranchCode code)
+        public bool Branch(BranchCode code)
         {
             //https://www.cs.tcd.ie/John.Waldron/3d1/branches.pdf
             switch(code)
             {
                 case BranchCode.B:
                     return true;
-                case BranchCode.BEQ:
-                    return Nzcv.BitMatch(2, 1);
-                case BranchCode.BNE:
-                    return Nzcv.BitMatch(2, 0);
-                case BranchCode.BGT:
-                    return Nzcv.BitMatch(2, 0) && (Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 0) );
-                case BranchCode.BLT:
-                    return Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 1);
-                case BranchCode.BGE:
-                    return Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 0);
-                case BranchCode.BLE:
-                    return Nzcv.BitMatch(2, 1) || (Nzcv.BitMatch(3, 1) ^ Nzcv.BitMatch(0, 1) );
-                case BranchCode.BVS:
-                    return Nzcv.BitMatch(0, 1);
-                case BranchCode.BVC:
-                    return Nzcv.BitMatch(0, 0);
-                case BranchCode.BCS:
-                    return Nzcv.BitMatch(1, 1);
-                case BranchCode.BCC:
-                    return Nzcv.BitMatch(1, 0);
-                case BranchCode.BNS:
-                    return Nzcv.BitMatch(3, 1);
-                case BranchCode.BNC:
-                    return Nzcv.BitMatch(3, 0);
-                case BranchCode.BHI:
-                    return Nzcv.BitMatch(1, 1) && Nzcv.BitMatch(2, 0);
-                case BranchCode.BLS:
-                    return Nzcv.BitMatch(1, 0) || Nzcv.BitMatch(2, 1);
+                case BranchCode.Beq:
+                    return _nzcv.BitMatch(2, 1);
+                case BranchCode.Bne:
+                    return _nzcv.BitMatch(2, 0);
+                case BranchCode.Bgt:
+                    return _nzcv.BitMatch(2, 0) && (_nzcv.BitMatch(3, 1) ^ _nzcv.BitMatch(0, 0) );
+                case BranchCode.Blt:
+                    return _nzcv.BitMatch(3, 1) ^ _nzcv.BitMatch(0, 1);
+                case BranchCode.Bge:
+                    return _nzcv.BitMatch(3, 1) ^ _nzcv.BitMatch(0, 0);
+                case BranchCode.Ble:
+                    return _nzcv.BitMatch(2, 1) || (_nzcv.BitMatch(3, 1) ^ _nzcv.BitMatch(0, 1) );
+                case BranchCode.Bvs:
+                    return _nzcv.BitMatch(0, 1);
+                case BranchCode.Bvc:
+                    return _nzcv.BitMatch(0, 0);
+                case BranchCode.Bcs:
+                    return _nzcv.BitMatch(1, 1);
+                case BranchCode.Bcc:
+                    return _nzcv.BitMatch(1, 0);
+                case BranchCode.Bns:
+                    return _nzcv.BitMatch(3, 1);
+                case BranchCode.Bnc:
+                    return _nzcv.BitMatch(3, 0);
+                case BranchCode.Bhi:
+                    return _nzcv.BitMatch(1, 1) && _nzcv.BitMatch(2, 0);
+                case BranchCode.Bls:
+                    return _nzcv.BitMatch(1, 0) || _nzcv.BitMatch(2, 1);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(code), code, null);
             }
-            return false;
         }
     }
 }

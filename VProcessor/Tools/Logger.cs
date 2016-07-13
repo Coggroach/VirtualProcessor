@@ -1,68 +1,53 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace VProcessor.Tools
 {
     public class Logger
     {
-        private static Logger instance;
+        private static readonly Logger _instance;
 
         static Logger()
         {
-            instance = new Logger();
+            _instance = new Logger();
         }
 
         public static Logger Instance()
         {
-            return instance;
+            return _instance;
         }
 
-        private String path;
-        private Boolean mode;        
+        private readonly string _path;
+        private bool _mode;        
 
         public Logger() : this("LoggerDebug.txt", true)
         {
             
         }
 
-        public Logger(String s, Boolean b)
+        public Logger(string s, bool b)
         {
-            this.path = s;
-            this.mode = b;
-            if(!mode)
-                System.IO.File.Delete(this.path);
+            _path = s;
+            _mode = b;
+            if(!_mode)
+                File.Delete(_path);
         }
 
-        public void Log(String line)
+        public void Log(string line)
         {
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter(this.path, true))
+            using (var file = new StreamWriter(_path, true))
             {
                 file.WriteLine(AddInfo(line));
                 file.Close();
             }           
         }
 
-        public void Append(Boolean b)
-        {
-            this.mode = b;
-        }
+        public void Append(bool b) => _mode = b;
 
-        private String AddInfo(String line)
-        {
-            return AddType(AddDate(line));
-        }
+        private string AddInfo(string line) => AddType(AddDate(line));
 
-        private String AddType(String line)
-        {
-            return "[Logger]" + line;
-        }
+        private string AddType(string line) => "[Logger]" + line;
 
-        private String AddDate(String line)
-        {
-            return "[" + System.DateTime.Now.ToLongTimeString() + "]:" + line;
-        }
+        private string AddDate(string line) => "[" + DateTime.Now.ToLongTimeString() + "]:" + line;
     }
 }

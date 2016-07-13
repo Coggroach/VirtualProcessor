@@ -8,124 +8,125 @@ using VProcessor.Common;
 using VProcessor.Hardware;
 using VProcessor.Hardware.Memory;
 using VProcessor.Hardware.Peripherals;
-using VProcessor.Software.Assembly;
+using VProcessor.Software;
 using VProcessor.Tools;
+using Timer = VProcessor.Hardware.Peripherals.Timer;
 
 namespace VProcessor.Gui
 {
     public partial class EditorForm : Form
     {
-        private IAssembler compiler;
-        private volatile Machine machine;
-        private UserSettings settings;
-        private VPFile flashFile;
-        private const String RegisterPrefix = "r";
-        private VProcessor.Hardware.Peripherals.Timer timer;
-        private LEDBoard leds;
+        private readonly IAssembler _compiler;
+        private volatile Machine _machine;
+        private readonly UserSettings _settings;
+        private readonly VpFile _flashFile;
+        private const string RegisterPrefix = "r";
+        private readonly Timer _timer;
+        private readonly LedBoard _leds;
 
         public EditorForm()
         {
-            this.compiler = new Assembler();
-            this.settings = new UserSettings().Load();
-            this.flashFile = new VPFile(this.settings.FlashFileLocation);
+            _compiler = new Assembler();
+            _settings = new UserSettings().Load();
+            _flashFile = new VpFile(_settings.FlashFileLocation);
             
-            this.machine = new Machine(this.compiler);
-            this.timer = new Hardware.Peripherals.Timer();
-            this.machine.RegisterPeripheral(this.timer);
-            this.leds = new LEDBoard();
-            this.machine.RegisterPeripheral(this.leds);
+            _machine = new Machine(_compiler);
+            _timer = new Timer();
+            _machine.RegisterPeripheral(_timer);
+            _leds = new LedBoard();
+            _machine.RegisterPeripheral(_leds);
 
-            this.SetupThread();
-            this.InitializeComponent();
-            this.Setup();
-            this.Update();
-            this.UpdateEditorBox();
+            SetupThread();
+            InitializeComponent();
+            Setup();
+            Update();
+            UpdateEditorBox();
         }
 
         public void Tick()
         {
-            this.machine.Tick();
-            this.Update();
+            _machine.Tick();
+            Update();
         }
 
         #region Threading
 
-        private volatile Boolean IsRunning;
-        private Thread RunThread;
+        private volatile bool _isRunning;
+        private Thread _runThread;
 
         public void SetupThread()
         {
-            this.RunThread = new Thread(this.Run);
-            this.IsRunning = false;
+            _runThread = new Thread(Run);
+            _isRunning = false;
         }
 
-        public void Run(Object context)
+        public void Run(object context)
         {
-            this.IsRunning = true;
+            _isRunning = true;
             //var timeSpan = new TimeSpan(Settings.ClockTime);
-            this.RunningStatus.BackColor = Color.Green;
+            RunningStatus.BackColor = Color.Green;
 
-            while (!this.machine.HasTerminated() && this.IsRunning)
+            while (!_machine.HasTerminated() && _isRunning)
             {
-                this.machine.Tick();
+                _machine.Tick();
                 //Thread.Sleep(timeSpan);
             }
-            this.Stop();
+            Stop();
         }
 
         public void Stop()
         {
-            this.IsRunning = false;
+            _isRunning = false;
             Thread.Sleep(100);
-            this.RunningStatus.BackColor = Color.Red;
-            this.Update();
+            RunningStatus.BackColor = Color.Red;
+            Update();
         }
         #endregion
 
         #region Setup
         public void Setup()
         {
-            this.SetupUserSettings();
-            this.SetupRegisterFile();
-            this.SetupEditorBoxText();
-            this.SetupToolBar();            
+            SetupUserSettings();
+            SetupRegisterFile();
+            SetupEditorBoxText();
+            SetupToolBar();            
         }
 
         public void SetupUserSettings()
         {
-            this.tabsToolStripMenuItem.Checked = this.settings.IndentMode == 0;
-            this.spacesToolStripMenuItem.Checked = this.settings.IndentMode == 1;
-            this.size1toolStripMenuItem.Checked = this.settings.IndentSize == 1;
-            this.size2toolStripMenuItem.Checked = this.settings.IndentSize == 2;
-            this.size4toolStripMenuItem.Checked = this.settings.IndentSize == 4;
+            tabsToolStripMenuItem.Checked = _settings.IndentMode == 0;
+            spacesToolStripMenuItem.Checked = _settings.IndentMode == 1;
+            size1toolStripMenuItem.Checked = _settings.IndentSize == 1;
+            size2toolStripMenuItem.Checked = _settings.IndentSize == 2;
+            size4toolStripMenuItem.Checked = _settings.IndentSize == 4;
         }
 
         public void SetupRegisterFile()
         {
-            var registers = this.machine.GetRegisters();
-            this.RegisterFile.ColumnCount = 2;
-            this.RegisterFile.RowCount = this.machine.GetRegisters().Length + 3;
-            this.RegisterFile.Font = new Font("Arial", 12);
+            var registers = _machine.GetRegisters();
+            RegisterFile.ColumnCount = 2;
+            RegisterFile.RowCount = _machine.GetRegisters().Length + 3;
+            RegisterFile.Font = new Font("Arial", 12);
         }
 
         private void SetupToolBar()
         {
             //this.ToolFontType.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source);
-            this.ToolFontSize.Items.AddRange(new Object[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 });
-            this.ToolFontSize.SelectedItem = 14;
+            ToolFontSize.Items.AddRange(new object[] { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 });
+            ToolFontSize.SelectedItem = 14;
         }
 
         private void SetupEditorBoxText()
         {
-            this.UpdateEditorBox();   
-            this.FlashMemoryBox.Text = ConvertMemoryToString(this.machine.GetFlashMemory());
+            UpdateEditorBox();   
+            FlashMemoryBox.Text = ConvertMemoryToString(_machine.GetFlashMemory());
         }
 
-        private String ConvertMemoryToString(MemoryUnit<UInt32> memory)
+        private string ConvertMemoryToString(MemoryUnit<uint> memory)
         {
             var chunk = memory.GetMemoryChunk();
             var s = "";
-            const String template = "00000000";
+            const string template = "00000000";
             for(var i = 0; i < chunk.Length; i++)
             {
                 var convert = Convert.ToString(chunk.GetMemory(i), 16).ToUpper();
@@ -138,84 +139,84 @@ namespace VProcessor.Gui
         #region Update
         public new void Update()
         {
-            if(this.InvokeRequired)
+            if(InvokeRequired)
             {
-                this.Invoke(new Action(UpdateHelper));
+                Invoke(new Action(UpdateHelper));
                 return;
             }
-            this.UpdateHelper();
+            UpdateHelper();
         }
 
         public void UpdateHelper()
         {
-            this.UpdateRegisterFile();
-            this.UpdateMemoryDisplays();
-            this.UpdateToolBar();                
+            UpdateRegisterFile();
+            UpdateMemoryDisplays();
+            UpdateToolBar();                
         }
 
         private void UpdateEditorBox()
         {
-            var parser = this.flashFile.GetString().Replace(VPFile.Delimiter, '\n');
+            var parser = _flashFile.GetString().Replace(VpFile.Delimiter, '\n');
 
             parser = Regex.Replace(parser, @"[ ]{2,}", " ");            
             parser = Regex.Replace(parser, @"[\t]{1,}", " ");            
 
-            var indentMode = this.settings.IndentMode == UserSettings.IndentTab ? "\t" : " ";
-            for (var i = 0; i < this.settings.IndentSize; i++)
+            var indentMode = _settings.IndentMode == UserSettings.IndentTab ? "\t" : " ";
+            for (var i = 0; i < _settings.IndentSize; i++)
                 indentMode += indentMode;
 
-            this.EditorBox.Text = parser.Replace(" ", indentMode);
-            this.HighlightEditorBox();
+            EditorBox.Text = parser.Replace(" ", indentMode);
+            HighlightEditorBox();
         }
 
        
         public void UpdateRegisterFile()
         {
-            var registers = this.machine.GetRegisters();
+            var registers = _machine.GetRegisters();
             var length = registers.Length;
             for (var i = 0; i < length; i++)
             {
-                this.RegisterFile[0, i].Value = RegisterPrefix + i;
-                this.RegisterFile[1, i].Value = registers[i];
+                RegisterFile[0, i].Value = RegisterPrefix + i;
+                RegisterFile[1, i].Value = registers[i];
             }
-            this.RegisterFile[0, length].Value = "pc";
-            this.RegisterFile[1, length].Value = (Int32)this.machine.GetProgramCounter();
-            this.RegisterFile[0, length + 1].Value = "car";
-            this.RegisterFile[1, length + 1].Value = this.machine.GetControlAddressRegister();
-            this.RegisterFile[0, length + 2].Value = "nzcv";
-            this.RegisterFile[1, length + 2].Value = this.machine.GetStatusRegister();
+            RegisterFile[0, length].Value = "pc";
+            RegisterFile[1, length].Value = (int)_machine.GetProgramCounter();
+            RegisterFile[0, length + 1].Value = "car";
+            RegisterFile[1, length + 1].Value = _machine.GetControlAddressRegister();
+            RegisterFile[0, length + 2].Value = "nzcv";
+            RegisterFile[1, length + 2].Value = _machine.GetStatusRegister();
         }
 
         private void UpdateToolBar()
         {
-            this.EditorBox.SelectAll();
-            this.EditorBox.SelectionFont = new Font("Arial", Single.Parse(this.ToolFontSize.Text));
-            this.EditorBox.DeselectAll();
+            EditorBox.SelectAll();
+            EditorBox.SelectionFont = new Font("Arial", float.Parse(ToolFontSize.Text));
+            EditorBox.DeselectAll();
         }
 
         private void UpdateMemoryDisplays()
         {
-            var pc = this.machine.GetProgramCounter();
-            var carM = Convert.ToString((Int64)this.machine.GetControlMemory().GetMemory(), 16);
+            var pc = _machine.GetProgramCounter();
+            var carM = Convert.ToString((long)_machine.GetControlMemory().GetMemory(), 16);
 
             while (carM.Length < 16)
                 carM = "0" + carM;
             for (var i = 1; i < 4; i++)
                 carM = carM.Insert(5 * i - 1, " ");
 
-            this.CurrentCommandTextBox.Text = carM.ToUpper();
-            this.FlashMemoryBox.Text = ConvertMemoryToString(this.machine.GetFlashMemory());
+            CurrentCommandTextBox.Text = carM.ToUpper();
+            FlashMemoryBox.Text = ConvertMemoryToString(_machine.GetFlashMemory());
 
-            this.FlashMemoryBox.SelectAll();
-            this.FlashMemoryBox.SelectionFont = new Font("Arial", 12);
-            this.FlashMemoryBox.DeselectAll();
+            FlashMemoryBox.SelectAll();
+            FlashMemoryBox.SelectionFont = new Font("Arial", 12);
+            FlashMemoryBox.DeselectAll();
 
-            for (var i = 0; i < this.FlashMemoryBox.Lines.Length; i++)
+            for (var i = 0; i < FlashMemoryBox.Lines.Length; i++)
             {
-                var charIndex = this.FlashMemoryBox.GetFirstCharIndexFromLine(i);
-                var current = this.FlashMemoryBox.Lines[i];
-                this.FlashMemoryBox.Select(charIndex, current.Length);
-                this.FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : Color.WhiteSmoke;                
+                var charIndex = FlashMemoryBox.GetFirstCharIndexFromLine(i);
+                var current = FlashMemoryBox.Lines[i];
+                FlashMemoryBox.Select(charIndex, current.Length);
+                FlashMemoryBox.SelectionBackColor = (i == pc) ? Color.Orange : Color.WhiteSmoke;                
             }
         }
         #endregion Update
@@ -223,58 +224,58 @@ namespace VProcessor.Gui
         #region Highlight
         private void HighlightDefaultEditorBox()
         {
-            this.EditorBox.SelectAll();
-            this.EditorBox.SelectionColor = Color.Black;
-            this.EditorBox.DeselectAll();
+            EditorBox.SelectAll();
+            EditorBox.SelectionColor = Color.Black;
+            EditorBox.DeselectAll();
         }
 
-        private void HighlightEditorBox(String mode = "All")
+        private void HighlightEditorBox(string mode = "All")
         {
-            if (this.EditorBox.Text.Length <= 0)
+            if (EditorBox.Text.Length <= 0)
                 return;
 
-            var save = this.EditorBox.SelectionStart;
+            var save = EditorBox.SelectionStart;
             var charIndex = 0;
             var line = 0;
 
-            if (!this.settings.Highlight)
+            if (!_settings.Highlight)
             {
-                this.HighlightDefaultEditorBox();
+                HighlightDefaultEditorBox();
                 return;
             }
 
             if (mode == "Line")
             {
-                line = this.EditorBox.GetLineFromCharIndex(save);
-                charIndex = this.EditorBox.GetFirstCharIndexFromLine(line);
-                var current = this.EditorBox.Lines[line];
-                this.EditorBox.Select(charIndex, current.Length);
-                this.EditorBox.SelectionColor = Color.Black;
-                this.HighlightEditorBoxLine(line, charIndex);                
+                line = EditorBox.GetLineFromCharIndex(save);
+                charIndex = EditorBox.GetFirstCharIndexFromLine(line);
+                var current = EditorBox.Lines[line];
+                EditorBox.Select(charIndex, current.Length);
+                EditorBox.SelectionColor = Color.Black;
+                HighlightEditorBoxLine(line, charIndex);                
             }
 
             if(mode == "All")
             {
-                this.HighlightDefaultEditorBox();
-                for (line = 0; line < this.EditorBox.Lines.Length; line++)
+                HighlightDefaultEditorBox();
+                for (line = 0; line < EditorBox.Lines.Length; line++)
                 {
-                    charIndex = this.EditorBox.GetFirstCharIndexFromLine(line);
+                    charIndex = EditorBox.GetFirstCharIndexFromLine(line);
 
-                    this.HighlightEditorBoxLine(line, charIndex);
+                    HighlightEditorBoxLine(line, charIndex);
                 }
             }               
-            this.EditorBox.DeselectAll();
-            this.EditorBox.SelectionStart = save;
+            EditorBox.DeselectAll();
+            EditorBox.SelectionStart = save;
         }
 
-        private void HighlightEditorBoxLine(Int32 line, Int32 charIndex)
+        private void HighlightEditorBoxLine(int line, int charIndex)
         {
             try
             {
-                this.HighlightOpcodes(charIndex);
-                this.HighlightRegisters(charIndex);
-                this.HighlightNumbers(line, charIndex);
-                this.HighlightKeywords(line, charIndex);
+                HighlightOpcodes(charIndex);
+                HighlightRegisters(charIndex);
+                HighlightNumbers(line, charIndex);
+                HighlightKeywords(line, charIndex);
             }
             catch (Exception ex)
             {
@@ -288,25 +289,25 @@ namespace VProcessor.Gui
 
         private void HighlightOpcodes(int index)
         {
-            this.EditorBox.Select(index, 3);
+            EditorBox.Select(index, 3);
 
-            var selection = this.EditorBox.SelectedText.Trim().ToUpper();
+            var selection = EditorBox.SelectedText.Trim().ToUpper();
             if (OpcodeRegistry.Instance.IsValidCode(selection))
-                this.EditorBox.SelectionColor = Color.DarkCyan;
+                EditorBox.SelectionColor = Color.DarkCyan;
         }
 
         private void HighlightKeywords(int index, int charIndex)
         {
-            var current = this.EditorBox.Lines[index];
-            var entries = ((Assembler)this.compiler).KeywordLookup;
+            var current = EditorBox.Lines[index];
+            var entries = ((Assembler)_compiler).KeywordLookup;
 
             foreach (DictionaryEntry entry in entries)
             {
-                if (current.Contains((String)entry.Key))
+                if (current.Contains((string)entry.Key))
                 {
-                    var numIndex = current.IndexOf((String)entry.Key);
-                    this.EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
-                    this.EditorBox.SelectionColor = Color.MediumPurple;
+                    var numIndex = current.IndexOf((string)entry.Key);
+                    EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
+                    EditorBox.SelectionColor = Color.MediumPurple;
                 }
             }
         }
@@ -318,46 +319,46 @@ namespace VProcessor.Gui
 
         private void HighlightNumbers(int index, int charIndex)
         {
-            var current = this.EditorBox.Lines[index];
-            var numIndicatorArray = new String[] { "#", "=" };
+            var current = EditorBox.Lines[index];
+            var numIndicatorArray = new[] { "#", "=" };
 
             for (var i = 0; i < numIndicatorArray.Length; i++)
                 if (current.Contains(numIndicatorArray[i]))
                 {
                     var numIndex = current.IndexOf(numIndicatorArray[i]);
-                    this.EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
-                    this.EditorBox.SelectionColor = Color.PaleVioletRed;
+                    EditorBox.Select(charIndex + numIndex, current.Length - numIndex);
+                    EditorBox.SelectionColor = Color.PaleVioletRed;
                 }
         }
         #endregion
 
         #region EventHandling
-        private void EditorBox_SelectionChanged(Object sender, EventArgs e)
+        private void EditorBox_SelectionChanged(object sender, EventArgs e)
         {            
             
         }
 
-        private void EditorBox_TextChanged(Object sender, EventArgs e)
+        private void EditorBox_TextChanged(object sender, EventArgs e)
         {
-            this.HighlightEditorBox("Line");
+            HighlightEditorBox("Line");
         }
 
-        private void tickToolStripMenuItem_Click(Object sender, EventArgs e)
+        private void tickToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Tick();
+            Tick();
         }
 
         private void tickx25ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 25; i++)
-                this.machine.Tick(); 
-            this.Update();
+                _machine.Tick(); 
+            Update();
         }
 
         private void restartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.machine.Reset();
-            this.Update();
+            _machine.Reset();
+            Update();
         } 
 
         private void modeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -367,60 +368,60 @@ namespace VProcessor.Gui
 
         private void UncheckToolStripMenuItems()
         {
-            this.hexadecimalToolStripMenuItem.Checked = false;
-            this.decimalToolStripMenuItem.Checked = false;
-            this.assemblyToolStripMenuItem.Checked = false;
+            hexadecimalToolStripMenuItem.Checked = false;
+            decimalToolStripMenuItem.Checked = false;
+            assemblyToolStripMenuItem.Checked = false;
         }
 
         private ToolStripMenuItem GetToolStripMenuItemMode()
         {
-            switch (this.flashFile.GetMode())
+            switch (_flashFile.GetMode())
             {
-                case VPFile.Assembly:
-                    return this.assemblyToolStripMenuItem;
-                case VPFile.Decimal:
-                    return this.decimalToolStripMenuItem;
-                case VPFile.Hexadecimal:
-                    return this.hexadecimalToolStripMenuItem;
+                case VpFile.Assembly:
+                    return assemblyToolStripMenuItem;
+                case VpFile.Decimal:
+                    return decimalToolStripMenuItem;
+                case VpFile.Hexadecimal:
+                    return hexadecimalToolStripMenuItem;
             }
             return null;
         }
 
-        private void ModeToolStripMenuItem_Click(Int32 mode)
+        private void ModeToolStripMenuItem_Click(int mode)
         {
-            this.flashFile.SetMode(mode);
-            this.UncheckToolStripMenuItems();
-            this.GetToolStripMenuItemMode().Checked = true;  
+            _flashFile.SetMode(mode);
+            UncheckToolStripMenuItems();
+            GetToolStripMenuItemMode().Checked = true;  
         }
 
         private void hexadecimalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ModeToolStripMenuItem_Click(VPFile.Hexadecimal);
+            ModeToolStripMenuItem_Click(VpFile.Hexadecimal);
         }
 
         private void decimalToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ModeToolStripMenuItem_Click(VPFile.Decimal);
+            ModeToolStripMenuItem_Click(VpFile.Decimal);
         }
 
         private void assemblyToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.ModeToolStripMenuItem_Click(VPFile.Assembly);        
+            ModeToolStripMenuItem_Click(VpFile.Assembly);        
         }
 
         private void ToolFontSize_Click(object sender, EventArgs e)
         {
-            this.UpdateEditorBox();
+            UpdateEditorBox();
         }
 
         private void TickButton_Click(object sender, EventArgs e)
         {
             var count = 1;
-            try { count = Int32.Parse(this.TickCounter.Text); }
-            catch (Exception ex) { Logger.Instance().Log("TickCounter (TextBox): " + ex.ToString()); }
+            try { count = int.Parse(TickCounter.Text); }
+            catch (Exception ex) { Logger.Instance().Log("TickCounter (TextBox): " + ex); }
             for (int i = 0; i < count; i++)
-                this.machine.Tick();
-            this.Update();
+                _machine.Tick();
+            Update();
         }
 
         private void CommandBox_KeyPress(object sender, EventArgs e)
@@ -430,7 +431,7 @@ namespace VProcessor.Gui
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.settings.Save();
+            _settings.Save();
             Application.Exit();
         }
 
@@ -445,10 +446,10 @@ namespace VProcessor.Gui
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                this.flashFile.SetString(this.EditorBox.Text);
-                this.flashFile.Save(dialog.FileName);
-                this.UncheckToolStripMenuItems();
-                this.GetToolStripMenuItemMode().Checked = true;
+                _flashFile.SetString(EditorBox.Text);
+                _flashFile.Save(dialog.FileName);
+                UncheckToolStripMenuItems();
+                GetToolStripMenuItemMode().Checked = true;
             }
         }
 
@@ -456,12 +457,12 @@ namespace VProcessor.Gui
 
         private void assembleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.flashFile.SetString(this.EditorBox.Text);
-            this.flashFile.Save();
-            this.flashFile.Load();
-            this.machine.Reset(this.compiler.Compile32(this.flashFile, VPConsts.FlashMemorySize));
-            this.Update();
-            this.UpdateEditorBox();
+            _flashFile.SetString(EditorBox.Text);
+            _flashFile.Save();
+            _flashFile.Load();
+            _machine.Reset(_compiler.Compile32(_flashFile, VpConsts.FlashMemorySize));
+            Update();
+            UpdateEditorBox();
         }
 
 
@@ -475,10 +476,10 @@ namespace VProcessor.Gui
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {                
-                this.flashFile.Load(dialog.FileName);
-                this.SetupEditorBoxText();
-                this.UncheckToolStripMenuItems();
-                this.GetToolStripMenuItemMode().Checked = true;
+                _flashFile.Load(dialog.FileName);
+                SetupEditorBoxText();
+                UncheckToolStripMenuItems();
+                GetToolStripMenuItemMode().Checked = true;
             }
         }
                 
@@ -489,44 +490,44 @@ namespace VProcessor.Gui
 
         private void tabsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.indentModeToolStripMenuItem_Click(UserSettings.IndentTab);
+            indentModeToolStripMenuItem_Click(UserSettings.IndentTab);
         }
 
         private void spacesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.indentModeToolStripMenuItem_Click(UserSettings.IndentSpace);
+            indentModeToolStripMenuItem_Click(UserSettings.IndentSpace);
         }     
   
-        private void indentModeToolStripMenuItem_Click(Int32 index)
+        private void indentModeToolStripMenuItem_Click(int index)
         {
-            this.tabsToolStripMenuItem.Checked = UserSettings.IndentTab == index;
-            this.spacesToolStripMenuItem.Checked = UserSettings.IndentSpace == index;
-            this.settings.IndentMode = index;
-            this.UpdateEditorBox();
+            tabsToolStripMenuItem.Checked = UserSettings.IndentTab == index;
+            spacesToolStripMenuItem.Checked = UserSettings.IndentSpace == index;
+            _settings.IndentMode = index;
+            UpdateEditorBox();
         }
 
         private void size1toolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.sizeXtoolStripMenuItem_Click(UserSettings.IndentSize1);
+            sizeXtoolStripMenuItem_Click(UserSettings.IndentSize1);
         }
 
         private void size2toolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.sizeXtoolStripMenuItem_Click(UserSettings.IndentSize2);
+            sizeXtoolStripMenuItem_Click(UserSettings.IndentSize2);
         }
 
         private void size4toolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.sizeXtoolStripMenuItem_Click(UserSettings.IndentSize4);
+            sizeXtoolStripMenuItem_Click(UserSettings.IndentSize4);
         }
 
-        private void sizeXtoolStripMenuItem_Click(Int32 number)
+        private void sizeXtoolStripMenuItem_Click(int number)
         {
-            this.size1toolStripMenuItem.Checked = UserSettings.IndentSize1 == number;
-            this.size2toolStripMenuItem.Checked = UserSettings.IndentSize2 == number;
-            this.size4toolStripMenuItem.Checked = UserSettings.IndentSize4 == number;
-            this.settings.IndentSize = number;
-            this.UpdateEditorBox();
+            size1toolStripMenuItem.Checked = UserSettings.IndentSize1 == number;
+            size2toolStripMenuItem.Checked = UserSettings.IndentSize2 == number;
+            size4toolStripMenuItem.Checked = UserSettings.IndentSize4 == number;
+            _settings.IndentSize = number;
+            UpdateEditorBox();
         }
 
         private void EditorForm_Load(object sender, EventArgs e)
@@ -536,18 +537,18 @@ namespace VProcessor.Gui
 
         private void highlightToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.highlightToolStripMenuItem.Checked = !this.highlightToolStripMenuItem.Checked;
-            this.settings.Highlight = this.highlightToolStripMenuItem.Checked;
-            this.HighlightEditorBox("All");
+            highlightToolStripMenuItem.Checked = !highlightToolStripMenuItem.Checked;
+            _settings.Highlight = highlightToolStripMenuItem.Checked;
+            HighlightEditorBox("All");
         }
 
         private void runToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.IsRunning)
-                this.Stop();
+            if (_isRunning)
+                Stop();
             else
             {
-                ThreadPool.QueueUserWorkItem(this.Run);                
+                ThreadPool.QueueUserWorkItem(Run);                
             }
         }
         #endregion EventHandling

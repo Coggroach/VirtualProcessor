@@ -1,79 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using VProcessor.Software.Assembly;
-using VProcessor.Tools;
 using VProcessor.Common;
+using VProcessor.Tools;
 
 namespace VProcessor.Gui
 {
     public class UserSettings
     {
-        private static UserSettings defaultSettings;
+        private static readonly UserSettings _defaultSettings;
 
         static UserSettings()
         {
-            defaultSettings = new UserSettings()
+            _defaultSettings = new UserSettings
             {
-                FlashFileLocation = VPConsts.FlashMemoryLocation,
-                FileMode = VPFile.Hexadecimal,
+                FlashFileLocation = VpConsts.FlashMemoryLocation,
+                FileMode = VpFile.Hexadecimal,
                 IndentMode = IndentSpace,
                 IndentSize = IndentSize1,
                 Highlight = true
             };
         }
 
-        public const Int32 IndentSpace = 0;
-        public const Int32 IndentTab = 1;
-        public const Int32 IndentSize1 = 1;
-        public const Int32 IndentSize2 = 2;
-        public const Int32 IndentSize4 = 4;        
+        public const int IndentSpace = 0;
+        public const int IndentTab = 1;
+        public const int IndentSize1 = 1;
+        public const int IndentSize2 = 2;
+        public const int IndentSize4 = 4;        
 
-        public String FlashFileLocation;
-        public Int32 FileMode;
-        public Int32 IndentMode;
-        public Int32 IndentSize;
-        public Boolean Highlight;
+        public string FlashFileLocation;
+        public int FileMode;
+        public int IndentMode;
+        public int IndentSize;
+        public bool Highlight;
 
-        private String[] lines;        
-
-        public UserSettings()
-        {
-            
-        }
+        private string[] _lines;
 
         public UserSettings Load()
         {
-            using(StreamReader reader = File.OpenText(VPConsts.UserSettingsLocation))
+            using(StreamReader reader = File.OpenText(VpConsts.UserSettingsLocation))
             {
-                this.lines = reader.ReadToEnd().Replace("\r\n", "").Split(';');
+                _lines = reader.ReadToEnd().Replace("\r\n", "").Split(';');
 
-                this.FlashFileLocation = this.GetStringValue("FlashFileLocation", defaultSettings.FlashFileLocation);
-                this.FileMode = this.GetInt32Value("FileMode", defaultSettings.FileMode);
-                this.IndentMode = this.GetInt32Value("IndentMode", defaultSettings.IndentMode);
-                this.IndentSize = this.GetInt32Value("IndentSize", defaultSettings.IndentSize);
-                this.Highlight = this.GetBooleanValue("Highlight", defaultSettings.Highlight);
+                FlashFileLocation = GetStringValue("FlashFileLocation", _defaultSettings.FlashFileLocation);
+                FileMode = GetInt32Value("FileMode", _defaultSettings.FileMode);
+                IndentMode = GetInt32Value("IndentMode", _defaultSettings.IndentMode);
+                IndentSize = GetInt32Value("IndentSize", _defaultSettings.IndentSize);
+                Highlight = GetBooleanValue("Highlight", _defaultSettings.Highlight);
             }
             return this;
         }
         
-        private Int32 GetInt32Value(String match, Int32 defaultValue)
+        private int GetInt32Value(string match, int defaultValue)
         {
-            var unparsed = this.GetUnparsedValue(match);
+            var unparsed = GetUnparsedValue(match);
 
             if (unparsed == null)
                 return defaultValue;
 
-            return Int32.Parse(unparsed);
+            return int.Parse(unparsed);
         }
 
-        private String GetStringValue(String match, String defaultValue)
+        private string GetStringValue(string match, string defaultValue)
         {
-            var unparsed = this.GetUnparsedValue(match);
+            var unparsed = GetUnparsedValue(match);
 
             if (unparsed == null)
                 return defaultValue;
@@ -81,24 +70,24 @@ namespace VProcessor.Gui
             return unparsed;
         }
 
-        private Boolean GetBooleanValue(String match, Boolean defaultValue)
+        private bool GetBooleanValue(string match, bool defaultValue)
         {
-            var unparsed = this.GetUnparsedValue(match);
+            var unparsed = GetUnparsedValue(match);
 
             if (unparsed == null)
                 return defaultValue;
 
-            return Boolean.Parse(unparsed);
+            return bool.Parse(unparsed);
         }
 
-        private String GetUnparsedValue(String match)
+        private string GetUnparsedValue(string match)
         {
-            var regex = this.InsertStringIntoRegex(match);
-            for (var i = 0; i < this.lines.Length; i++)
+            var regex = InsertStringIntoRegex(match);
+            for (var i = 0; i < _lines.Length; i++)
             {
-                if (!String.IsNullOrEmpty(this.lines[i]) && Regex.IsMatch(this.lines[i].Replace(@"\", @"/"), regex))
+                if (!string.IsNullOrEmpty(_lines[i]) && Regex.IsMatch(_lines[i].Replace(@"\", @"/"), regex))
                 {
-                    return Regex.Replace(this.lines[i], this.GetRegex(match), "");
+                    return Regex.Replace(_lines[i], GetRegex(match), "");
                 }
             }
             return null;
@@ -107,16 +96,16 @@ namespace VProcessor.Gui
 
         public void Save()
         {
-            using (StreamWriter writer = File.CreateText(VPConsts.UserSettingsLocation))
+            using (StreamWriter writer = File.CreateText(VpConsts.UserSettingsLocation))
             {
-                writer.WriteLine("s:FlashFileLocation=" + this.FlashFileLocation + ";");
-                writer.WriteLine("i:FileMode=" + this.FileMode + ";");
-                writer.WriteLine("i:IndentMode=" + this.IndentMode + ";");
-                writer.WriteLine("i:IndentSize=" + this.IndentSize + ";");
+                writer.WriteLine("s:FlashFileLocation=" + FlashFileLocation + ";");
+                writer.WriteLine("i:FileMode=" + FileMode + ";");
+                writer.WriteLine("i:IndentMode=" + IndentMode + ";");
+                writer.WriteLine("i:IndentSize=" + IndentSize + ";");
             }
         }
 
-        private String InsertStringIntoRegex(String s)
+        private string InsertStringIntoRegex(string s)
         {
             var array = s.ToCharArray();
             var result = @"^[\w][:]";
@@ -127,9 +116,9 @@ namespace VProcessor.Gui
             return result;
         }
 
-        private String GetRegex(String s)
+        private string GetRegex(string s)
         {
-            return this.InsertStringIntoRegex(s).Replace(@"[\w\\.;]+", "");
+            return InsertStringIntoRegex(s).Replace(@"[\w\\.;]+", "");
         }
     }
 }

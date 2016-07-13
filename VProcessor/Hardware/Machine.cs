@@ -1,101 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VProcessor.Software.Assembly;
-using VProcessor.Tools;
+﻿using VProcessor.Common;
 using VProcessor.Hardware.Components;
-using VProcessor.Hardware.Memory;
-using VProcessor.Common;
 using VProcessor.Hardware.Interrupts;
+using VProcessor.Hardware.Memory;
 using VProcessor.Hardware.Peripherals;
+using VProcessor.Software;
+using VProcessor.Tools;
 
 namespace VProcessor.Hardware
 {
     public class Machine : IInformable
     {
-        private Processor processor;
-        private MemoryController memory;
-        private InterruptController interrupts;
-        private IAssembler assembler;
+        private readonly Processor _processor;
+        private readonly MemoryController _memory;
+        private readonly InterruptController _interrupts;
+        private readonly IAssembler _assembler;
 
         public Machine() 
             : this(new Assembler()) { }
 
         public Machine(IAssembler assembler)
         {
-            this.assembler = assembler;
-            this.processor = new Processor(
-                this.assembler.Compile64(new VPFile(VPConsts.ControlMemoryLocation), VPConsts.ControlMemorySize), 
-                this.assembler.Compile32(new VPFile(VPConsts.FlashMemoryLocation), VPConsts.FlashMemorySize));
-            this.interrupts = new InterruptController(this.processor.GetInterruptChannel());
-            this.memory = new MemoryController(this.processor.GetMemoryDualChannel());
-            this.memory.RegisterMappedMemory(interrupts);
+            _assembler = assembler;
+            _processor = new Processor(
+                _assembler.Compile64(new VpFile(VpConsts.ControlMemoryLocation), VpConsts.ControlMemorySize), 
+                _assembler.Compile32(new VpFile(VpConsts.FlashMemoryLocation), VpConsts.FlashMemorySize));
+            _interrupts = new InterruptController(_processor.GetInterruptChannel());
+            _memory = new MemoryController(_processor.GetMemoryDualChannel());
+            _memory.RegisterMappedMemory(_interrupts);
         }
         
         public void Tick()
         {
-            this.processor.Tick();
-            this.memory.Tick();
-            this.interrupts.Tick();
+            _processor.Tick();
+            _memory.Tick();
+            _interrupts.Tick();
         }
 
         public void RegisterPeripheral(IPeripheral peripheral)
         {            
-            this.interrupts.RegisterPeripheral(peripheral);
+            _interrupts.RegisterPeripheral(peripheral);
             if (peripheral.HasMemory)
-                this.memory.RegisterMappedMemory(peripheral);
+                _memory.RegisterMappedMemory(peripheral);
         }
        
-        public Boolean HasTerminated()
-        {
-            return this.processor.HasTerminated();
-        }
+        public bool HasTerminated() => _processor.HasTerminated();
 
-        public void Reset()
-        {
-            this.processor.Reset();
-        }
+        public void Reset() => _processor.Reset();
 
-        public void Reset(Memory32 m)
-        {
-            this.processor.Reset(m);
-        }
+        public void Reset(Memory32 m) => _processor.Reset(m);
 
-        public UInt32[] GetRegisters()
-        {
-            return this.processor.GetRegisters();
-        }
+        public uint[] GetRegisters() => _processor.GetRegisters();
 
-        public Byte GetStatusRegister()
-        {
-            return this.processor.GetStatusRegister();
-        }
+        public byte GetStatusRegister() => _processor.GetStatusRegister();
 
-        public UInt32 GetProgramCounter()
-        {
-            return this.processor.GetProgramCounter();
-        }
+        public uint GetProgramCounter() => _processor.GetProgramCounter();
 
-        public UInt32 GetControlAddressRegister()
-        {
-            return this.processor.GetControlAddressRegister();
-        }
+        public uint GetControlAddressRegister() => _processor.GetControlAddressRegister();
 
-        public Register GetInstructionRegister()
-        {
-            return this.processor.GetInstructionRegister();
-        }
+        public Register GetInstructionRegister() => _processor.GetInstructionRegister();
 
-        public MemoryUnit<UInt32> GetFlashMemory()
-        {
-            return this.processor.GetFlashMemory();
-        }
+        public MemoryUnit<uint> GetFlashMemory() => _processor.GetFlashMemory();
 
-        public MemoryUnit<UInt64> GetControlMemory()
-        {
-            return this.processor.GetControlMemory();
-        }
+        public MemoryUnit<ulong> GetControlMemory() => _processor.GetControlMemory();
     }
 }

@@ -1,84 +1,82 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using VProcessor.Tools;
 
 namespace VProcessor.Common
 {
-    public enum Opcode : int
+    public enum Opcode
     {
         //http://simplemachines.it/doc/arm_inst.pdf
-        NUL = 0,
+        Nul = 0,
 
         //Data Movement Flags
-        LDR = 0,
-        LDRC = 0xD,        
-        STR = 0xE,
+        Ldr = 0,
+        Ldrc = 0xD,        
+        Str = 0xE,
 
         //Arithmetic Flags
-        INC = 1,
-        ADD = 2,
-        ADDI = 3,
-        ADC = 4,
-        SUBD = 5,
-        SUB = 6,
-        SBC = 7,
-        DEC = 8,
-        RSB = 9,
-        RSC = 0xA,
+        Inc = 1,
+        Add = 2,
+        Addi = 3,
+        Adc = 4,
+        Subd = 5,
+        Sub = 6,
+        Sbc = 7,
+        Dec = 8,
+        Rsb = 9,
+        Rsc = 0xA,
 
         //Multiplication Flags
-        MUL = 0xB,
-        MLA = 0xC,
+        Mul = 0xB,
+        Mla = 0xC,
 
         //Logical Flags
-        AND = 0x10,
-        EOR = 0x15,
-        ORR = 0x12,
-        BIC = 0x13,
+        And = 0x10,
+        Eor = 0x15,
+        Orr = 0x12,
+        Bic = 0x13,
 
         //Data Movement
-        MOV = 0x14,
-        MNV = 0x15,
+        Mov = 0x14,
+        Mnv = 0x15,
 
         //Shifting Flags
-        ROL = 0x18,
-        ROR = 0x19,
-        LSL = 0x1A,
-        LSR = 0x1B,
+        Rol = 0x18,
+        Ror = 0x19,
+        Lsl = 0x1A,
+        Lsr = 0x1B,
 
         //Comparison Flags
-        TST = 0x1C,
-        TEQ = 0x1D,
-        CMN = 0x1E,
-        CMP = 0x1F,
+        Tst = 0x1C,
+        Teq = 0x1D,
+        Cmn = 0x1E,
+        Cmp = 0x1F,
 
-        LDPC = 0x80,
-        STPC = 0x40,
+        Ldpc = 0x80,
+        Stpc = 0x40,
 
-        MOD = 0x100,
-        EOI = 0x2000,
-        IRQ = 0
+        Mod = 0x100,
+        Eoi = 0x2000,
+        Irq = 0
     }
 
-    public enum BranchCode : int
+    public enum BranchCode
     {
         //Branch Flags
         B = 0x0,
-        BEQ = 0x1,
-        BNE = 0x2,
-        BCS = 0x3,
-        BCC = 0x4,
-        BNS = 0x5,
-        BNC = 0x6,
-        BVS = 0x7,
-        BVC = 0x8,
-        BHI = 0x9,
-        BLS = 0xA,
-        BGE = 0xB,
-        BLT = 0xC,
-        BGT = 0xD,
-        BLE = 0xE
+        Beq = 0x1,
+        Bne = 0x2,
+        Bcs = 0x3,
+        Bcc = 0x4,
+        Bns = 0x5,
+        Bnc = 0x6,
+        Bvs = 0x7,
+        Bvc = 0x8,
+        Bhi = 0x9,
+        Bls = 0xA,
+        Bge = 0xB,
+        Blt = 0xC,
+        Bgt = 0xD,
+        Ble = 0xE
     }
 
     public class OpcodeRegistry
@@ -92,113 +90,113 @@ namespace VProcessor.Common
 
         public class OpcodeRegistryElement
         {
-            public Int32 Code { get; private set; }
-            public Byte Type { get; private set; }
-            public Int32 Address { get; private set; }
+            public int Code { get; private set; }
+            public byte Type { get; private set; }
+            public int Address { get; private set; }
 
-            public OpcodeRegistryElement(Int32 code, Int32 address, Byte type)
+            public OpcodeRegistryElement(int code, int address, byte type)
             {
-                this.Code = code;
-                this.Address = address;
-                this.Type = type;
+                Code = code;
+                Address = address;
+                Type = type;
             }
         }
 
-        enum OpcodeTypeFlag : int
+        enum OpcodeTypeFlag
         {
             Constant = 1,
             Number = 3,
             Register = 1            
         }
 
-        private readonly Dictionary<String, OpcodeRegistryElement> CodeTable;
-        private Int32 CurrentAddress;
-        private Int32 LastType;
-        private Logger Logger;    
+        private readonly Dictionary<string, OpcodeRegistryElement> _codeTable;
+        private int _currentAddress;
+        private int _lastType;
+        private readonly Logger _logger;    
         
-        private const Int32 FirstAddress = 1;
+        private const int FirstAddress = 1;
 
-        private OpcodeRegistryElement GetCodeTable(String code)
+        private OpcodeRegistryElement GetCodeTable(string code)
         {
-            return CodeTable[code];
+            return _codeTable[code];
         }
 
-        public Boolean IsValidCode(String code)
+        public bool IsValidCode(string code)
         {
-            return CodeTable.ContainsKey(code);
+            return _codeTable.ContainsKey(code);
         }
 
-        public Int32 GetCode(String code)
+        public int GetCode(string code)
         {
-            return CodeTable[code].Code;
+            return _codeTable[code].Code;
         }
 
-        public Byte GetCodeType(String code)
+        public byte GetCodeType(string code)
         {
-            return CodeTable[code].Type;
+            return _codeTable[code].Type;
         }
 
-        public Int32 GetCodeAddress(String code)
+        public int GetCodeAddress(string code)
         {
-            return CodeTable[code].Address;
+            return _codeTable[code].Address;
         }
 
-        public Dictionary<String, OpcodeRegistryElement> GetCodeTable()
+        public Dictionary<string, OpcodeRegistryElement> GetCodeTable()
         {
-            return CodeTable;
+            return _codeTable;
         }
 
-        public void Add(String name, Opcode value, Byte type)
+        public void Add(string name, Opcode value, byte type)
         {
-            this.Add(name, (Int32)value, type);
+            Add(name, (int)value, type);
         }
 
-        public void Add(String name, Opcode value, Int32 address, Byte type)
+        public void Add(string name, Opcode value, int address, byte type)
         {
-            this.Add(name, (Int32)value, address, type);
+            Add(name, (int)value, address, type);
         }
 
-        public void Add(String name, BranchCode value, Byte type)
+        public void Add(string name, BranchCode value, byte type)
         {
-            this.Add(name, (Int32)value, type);
+            Add(name, (int)value, type);
         }
 
-        public void Add(String name, BranchCode value, Int32 address, Byte type)
+        public void Add(string name, BranchCode value, int address, byte type)
         {
-            this.Add(name, (Int32)value, address, type);
+            Add(name, (int)value, address, type);
         }
 
-        public void Add(String name, Int32 value, Int32 address, Byte type)
+        public void Add(string name, int value, int address, byte type)
         {
-            CurrentAddress += address;
-            CodeTable.Add(name, new OpcodeRegistryElement(value, CurrentAddress, type));
-            LastType = type & 7;
-            Logger.Log(name + ":" + CurrentAddress + " : " + GetNextAddressSize());
+            _currentAddress += address;
+            _codeTable.Add(name, new OpcodeRegistryElement(value, _currentAddress, type));
+            _lastType = type & 7;
+            _logger.Log(name + ":" + _currentAddress + " : " + GetNextAddressSize());
         }
 
-        public void Add(String name, Int32 value, Byte type)
+        public void Add(string name, int value, byte type)
         {
             Add(name, value, GetNextAddressSize(), type);
         }
 
-        private Int32 GetNextAddressSize()
+        private int GetNextAddressSize()
         {
-            switch(LastType)
+            switch(_lastType)
             {                
                 case 1:                    
-                    return (Int32)OpcodeTypeFlag.Constant;
+                    return (int)OpcodeTypeFlag.Constant;
                 case 2:
-                    return (Int32)OpcodeTypeFlag.Number;
+                    return (int)OpcodeTypeFlag.Number;
                 case 3:
-                    return (Int32)OpcodeTypeFlag.Number + (Int32)OpcodeTypeFlag.Constant;
+                    return (int)OpcodeTypeFlag.Number + (int)OpcodeTypeFlag.Constant;
                 case 4:
-                    return (Int32)OpcodeTypeFlag.Register;
+                    return (int)OpcodeTypeFlag.Register;
                 case 5:
-                    return (Int32)OpcodeTypeFlag.Register + (Int32)OpcodeTypeFlag.Constant;
+                    return (int)OpcodeTypeFlag.Register + (int)OpcodeTypeFlag.Constant;
                 case 6:
-                    return (Int32)OpcodeTypeFlag.Register + (Int32)OpcodeTypeFlag.Number;
+                    return (int)OpcodeTypeFlag.Register + (int)OpcodeTypeFlag.Number;
                 case 7:
-                    return (Int32)OpcodeTypeFlag.Register + (Int32)OpcodeTypeFlag.Number + (Int32)OpcodeTypeFlag.Constant;
+                    return (int)OpcodeTypeFlag.Register + (int)OpcodeTypeFlag.Number + (int)OpcodeTypeFlag.Constant;
                 default:
                     return 0;
             }
@@ -206,10 +204,10 @@ namespace VProcessor.Common
 
         public OpcodeRegistry()
         {
-            CodeTable = new Dictionary<String, OpcodeRegistryElement>();
-            Logger = new Logger("LoggerControl.txt", false);            
-            CurrentAddress = FirstAddress;
-            LastType = 0;
+            _codeTable = new Dictionary<string, OpcodeRegistryElement>();
+            _logger = new Logger("LoggerControl.txt", false);            
+            _currentAddress = FirstAddress;
+            _lastType = 0;
             //Type 1: ADD rx, ry, C
             //Type 2: LDR rx, C
             //Type 3: BEQ C
@@ -226,69 +224,69 @@ namespace VProcessor.Common
             //110 - 6 : RF  - 4
             //111 - 7 : RFK - 5    
                         
-            Add("LDR", Opcode.LDR, 0x27);
-            Add("ADD", Opcode.ADD, 0x15);
-            Add("INC", Opcode.INC, 0x24);
-            Add("ADDI", Opcode.ADDI, 0x15);            
-            Add("MOV", Opcode.MOV, 0x25);
-            Add("MNV", Opcode.MNV, 0x25);
-            Add("CMP", Opcode.CMP, 0x25);
-            Add("CMN", Opcode.CMN, 0x25);
-            Add("TST", Opcode.TST, 0x25);
-            Add("TEQ", Opcode.TEQ, 0x25);
+            Add("LDR", Opcode.Ldr, 0x27);
+            Add("ADD", Opcode.Add, 0x15);
+            Add("INC", Opcode.Inc, 0x24);
+            Add("ADDI", Opcode.Addi, 0x15);            
+            Add("MOV", Opcode.Mov, 0x25);
+            Add("MNV", Opcode.Mnv, 0x25);
+            Add("CMP", Opcode.Cmp, 0x25);
+            Add("CMN", Opcode.Cmn, 0x25);
+            Add("TST", Opcode.Tst, 0x25);
+            Add("TEQ", Opcode.Teq, 0x25);
 
-            Add("AND", Opcode.AND, 0x15);
-            Add("EOR", Opcode.EOR, 0x15);
-            Add("ORR", Opcode.ORR, 0x15);
-            Add("BIC", Opcode.BIC, 0x15);
+            Add("AND", Opcode.And, 0x15);
+            Add("EOR", Opcode.Eor, 0x15);
+            Add("ORR", Opcode.Orr, 0x15);
+            Add("BIC", Opcode.Bic, 0x15);
 
-            Add("ROL", Opcode.ROL, 0x15);
-            Add("ROR", Opcode.ROR, 0x15);
-            Add("LSL", Opcode.LSL, 0x15);
-            Add("LSR", Opcode.LSR, 0x15); 
+            Add("ROL", Opcode.Rol, 0x15);
+            Add("ROR", Opcode.Ror, 0x15);
+            Add("LSL", Opcode.Lsl, 0x15);
+            Add("LSR", Opcode.Lsr, 0x15); 
 
             Add("B", BranchCode.B, 0x31);
-            Add("BEQ", BranchCode.BEQ, 0x31);
-            Add("BNE", BranchCode.BNE, 0x31);
-            Add("BCS", BranchCode.BCS, 0x31);
-            Add("BCC", BranchCode.BCC, 0x31);
-            Add("BNS", BranchCode.BNS, 0x31);
-            Add("BNC", BranchCode.BNC, 0x31);
-            Add("BVS", BranchCode.BVS, 0x31);
-            Add("BVC", BranchCode.BVC, 0x31);
-            Add("BHI", BranchCode.BHI, 0x31);
-            Add("BLS", BranchCode.BLS, 0x31);
-            Add("BGE", BranchCode.BGE, 0x31);
-            Add("BLT", BranchCode.BLT, 0x31);
-            Add("BGT", BranchCode.BGT, 0x31);
-            Add("BLE", BranchCode.BLE, 0x31);
+            Add("BEQ", BranchCode.Beq, 0x31);
+            Add("BNE", BranchCode.Bne, 0x31);
+            Add("BCS", BranchCode.Bcs, 0x31);
+            Add("BCC", BranchCode.Bcc, 0x31);
+            Add("BNS", BranchCode.Bns, 0x31);
+            Add("BNC", BranchCode.Bnc, 0x31);
+            Add("BVS", BranchCode.Bvs, 0x31);
+            Add("BVC", BranchCode.Bvc, 0x31);
+            Add("BHI", BranchCode.Bhi, 0x31);
+            Add("BLS", BranchCode.Bls, 0x31);
+            Add("BGE", BranchCode.Bge, 0x31);
+            Add("BLT", BranchCode.Blt, 0x31);
+            Add("BGT", BranchCode.Bgt, 0x31);
+            Add("BLE", BranchCode.Ble, 0x31);
 
-            Add("MUL", Opcode.MUL, 0x15);
-            Add("MLA", Opcode.MLA, 0x15);
+            Add("MUL", Opcode.Mul, 0x15);
+            Add("MLA", Opcode.Mla, 0x15);
 
-            Add("ADC", Opcode.ADC, 0x15);
-            Add("SUBD", Opcode.SUBD, 0x15);
-            Add("SUB", Opcode.SUB, 0x15);
-            Add("SBC", Opcode.SBC, 0x15);
-            Add("DEC", Opcode.DEC, 0x24);
-            Add("RSB", Opcode.RSB, 0x15);          
-            Add("RSC", Opcode.RSC, 0x15);
+            Add("ADC", Opcode.Adc, 0x15);
+            Add("SUBD", Opcode.Subd, 0x15);
+            Add("SUB", Opcode.Sub, 0x15);
+            Add("SBC", Opcode.Sbc, 0x15);
+            Add("DEC", Opcode.Dec, 0x24);
+            Add("RSB", Opcode.Rsb, 0x15);          
+            Add("RSC", Opcode.Rsc, 0x15);
 
-            Add("STR", Opcode.STR, 0x54);
-            Add("LDRST", Opcode.LDR, 0x54); //3 Lines
+            Add("STR", Opcode.Str, 0x54);
+            Add("LDRST", Opcode.Ldr, 0x54); //3 Lines
 
-            Add("LDM", Opcode.NUL, 3, 0x80);
-            Add("STM", Opcode.NUL, 0x80);
+            Add("LDM", Opcode.Nul, 3, 0x80);
+            Add("STM", Opcode.Nul, 0x80);
 
-            Add("LDPC", Opcode.LDPC, 0x84);
-            Add("STPC", Opcode.STPC, 0x84);
+            Add("LDPC", Opcode.Ldpc, 0x84);
+            Add("STPC", Opcode.Stpc, 0x84);
 
-            Add("BX", Opcode.NUL, 0x80);
-            Add("^", Opcode.NUL, 0x80);
+            Add("BX", Opcode.Nul, 0x80);
+            Add("^", Opcode.Nul, 0x80);
 
-            Add("MOD", Opcode.MOD, 0x86);
-            Add("EOI", Opcode.EOI, 0x81);
-            Add("IRQ", Opcode.IRQ, 0x82);            
+            Add("MOD", Opcode.Mod, 0x86);
+            Add("EOI", Opcode.Eoi, 0x81);
+            Add("IRQ", Opcode.Irq, 0x82);            
         }
     }
 }
